@@ -1,0 +1,17 @@
+nginx:
+  build: docker/nginx
+  volumes:
+    - ".:/var/www/html"
+  ports:
+    - "8080:80"
+  links:
+    - fpm:fpm
+    - redis:redis
+
+fpm:
+  build: docker/php7-fpm
+  volumes:
+    - ".:/var/www/html"
+
+redis:
+  build: docker/redis
