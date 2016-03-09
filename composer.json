@@ -1,5 +1,31 @@
 {
+  "name": "fly-image",
+  "description": "Server image resizing and cropping on the fly base on ImageMagick+MozJPEG",
+  "keywords": [
+    "image",
+    "resize",
+    "crop",
+    "imageMagick",
+    "MozJPEG"
+  ],
+  "homepage": "https://github.com/sadok-f/fly-image",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Sadok Ferjani",
+      "email": "sadoknet@gmail.com",
+      "homepage": "http://sadokferjani.me",
+      "role": "Developer"
+    },
+    {
+      "name": "Agustín Amenabar",
+      "email": "baamenabar@gmail.com",
+      "homepage": "http://code.medula.cl",
+      "role": "Developer"
+    }
+  ],
   "require": {
+    "php": ">=5.3.9",
     "silex/silex": "~1.3",
     "symfony/config": "^3.0",
     "symfony/yaml": "^3.0"
