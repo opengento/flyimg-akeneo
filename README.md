@@ -1,5 +1,5 @@
 # Fly-Image
-Server image resizing and cropping on the fly base on ImageMagick+MozJPEG
+Image resizing and cropping on the fly base on ImageMagick+MozJPEG runs inside a Docker container
 
 Creating a Fly-Image Server With Docker
 ---------------------------------------
