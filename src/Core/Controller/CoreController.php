@@ -3,16 +3,18 @@
 namespace Core\Controller;
 
 use Silex\Application;
-use Symfony\Component\HttpFoundation\Response;
 
 class CoreController
 {
+    /**
+     * @var Silex/Application
+     */
     protected $app;
 
     /**
-     * @param Application $app
+     * @param Silex /Application $app
      */
-    public function  setApp(Application $app)
+    public function setApp(Application $app)
     {
         $this->app = $app;
     }
