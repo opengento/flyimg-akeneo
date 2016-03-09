@@ -1,5 +1,5 @@
 {
-  "name": "fly-image",
+  "name": "sadok-f/fly-image",
   "description": "Server image resizing and cropping on the fly base on ImageMagick+MozJPEG",
   "keywords": [
     "image",
