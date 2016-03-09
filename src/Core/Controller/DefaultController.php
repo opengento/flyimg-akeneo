@@ -12,5 +12,4 @@ class DefaultController extends CoreController
     {
         return 'Hello from ' . $this->app->escape('Docker!');
     }
-
 }
