@@ -1,2 +1,3 @@
 mozjpeg_path: /opt/mozjpeg/bin/cjpeg
 quality: 90
+options_separator: ,
