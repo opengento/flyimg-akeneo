@@ -15,7 +15,9 @@ $app = new Silex\Application();
 /**
  * Load parameters files
  */
-$app['params'] = Yaml::parse(file_get_contents(__DIR__ . '/config/parameters.yml'));
+$params = Yaml::parse(file_get_contents(__DIR__ . '/config/parameters.yml'));
+$params['root_dir'] = __DIR__;
+$app['params'] = $params;
 
 
 /**
@@ -35,5 +37,7 @@ $app['resolver'] = $app->share(function () use ($app) {
 $app['image.resizer'] = $app->share(function ($app) {
     return new Resizer($app['params']);
 });
+
+$app['debug'] = true;
 
 return $app;
