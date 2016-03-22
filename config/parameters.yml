@@ -1,3 +1,6 @@
 mozjpeg_path: /opt/mozjpeg/bin/cjpeg
-quality: 90
+use_graphicsmagick: false
 options_separator: ,
+default_options:
+  quality: 90
+  unsharp: 1

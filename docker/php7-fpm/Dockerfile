@@ -6,7 +6,9 @@ RUN curl -sS https://getcomposer.org/installer | php \
 
 RUN apt-get -y install \
     imagemagick \
-    gcc nasm build-essential make wget
+    graphicsmagick \
+    gcc nasm build-essential make wget \
+    git vim
 
 
 # install MozJPEG
