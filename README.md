@@ -5,22 +5,19 @@ Image resizing and cropping on the fly base on ImageMagick+MozJPEG runs inside a
 
 Build the images:
 
-.. code-block:: console
-
+```sh
     $ docker-compose build
-
+```
 Up the containers:
 
-.. code-block:: console
-
+```sh
     $ docker-compose up -d
-
+```
 If you running docker-machine, get the VM ip:
 
-.. code-block:: console
-
+```sh
     $ docker-machine ip xxx
-
+```
 
 Access to the server: xxx.xxx.xxx.xxx:8080
 
