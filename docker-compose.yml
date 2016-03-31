@@ -1,4 +1,5 @@
 nginx:
+  container_name: nginx
   build: docker/nginx
   volumes:
     - ".:/var/www/html"
@@ -9,9 +10,11 @@ nginx:
     - redis:redis
 
 fpm:
+  container_name: fpm
   build: docker/php7-fpm
   volumes:
     - ".:/var/www/html"
 
 redis:
+  container_name: redis
   build: docker/redis

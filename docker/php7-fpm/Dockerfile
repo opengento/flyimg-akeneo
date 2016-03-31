@@ -1,9 +1,10 @@
 FROM php:7-fpm
 
-RUN apt-get update
-RUN curl -sS https://getcomposer.org/installer | php \
-    && mv composer.phar /usr/local/bin/composer
+#apt-update && composer
+RUN apt-get -y update && \
+    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
+#install dependencies
 RUN apt-get -y install \
     imagemagick \
     graphicsmagick \
