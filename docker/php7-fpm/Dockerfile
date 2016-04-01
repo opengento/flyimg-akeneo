@@ -1,5 +1,9 @@
 FROM php:7-fpm
 
+#to have color and alias in bash
+ENV TERM xterm
+COPY .bashrc /root/.bashrc
+
 #apt-update && composer
 RUN apt-get -y update && \
     curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -10,7 +14,6 @@ RUN apt-get -y install \
     graphicsmagick \
     gcc nasm build-essential make wget \
     git vim
-
 
 # install MozJPEG
 RUN \
