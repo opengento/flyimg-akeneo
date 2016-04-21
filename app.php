@@ -6,18 +6,22 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Routing\Loader\YamlFileLoader;
 use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Yaml\Yaml;
+use League\Flysystem\Cached\Storage\Predis as Cache;
+use Predis\Client;
 
-//$cmd='/opt/mozjpeg/bin/cjpeg -version  2>&1';
 $loader = require_once __DIR__ . '/vendor/autoload.php';
 
 $app = new Silex\Application();
 
 /**
- * Load parameters files
+ * Define Constants && Load parameters files
  */
-$params = Yaml::parse(file_get_contents(__DIR__ . '/config/parameters.yml'));
-$params['root_dir'] = __DIR__;
-$app['params'] = $params;
+define('ROOT_DIR', __DIR__);
+define('UPLOAD_DIR', ROOT_DIR . '/var/upload/');
+define('TMP_DIR', ROOT_DIR . '/var/tmp/');
+define('LOG_DIR', ROOT_DIR . '/var/log  /');
+
+$app['params'] = Yaml::parse(file_get_contents(ROOT_DIR . '/config/parameters.yml'));
 
 
 /**
@@ -30,12 +34,37 @@ $app['routes'] = $app->extend('routes', function (RouteCollection $routes) {
     return $routes;
 });
 
+
+/**
+ * Register Fly System Provider
+ */
+$client = new Client('tcp://redis-service:6379');
+$app->register(new WyriHaximus\SliFly\FlysystemServiceProvider(), [
+    'flysystem.filesystems' => [
+        'upload_dir' => [
+            'adapter' => 'League\Flysystem\Cached\CachedAdapter',
+            'args' => [
+                new League\Flysystem\Adapter\Local(UPLOAD_DIR),
+                new Cache($client)
+            ],
+        ],
+    ],
+]);
+
+/**
+ * Monolog Service
+ */
+$app->register(new Silex\Provider\MonologServiceProvider(), array(
+    'monolog.name' => 'fly-image',
+    'monolog.logfile' => LOG_DIR . 'dev.log',
+));
+
 $app['resolver'] = $app->share(function () use ($app) {
     return new ControllerResolver($app, $app['logger']);
 });
 
 $app['image.resizer'] = $app->share(function ($app) {
-    return new ImageResizer($app['params']);
+    return new ImageResizer($app['params'], $app['flysystems']['upload_dir'], $app['monolog']);
 });
 
 $app['debug'] = true;

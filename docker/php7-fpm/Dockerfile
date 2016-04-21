@@ -15,7 +15,7 @@ RUN apt-get -y install \
     gcc nasm build-essential make wget \
     git vim
 
-# install MozJPEG
+#install MozJPEG
 RUN \
     wget "https://github.com/mozilla/mozjpeg/releases/download/v3.1/mozjpeg-3.1-release-source.tar.gz" && \
     tar xvf "mozjpeg-3.1-release-source.tar.gz" && \
@@ -23,5 +23,10 @@ RUN \
     ./configure && \
     make && \
     make install
+
+#add www-data + mdkdir var folder
+RUN usermod -u 1000 www-data && \
+    mkdir -p /var/www/html/var && \
+    chown -R www-data:www-data /var/www/html/var
 
 CMD ["php-fpm"]

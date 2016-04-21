@@ -4,6 +4,8 @@ namespace Core\Controller;
 
 use Silex\Application;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class DefaultController extends CoreController
 {
@@ -21,7 +23,9 @@ class DefaultController extends CoreController
         /** @var \Core\Service\ImageResizer $resizer */
         $resizer = $this->app['image.resizer'];
         $image = $resizer->resize($imageSrc, $options);
-        $response = new BinaryFileResponse($image);
+        $response = new Response();
+        $response->headers->set('Content-Type', 'image');
+        $response->setContent($image);
         return $response;
     }
 
