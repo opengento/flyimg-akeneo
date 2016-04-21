@@ -20,3 +20,11 @@ fpm:
 redis:
   container_name: redis
   build: docker/redis
+
+redis-commander:
+  container_name: redis-commander
+  build: docker/redis-commander
+  ports:
+    - "8090:8081"
+  links:
+    - redis:redis-service
