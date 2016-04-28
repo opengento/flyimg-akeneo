@@ -1,6 +1,40 @@
 mozjpeg_path: /opt/mozjpeg/bin/cjpeg
 use_graphicsmagick: false
 options_separator: ,
+
+#Keys used in url to match options. Ex: q_80,w_200,h_100
+options_keys:
+  q: quality
+  sh: unsharp
+  c: crop
+  bg: background
+  st: strip
+  rz: resize
+  unsh: unsharp
+  moz: mozjpeg
+  h: width
+  w: height
+  g: gravity
+  th: thread
+  thb: thumbnail
+  f: filter
+  sc: scale
+  sf: sampling-factor
+
+#Default options values
 default_options:
+  mozjpeg: 1
   quality: 90
-  unsharp: 1
+  unsharp: null
+  width: null
+  height: null
+  crop: null
+  background: null
+  resize: null
+  strip: 1
+  gravity: Center
+  thread: 1
+  thumbnail: null
+  filter: Lanczos
+  scale: null
+  sampling-factor: 1x1
