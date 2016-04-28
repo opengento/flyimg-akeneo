@@ -44,8 +44,8 @@ options_keys:
   rz: resize
   unsh: unsharp
   moz: mozjpeg
-  h: width
-  w: height
+  h: height
+  w: width
   g: gravity
   th: thread
   thb: thumbnail
