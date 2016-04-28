@@ -34,6 +34,7 @@ http://192.168.99.100:8080/upload/w_500,h_500,q_10/https://www.google.com/images
 Options keys:
 -------------
 
+```sh
 options_keys:
   q: quality
   sh: unsharp
@@ -51,9 +52,12 @@ options_keys:
   f: filter
   sc: scale
   sf: sampling-factor
+```
 
-Default options values
---------
+Default options values:
+-----------------------
+
+```sh
 default_options:
   mozjpeg: 1
   quality: 90
@@ -70,4 +74,4 @@ default_options:
   filter: Lanczos
   scale: null
   sampling-factor: 1x1
-
+```
