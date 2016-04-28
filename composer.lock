@@ -4,21 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "48368481105b3e6ca83f70a0f493505e",
-    "content-hash": "4a0c6a22c91ffdd59397ccd7a76d096f",
+    "hash": "0fd05c5621a0907f9f1d8ba854f750c0",
+    "content-hash": "1787e52a3fb53688f0e92daf71231d76",
     "packages": [
         {
             "name": "league/flysystem",
-            "version": "1.0.20",
+            "version": "1.0.22",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "e87a786e3ae12a25cf78a71bb07b4b384bfaa83a"
+                "reference": "bd73a91703969a2d20ab4bfbf971d6c2cbe36612"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/e87a786e3ae12a25cf78a71bb07b4b384bfaa83a",
-                "reference": "e87a786e3ae12a25cf78a71bb07b4b384bfaa83a",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/bd73a91703969a2d20ab4bfbf971d6c2cbe36612",
+                "reference": "bd73a91703969a2d20ab4bfbf971d6c2cbe36612",
                 "shasum": ""
             },
             "require": {
@@ -88,7 +88,7 @@
                 "sftp",
                 "storage"
             ],
-            "time": "2016-03-14 21:54:11"
+            "time": "2016-04-28 06:53:12"
         },
         {
             "name": "league/flysystem-cached-adapter",
@@ -215,59 +215,6 @@
                 "psr-3"
             ],
             "time": "2016-04-12 18:29:35"
-        },
-        {
-            "name": "pastuhov/php-exec-command",
-            "version": "1.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/pastuhov/php-exec-command.git",
-                "reference": "26a9eeca5cfad308bc0913429990660570c2ab37"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/pastuhov/php-exec-command/zipball/26a9eeca5cfad308bc0913429990660570c2ab37",
-                "reference": "26a9eeca5cfad308bc0913429990660570c2ab37",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "4.*",
-                "scrutinizer/ocular": "~1.1"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "pastuhov\\Command\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "Kirill Pastukhov",
-                    "email": "kirill@pastukhov.su",
-                    "homepage": "https://github.com/pastuhov/",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Simple php command executor with param binding.",
-            "homepage": "https://github.com/pastuhov/php-exec-command",
-            "keywords": [
-                "command",
-                "exec",
-                "system"
-            ],
-            "time": "2015-12-18 05:47:56"
         },
         {
             "name": "pimple/pimple",

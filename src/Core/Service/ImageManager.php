@@ -81,90 +81,63 @@ class ImageManager
      */
     private function saveNewFile($sourceFile, $newFileName, $options)
     {
-        extract($options);
-        $samplingFactor = $options['sampling-factor'];
-        $newFilePath = TMP_DIR . $newFileName;
+        $command = [];
 
+        $quality = $options['quality'];
+        $strip = $options['strip'];
+        $mozJPEG = $options['mozjpeg'];
+        $thread = $options['thread'];
+
+        $newFilePath = TMP_DIR . $newFileName;
         $tmpFile = $this->saveTmpFile($sourceFile);
 
-        $command = $params = [];
-        $command[] = "/usr/bin/convert {tmpFile}";
-        $command[] = "-extent {size}";
-        $params['tmpFile'] = $tmpFile;
-        $params['size'] = $height . 'x' . $width;
+        $size = $options['width'] . 'x' . $options['height'];
+        $command[] = "/usr/bin/convert ".$tmpFile."'[".escapeshellarg($size)."]'";
+        $command[] = "-extent ".escapeshellarg($size);
+
+        unset(
+            $options['width'],
+            $options['height'],
+            $options['quality'],
+            $options['mozjpeg'],
+            $options['thread'],
+            $options['strip']
+        );
+
+        if (!empty($thread)) {
+            $command[] = "-limit thread ". escapeshellarg($thread);
+        }
 
         if (!empty($strip)) {
             $command[] = "-strip ";
         }
 
-        if (!empty($gravity)) {
-            $command[] = "-gravity {gravity}";
-            $params['gravity'] = $gravity;
+        foreach ($options as $key => $value) {
+            if (!empty($value)) {
+                $command[] = "-{$key} ". escapeshellarg($value);
+            }
         }
 
-        if (!empty($thread)) {
-            $command[] = "-limit thread {thread}";
-            $params['thread'] = $thread;
-        }
-
-        if (!empty($samplingFactor)) {
-            $command[] = "-sampling-factor {sampling-factor}";
-            $params['sampling-factor'] = $samplingFactor;
-        }
-
-        if (!empty($unsharp)) {
-            $command[] = "-unsharp {unsharp}";
-            $params['unsharp'] = $unsharp;
-        }
-
-        if (!empty($filter)) {
-            $command[] = "-filter {filter}";
-            $params['filter'] = $filter;
-        }
-
-
-        if (!empty($scale)) {
-            $command[] = "-scale {scale}";
-            $params['scale'] = $scale;
-        }
-
-        if (!empty($thumbnail)) {
-            $command[] = "-thumbnail {thumbnail}";
-            $params['thumbnail'] = $thumbnail;
-        }
-
-        if (!empty($resize)) {
-            $command[] = '-resize {resize}';
-            $params['resize'] = $resize;
-        }
-
-        if (!empty($crop)) {
-            $command[] = '-crop {crop}';
-            $params['crop'] = $crop;
-        }
-
-        if (!empty($background)) {
-            $command[] = '-background {background}';
-            $params['background'] = $background;
-        }
-
-        if (is_executable($this->params['mozjpeg_path']) && $mozjpeg == 1) {
-            $command[] = "TGA:- | {mozJpegExecutable} -quality {quality} -outfile {newFilePath} -targa";
-            $params['mozJpegExecutable'] = $this->params['mozjpeg_path'];
+        if (is_executable($this->params['mozjpeg_path']) && $mozJPEG == 1) {
+            $command[] = "TGA:- | ".escapeshellarg($this->params['mozjpeg_path'])." -quality ".escapeshellarg($quality)." -outfile ".escapeshellarg($newFilePath)." -targa";
         } else {
-            $command[] = "-quality {quality} {newFilePath}";
+            $command[] = "-quality ".escapeshellarg($quality)." ".escapeshellarg($newFilePath);
         }
 
-        $params['quality'] = $quality;
-        $params['newFilePath'] = $newFilePath;
         $commandStr = implode(' ', $command);
         $this->logger->addInfo('CMD : ' . $commandStr);
-        $this->logger->addInfo('PARAMS : ' . implode(', ', $params));
         try {
-            Command::exec(
-                $commandStr,
-                $params
-            );
+
+            exec($commandStr, $output, $code);
+            if (count($output) === 0) {
+                $output = $code;
+            } else {
+                $output = implode(PHP_EOL, $output);
+            }
+
+            if ($code !== 0) {
+                throw new \Exception($output . ' Command line: ' . $commandStr);
+            }
 
             $this->filesystem->write($newFileName, stream_get_contents(fopen($newFilePath, 'r')));
             unlink($tmpFile);
