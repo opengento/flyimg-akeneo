@@ -47,9 +47,9 @@ class ImageManager
         $options = $this->parseOptions($options);
         $newFileName = md5(implode('.', $options) . $sourceFile);
 
-//        if (!$this->filesystem->has($newFileName)) {
-        $this->saveNewFile($sourceFile, $newFileName, $options);
-//        }
+        if (!$this->filesystem->has($newFileName)) {
+            $this->saveNewFile($sourceFile, $newFileName, $options);
+        }
         return $this->filesystem->read($newFileName);
     }
 
