@@ -1,7 +1,7 @@
 <?php
 
 use Core\Resolver\ControllerResolver;
-use Core\Service\ImageResizer;
+use Core\Service\ImageManager;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Routing\Loader\YamlFileLoader;
 use Symfony\Component\Routing\RouteCollection;
@@ -64,7 +64,7 @@ $app['resolver'] = $app->share(function () use ($app) {
 });
 
 $app['image.resizer'] = $app->share(function ($app) {
-    return new ImageResizer($app['params'], $app['flysystems']['upload_dir'], $app['monolog']);
+    return new ImageManager($app['params'], $app['flysystems']['upload_dir'], $app['monolog']);
 });
 
 $app['debug'] = true;

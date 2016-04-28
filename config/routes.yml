@@ -4,6 +4,6 @@ home:
 
 upload:
    path : /upload/{options}/{imageSrc}
-   defaults: { _controller: 'Core\Controller\DefaultController::uploadAction' }
+   defaults: { _controller: 'Core\Controller\DefaultController::uploadAction', imageSrc:'' }
    requirements:
       imageSrc: .+
