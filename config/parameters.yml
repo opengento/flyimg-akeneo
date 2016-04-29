@@ -4,22 +4,22 @@ options_separator: ,
 
 #Keys used in url to match options. Ex: q_80,w_200,h_100
 options_keys:
+  moz: mozjpeg
   q: quality
-  sh: unsharp
+  unsh: unsharp
+  w: width
+  h: height
   c: crop
   bg: background
   st: strip
   rz: resize
-  unsh: unsharp
-  moz: mozjpeg
-  h: height
-  w: width
   g: gravity
   th: thread
   thb: thumbnail
   f: filter
   sc: scale
   sf: sampling-factor
+  rf: refresh
 
 #Default options values
 default_options:
@@ -30,11 +30,12 @@ default_options:
   height: null
   crop: null
   background: null
-  resize: null
   strip: 1
+  resize: null
   gravity: Center
   thread: 1
   thumbnail: null
   filter: Lanczos
   scale: null
   sampling-factor: 1x1
+  refresh: false

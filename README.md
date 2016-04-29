@@ -1,5 +1,6 @@
 # Fly-Image
-Image resizing and cropping on the fly base on ImageMagick+MozJPEG runs inside a Docker container.
+Image resizing and cropping on the fly based on ImageMagick + MozJPEG runs with Docker containers.
+
 Docker compose create the following containers:
 - **nginx** : Nginx 1.9
 - **fpm** : PHP 7 fpm
@@ -50,22 +51,22 @@ Options keys:
 
 ```yml
 options_keys:
+  moz: mozjpeg
   q: quality
-  sh: unsharp
+  unsh: unsharp
+  w: width
+  h: height
   c: crop
   bg: background
   st: strip
   rz: resize
-  unsh: unsharp
-  moz: mozjpeg
-  h: height
-  w: width
   g: gravity
   th: thread
   thb: thumbnail
   f: filter
   sc: scale
   sf: sampling-factor
+  rf: refresh
 ```
 
 Default options values:
@@ -80,12 +81,13 @@ default_options:
   height: null
   crop: null
   background: null
-  resize: null
   strip: 1
+  resize: null
   gravity: Center
   thread: 1
   thumbnail: null
   filter: Lanczos
   scale: null
   sampling-factor: 1x1
+  refresh: false
 ```

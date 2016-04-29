@@ -52,9 +52,14 @@ class ImageManager
         $options = $this->parseOptions($options);
         $newFileName = md5(implode('.', $options) . $sourceFile);
 
+        if($this->filesystem->has($newFileName) && $options['refresh']) {
+            $this->filesystem->delete($newFileName);
+        }
+
         if (!$this->filesystem->has($newFileName)) {
             $this->saveNewFile($sourceFile, $newFileName, $options);
         }
+
         return $this->filesystem->read($newFileName);
     }
 
@@ -127,6 +132,7 @@ class ImageManager
      */
     private function generateCmdString($newFilePath, $tmpFile, $options)
     {
+        $this->extractByKey($options, 'refresh');
         $quality = $this->extractByKey($options, 'quality');
         $strip = $this->extractByKey($options, 'strip');
         $mozJPEG = $this->extractByKey($options, 'mozjpeg');
