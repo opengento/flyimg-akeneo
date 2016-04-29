@@ -28,10 +28,21 @@ Access to the server: xxx.xxx.xxx.xxx:8080
 
 Example:
 --------
-http://192.168.99.100:8080/upload/w_500,h_500,q_10/https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png
+http://192.168.99.100:8080/upload/w_500,h_500,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg
+
 
 Redis-commander:
-http://192.168.99.100:8090/
+http://192.168.99.100:8090
+
+
+Storage:
+--------
+Storage images based on [Flysystem](http://flysystem.thephpleague.com/) which is `a filesystem abstraction which allows you to easily swap out a local filesystem for a remote one. Technical debt is reduced as is the chance of vendor lock-in.`
+
+
+Caching:
+--------
+Use Redis for meta-data caching
 
 
 Options keys:
