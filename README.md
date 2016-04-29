@@ -38,8 +38,8 @@ http://192.168.99.100:8090
 
 Storage:
 --------
-Storage images based on [Flysystem](http://flysystem.thephpleague.com/) which is `a filesystem abstraction which allows you to easily swap out a local filesystem for a remote one. Technical debt is reduced as is the chance of vendor lock-in.`
-
+Storage files based on [Flysystem](http://flysystem.thephpleague.com/) which is `a filesystem abstraction allows you to easily swap out a local filesystem for a remote one. Technical debt is reduced as is the chance of vendor lock-in.`
+Default storage is Local, but you can use other Adapters like AWS S3, Azure, FTP, Dropbox, ... 
 
 Caching:
 --------
