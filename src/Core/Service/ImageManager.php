@@ -3,10 +3,12 @@
 namespace Core\Service;
 
 use League\Flysystem\Filesystem;
-use pastuhov\Command\Command;
 use Monolog\Logger;
 
-
+/**
+ * Class ImageManager
+ * @package Core\Service
+ */
 class ImageManager
 {
     /**
@@ -25,7 +27,8 @@ class ImageManager
     protected $logger;
 
     /**
-     * Resizer constructor.
+     * ImageManager constructor.
+     *
      * @param array $params
      * @param Filesystem $filesystem
      * @param Logger $logger
@@ -38,6 +41,8 @@ class ImageManager
     }
 
     /**
+     * Process give source file with given options
+     *
      * @param array $options
      * @param $sourceFile
      * @return string
@@ -54,7 +59,8 @@ class ImageManager
     }
 
     /**
-     * TODO Parse all options
+     * Parse options: match options keys and merge default options with given ones
+     *
      * @param $options
      * @return array
      */
@@ -62,7 +68,8 @@ class ImageManager
     {
         $defaultOptions = $this->params['default_options'];
         $optionsKeys = $this->params['options_keys'];
-        $optionsUrl = explode($this->params['options_separator'], $options);
+        $optionsSeparator = !empty($this->params['options_separator']) ? $this->params['options_separator'] : ',';
+        $optionsUrl = explode($optionsSeparator, $options);
         $options = [];
         foreach ($optionsUrl as $option) {
             $optArray = explode('_', $option);
@@ -74,6 +81,8 @@ class ImageManager
     }
 
     /**
+     * Save new FileName based on source file and list of options
+     *
      * @param $sourceFile
      * @param $newFileName
      * @param $options
@@ -81,50 +90,9 @@ class ImageManager
      */
     private function saveNewFile($sourceFile, $newFileName, $options)
     {
-        $command = [];
-
-        $quality = $options['quality'];
-        $strip = $options['strip'];
-        $mozJPEG = $options['mozjpeg'];
-        $thread = $options['thread'];
-
         $newFilePath = TMP_DIR . $newFileName;
-        $tmpFile = $this->saveTmpFile($sourceFile);
-
-        $size = $options['width'] . 'x' . $options['height'];
-        $command[] = "/usr/bin/convert ".$tmpFile."'[".escapeshellarg($size)."]'";
-        $command[] = "-extent ".escapeshellarg($size);
-
-        unset(
-            $options['width'],
-            $options['height'],
-            $options['quality'],
-            $options['mozjpeg'],
-            $options['thread'],
-            $options['strip']
-        );
-
-        if (!empty($thread)) {
-            $command[] = "-limit thread ". escapeshellarg($thread);
-        }
-
-        if (!empty($strip)) {
-            $command[] = "-strip ";
-        }
-
-        foreach ($options as $key => $value) {
-            if (!empty($value)) {
-                $command[] = "-{$key} ". escapeshellarg($value);
-            }
-        }
-
-        if (is_executable($this->params['mozjpeg_path']) && $mozJPEG == 1) {
-            $command[] = "TGA:- | ".escapeshellarg($this->params['mozjpeg_path'])." -quality ".escapeshellarg($quality)." -outfile ".escapeshellarg($newFilePath)." -targa";
-        } else {
-            $command[] = "-quality ".escapeshellarg($quality)." ".escapeshellarg($newFilePath);
-        }
-
-        $commandStr = implode(' ', $command);
+        $tmpFile = $this->saveToTemporaryFile($sourceFile);
+        $commandStr = $this->generateCmdString($newFilePath, $tmpFile, $options);
         $this->logger->addInfo('CMD : ' . $commandStr);
         try {
 
@@ -138,7 +106,7 @@ class ImageManager
             if ($code !== 0) {
                 throw new \Exception($output . ' Command line: ' . $commandStr);
             }
-
+            $this->logger->addInfo('CMD outout : ' . $output);
             $this->filesystem->write($newFileName, stream_get_contents(fopen($newFilePath, 'r')));
             unlink($tmpFile);
             unlink($newFilePath);
@@ -149,17 +117,78 @@ class ImageManager
         }
     }
 
+    /**
+     * Generate Command string bases on options
+     *
+     * @param $options
+     * @param $tmpFile
+     * @param $newFilePath
+     * @return string
+     */
+    private function generateCmdString($newFilePath, $tmpFile, $options)
+    {
+        $quality = $this->extractByKey($options, 'quality');
+        $strip = $this->extractByKey($options, 'strip');
+        $mozJPEG = $this->extractByKey($options, 'mozjpeg');
+        $thread = $this->extractByKey($options, 'thread');
+        $size = $this->extractByKey($options, 'width') . 'x' . $this->extractByKey($options, 'height');
+
+        $command = [];
+        $command[] = "/usr/bin/convert " . $tmpFile . "'[" . escapeshellarg($size) . "]'";
+        $command[] = "-extent " . escapeshellarg($size);
+
+        if (!empty($thread)) {
+            $command[] = "-limit thread " . escapeshellarg($thread);
+        }
+
+        if (!empty($strip)) {
+            $command[] = "-strip ";
+        }
+
+        foreach ($options as $key => $value) {
+            if (!empty($value)) {
+                $command[] = "-{$key} " . escapeshellarg($value);
+            }
+        }
+
+        if (is_executable($this->params['mozjpeg_path']) && $mozJPEG == 1) {
+            $command[] = "TGA:- | " . escapeshellarg($this->params['mozjpeg_path']) . " -quality " . escapeshellarg($quality) . " -outfile " . escapeshellarg($newFilePath) . " -targa";
+        } else {
+            $command[] = "-quality " . escapeshellarg($quality) . " " . escapeshellarg($newFilePath);
+        }
+
+        $commandStr = implode(' ', $command);
+        return $commandStr;
+    }
 
     /**
-     * Save given image in tmp file and return the path
+     * Extract a value from given array and unset it.
+     *
+     * @param $array
+     * @param $key
+     * @return null
+     */
+    private function extractByKey(&$array, $key)
+    {
+        $value = null;
+        if (isset($array[$key])) {
+            $value = $array[$key];
+            unset($array[$key]);
+        }
+        return $value;
+    }
+
+    /**
+     * Save given image to temporary file and return the path
+     *
      * @param $fileUrl
      * @return string
      * @throws \Exception
      */
-    private function saveTmpFile($fileUrl)
+    private function saveToTemporaryFile($fileUrl)
     {
         if (!$resource = @fopen($fileUrl, "r")) {
-            throw  new \Exception('Error occured while trying to read the file Url');
+            throw  new \Exception('Error occured while trying to read the file Url : ' . $fileUrl);
         }
         $content = "";
         while ($line = fread($resource, 1024)) {

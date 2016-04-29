@@ -1,5 +1,5 @@
 mozjpeg_path: /opt/mozjpeg/bin/cjpeg
-use_graphicsmagick: false
+#use_graphicsmagick: false
 options_separator: ,
 
 #Keys used in url to match options. Ex: q_80,w_200,h_100
