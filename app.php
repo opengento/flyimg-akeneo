@@ -63,7 +63,7 @@ $app['resolver'] = $app->share(function () use ($app) {
     return new ControllerResolver($app, $app['logger']);
 });
 
-$app['image.resizer'] = $app->share(function ($app) {
+$app['image.manager'] = $app->share(function ($app) {
     return new ImageManager($app['params'], $app['flysystems']['upload_dir'], $app['monolog']);
 });
 
