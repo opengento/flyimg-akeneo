@@ -134,7 +134,7 @@ Restricted domains disabled by default, to enable it change in config/parameters
 restricted_domains: true
 ```
 
-After you need to put put white list domains
+After you need to put the white list domains
 ```yml
 whitelist_domains:
     - www.domain-1.org
