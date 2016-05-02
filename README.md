@@ -92,3 +92,51 @@ default_options:
   sampling-factor: 1x1
   refresh: false
 ```
+
+
+
+Example of using AWS S3 Adapter:
+--------------------------------
+in app.php:
+
+```php
+use Aws\S3\S3Client;
+use League\Flysystem\AwsS3v3\AwsS3Adapter;
+use League\Flysystem\Filesystem;
+
+$client = S3Client::factory([
+    'credentials' => [
+        'key'    => 'your-key',
+        'secret' => 'your-secret',
+    ],
+    'region' => 'your-region',
+    'version' => 'latest|version',
+]);
+$app->register(new WyriHaximus\SliFly\FlysystemServiceProvider(), [
+    'flysystem.filesystems' => [
+        'upload_dir' => [
+            'adapter' => 'League\Flysystem\Cached\CachedAdapter',
+            'args' => [
+               new  AwsS3Adapter($s3Client, 'your-bucket-name'),
+                new Cache($client)
+            ],
+        ],
+    ],
+]);
+```
+ 
+
+Unable Restricted Domains:
+--------------------------
+
+Restricted domains disabled by default, to enable it change in config/parameters.yml
+```yml
+restricted_domains: true
+```
+
+After you need to put put white list domains
+```yml
+whitelist_domains:
+    - www.domain-1.org
+    - www.domain-2.org
+```

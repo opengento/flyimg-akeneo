@@ -1,7 +1,7 @@
 #path to mozjpeg bin
 mozjpeg_path: /opt/mozjpeg/bin/cjpeg
 
-#TODO implement loginc for graphicsmagick
+#TODO implement logic for graphicsmagick
 #use_graphicsmagick: false
 
 #options separator
