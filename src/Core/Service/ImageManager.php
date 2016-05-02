@@ -69,7 +69,7 @@ class ImageManager
      * @param $options
      * @return array
      */
-    private function parseOptions($options)
+    public function parseOptions($options)
     {
         $defaultOptions = $this->params['default_options'];
         $optionsKeys = $this->params['options_keys'];
@@ -93,7 +93,7 @@ class ImageManager
      * @param $options
      * @throws \Exception
      */
-    private function saveNewFile($sourceFile, $newFileName, $options)
+    public function saveNewFile($sourceFile, $newFileName, $options)
     {
         $newFilePath = TMP_DIR . $newFileName;
         $tmpFile = $this->saveToTemporaryFile($sourceFile);
@@ -130,7 +130,7 @@ class ImageManager
      * @param $newFilePath
      * @return string
      */
-    private function generateCmdString($newFilePath, $tmpFile, $options)
+    public function generateCmdString($newFilePath, $tmpFile, $options)
     {
         $this->extractByKey($options, 'refresh');
         $quality = $this->extractByKey($options, 'quality');
@@ -174,7 +174,7 @@ class ImageManager
      * @param $key
      * @return null
      */
-    private function extractByKey(&$array, $key)
+    public function extractByKey(&$array, $key)
     {
         $value = null;
         if (isset($array[$key])) {
@@ -191,7 +191,7 @@ class ImageManager
      * @return string
      * @throws \Exception
      */
-    private function saveToTemporaryFile($fileUrl)
+    public function saveToTemporaryFile($fileUrl)
     {
         //check restricted_domains is enabled
         if ($this->params['restricted_domains'] &&

@@ -24,6 +24,12 @@ RUN \
     make && \
     make install
 
+#install phpUnit
+RUN \
+    wget https://phar.phpunit.de/phpunit.phar && \
+    chmod +x phpunit.phar && \
+    mv phpunit.phar /usr/local/bin/phpunit
+
 #add www-data + mdkdir var folder
 RUN usermod -u 1000 www-data && \
     mkdir -p /var/www/html/var && \
