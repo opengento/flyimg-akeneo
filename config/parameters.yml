@@ -1,6 +1,17 @@
+#path to mozjpeg bin
 mozjpeg_path: /opt/mozjpeg/bin/cjpeg
+
+#TODO implement loginc for graphicsmagick
 #use_graphicsmagick: false
+
+#options separator
 options_separator: ,
+
+#restrict domains, false by default
+restricted_domains: false
+#if restricted_domains is enabled, put whitelist domains here
+whitelist_domains:
+    - www.mozilla.org
 
 #Keys used in url to match options. Ex: q_80,w_200,h_100
 options_keys:
