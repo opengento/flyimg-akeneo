@@ -1,6 +1,52 @@
+#path to mozjpeg bin
 mozjpeg_path: /opt/mozjpeg/bin/cjpeg
-use_graphicsmagick: false
+
+#TODO implement logic for graphicsmagick
+#use_graphicsmagick: false
+
+#options separator
 options_separator: ,
+
+#restrict domains, false by default
+restricted_domains: false
+#if restricted_domains is enabled, put whitelist domains here
+whitelist_domains:
+    - www.mozilla.org
+
+#Keys used in url to match options. Ex: q_80,w_200,h_100
+options_keys:
+  moz: mozjpeg
+  q: quality
+  unsh: unsharp
+  w: width
+  h: height
+  c: crop
+  bg: background
+  st: strip
+  rz: resize
+  g: gravity
+  th: thread
+  thb: thumbnail
+  f: filter
+  sc: scale
+  sf: sampling-factor
+  rf: refresh
+
+#Default options values
 default_options:
+  mozjpeg: 1
   quality: 90
-  unsharp: 1
+  unsharp: null
+  width: null
+  height: null
+  crop: null
+  background: null
+  strip: 1
+  resize: null
+  gravity: Center
+  thread: 1
+  thumbnail: null
+  filter: Lanczos
+  scale: null
+  sampling-factor: 1x1
+  refresh: false
