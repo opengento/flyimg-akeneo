@@ -3,7 +3,7 @@
 namespace Core\Controller;
 
 use Silex\Application;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class DefaultController extends CoreController
 {
@@ -13,41 +13,16 @@ class DefaultController extends CoreController
         return 'Hello from ' . $this->app->escape('Docker!');
     }
 
-
-    public function uploadAction($options, $imageSrc)
+    /**
+     * @param $options
+     * @param null $imageSrc
+     * @return Response
+     */
+    public function uploadAction($options, $imageSrc = null)
     {
-        $options = $this->parseOptions($options);
-
-        /** @var \Core\Service\ImageResizer $resizer */
-        $resizer = $this->app['image.resizer'];
-        $image = $resizer->resize($imageSrc, $options);
-        $response = new BinaryFileResponse($image);
-        return $response;
-    }
-
-    private function parseOptions($options)
-    {
-        $defaultOptions = $this->app['params']['default_options'];
-//        echo '<pre>';
-//        var_dump($defaultOptions);
-//        exit;
-        $optionsUrl = explode($this->app['params']['options_separator'], $options);
-        $options = [];
-        foreach ($optionsUrl as $option) {
-            $optArray = explode('_', $option);
-            if ($optArray[0] == 'w') {
-                $options['width'] = $optArray[1];
-            }
-            if ($optArray[0] == 'h') {
-                $options['height'] = $optArray[1];
-            }
-            if ($optArray[0] == 'q') {
-                $options['quality'] = $optArray[1];
-            }
-        }
-
-
-//TODO
-        return array_merge($defaultOptions, $options);
+        /** @var \Core\Service\ImageManager $manager */
+        $manager = $this->app['image.manager'];
+        $image = $manager->process($options, $imageSrc);
+        return $this->generateImageResponse($image);
     }
 }
