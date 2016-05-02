@@ -52,7 +52,7 @@ class ImageManager
         $options = $this->parseOptions($options);
         $newFileName = md5(implode('.', $options) . $sourceFile);
 
-        if($this->filesystem->has($newFileName) && $options['refresh']) {
+        if ($this->filesystem->has($newFileName) && $options['refresh']) {
             $this->filesystem->delete($newFileName);
         }
 
@@ -193,6 +193,15 @@ class ImageManager
      */
     private function saveToTemporaryFile($fileUrl)
     {
+        //check restricted_domains is enabled
+        if ($this->params['restricted_domains'] &&
+            is_array($this->params['whitelist_domains']) &&
+            !in_array(parse_url($fileUrl, PHP_URL_HOST), $this->params['whitelist_domains'])
+        ) {
+            throw  new \Exception('Restricted domains enabled, the domain your fetching from is not allowed: ' . parse_url($fileUrl, PHP_URL_HOST));
+
+        }
+
         if (!$resource = @fopen($fileUrl, "r")) {
             throw  new \Exception('Error occured while trying to read the file Url : ' . $fileUrl);
         }
