@@ -32,7 +32,8 @@ RUN \
 
 #add www-data + mdkdir var folder
 RUN usermod -u 1000 www-data && \
-    mkdir -p /var/www/html/var && \
+    mkdir -p /var/www/html/var/tmp && \
+    chmod 777 -R /var/www/html/var/ && \
     chown -R www-data:www-data /var/www/html/var
 
 CMD ["php-fpm"]
