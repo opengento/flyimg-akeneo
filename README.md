@@ -1,4 +1,7 @@
 # Fly-Image
+
+[![Build Status](https://travis-ci.org/sadok-f/fly-image.svg?branch=master)](https://travis-ci.org/sadok-f/fly-image)
+
 Image resizing and cropping on the fly based on ImageMagick + MozJPEG runs with Docker containers.
 
 Docker compose create the following containers:
