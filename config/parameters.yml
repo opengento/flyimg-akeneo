@@ -1,5 +1,6 @@
 #path to mozjpeg bin
 mozjpeg_path: /opt/mozjpeg/bin/cjpeg
+cache: false
 
 #TODO implement logic for graphicsmagick
 #use_graphicsmagick: false
