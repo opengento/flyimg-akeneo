@@ -38,7 +38,7 @@ $app['routes'] = $app->extend('routes', function (RouteCollection $routes) {
 /**
  * Register Fly System Provider
  */
-if (getenv('cache') || $app['params']['cache']) {
+if (getenv('cache') == 1 || $app['params']['cache']) {
     $client = new Client('tcp://redis-service:6379');
     $adapter = 'League\Flysystem\Cached\CachedAdapter';
     $args = [
