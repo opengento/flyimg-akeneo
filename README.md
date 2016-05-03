@@ -22,22 +22,6 @@ Up the containers:
 ```sh
     $ docker-compose up -d
 ```
-If you running docker-machine, get the VM ip:
-
-```sh
-    $ docker-machine ip xxx
-```
-
-Access to the server: xxx.xxx.xxx.xxx:8080
-
-Example:
---------
-http://192.168.99.100:8080/upload/w_500,h_500,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg
-
-
-Redis-commander:
-http://192.168.99.100:8090
-
 
 Storage:
 --------
@@ -143,3 +127,13 @@ whitelist_domains:
     - www.domain-1.org
     - www.domain-2.org
 ```
+
+Demo:
+-----
+restricted_domains is activated, only images from www.mozilla.org domain is accepted
+
+http://176.31.121.161:8080/upload/w_500,h_500,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg
+
+
+Redis-commander:
+http://176.31.121.161:8090
