@@ -38,16 +38,16 @@ $app['routes'] = $app->extend('routes', function (RouteCollection $routes) {
 /**
  * Register Fly System Provider
  */
-if (getenv('cache') == 1 || $app['params']['cache']) {
+if (getenv('cache') == 0 || !$app['params']['cache']) {
+    $adapter = 'League\Flysystem\Adapter\Local';
+    $args = [UPLOAD_DIR];
+} else {
     $client = new Client('tcp://redis-service:6379');
     $adapter = 'League\Flysystem\Cached\CachedAdapter';
     $args = [
         new League\Flysystem\Adapter\Local(UPLOAD_DIR),
         new Cache($client)
     ];
-} else {
-    $adapter = 'League\Flysystem\Adapter\Local';
-    $args = [UPLOAD_DIR];
 }
 
 $app->register(new WyriHaximus\SliFly\FlysystemServiceProvider(), [
