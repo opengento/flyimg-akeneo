@@ -23,6 +23,13 @@ define('LOG_DIR', ROOT_DIR . '/var/log  /');
 
 $app['params'] = Yaml::parse(file_get_contents(ROOT_DIR . '/config/parameters.yml'));
 
+if (
+    !mkdir(UPLOAD_DIR, 0777, true) ||
+    !mkdir(TMP_DIR, 0777, true) ||
+    !mkdir(LOG_DIR, 0777, true)
+) {
+    exit('Failed to create folders...');
+}
 
 /**
  * Routes
