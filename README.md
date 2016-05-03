@@ -95,20 +95,20 @@ if (getenv('cache') == 0 || !$app['params']['cache']) {
     $args = [$s3Client, 'your-bucket-name'];
 } else {
     $client = new Client('tcp://redis-service:6379');
-        $s3Client = S3Client::factory([
-            'credentials' => [
-                'key'    => 'your-key',
-                'secret' => 'your-secret',
-            ],
-            'region' => 'your-region',
-            'version' => 'latest|version',
-        ]);
-        
-        $adapter = 'League\Flysystem\Cached\CachedAdapter';
-         $args = [
-                new  AwsS3Adapter($s3Client, 'your-bucket-name'),
-                new Cache($client)
-            ];
+    $s3Client = S3Client::factory([
+        'credentials' => [
+            'key'    => 'your-key',
+            'secret' => 'your-secret',
+        ],
+        'region' => 'your-region',
+        'version' => 'latest|version',
+    ]);
+    
+    $adapter = 'League\Flysystem\Cached\CachedAdapter';
+     $args = [
+            new  AwsS3Adapter($s3Client, 'your-bucket-name'),
+            new Cache($client)
+        ];
 }
 ```
  
@@ -132,7 +132,11 @@ Demo:
 -----
 restricted_domains is activated, only images from www.mozilla.org domain is accepted
 
+- Quality 90%
 http://176.31.121.161:8080/upload/w_500,h_500,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg
+
+- Quality 10%
+http://176.31.121.161:8080/upload/w_500,h_500,q_10/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg
 
 
 Redis-commander:
