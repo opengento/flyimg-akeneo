@@ -1,4 +1,7 @@
 # Fly-Image
+
+[![Build Status](https://travis-ci.org/sadok-f/fly-image.svg?branch=master)](https://travis-ci.org/sadok-f/fly-image)
+
 Image resizing and cropping on the fly based on ImageMagick + MozJPEG runs with Docker containers.
 
 Docker compose create the following containers:
@@ -19,22 +22,6 @@ Up the containers:
 ```sh
     $ docker-compose up -d
 ```
-If you running docker-machine, get the VM ip:
-
-```sh
-    $ docker-machine ip xxx
-```
-
-Access to the server: xxx.xxx.xxx.xxx:8080
-
-Example:
---------
-http://192.168.99.100:8080/upload/w_500,h_500,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg
-
-
-Redis-commander:
-http://192.168.99.100:8090
-
 
 Storage:
 --------
@@ -103,26 +90,26 @@ in app.php:
 use Aws\S3\S3Client;
 use League\Flysystem\AwsS3v3\AwsS3Adapter;
 use League\Flysystem\Filesystem;
-
-$client = S3Client::factory([
-    'credentials' => [
-        'key'    => 'your-key',
-        'secret' => 'your-secret',
-    ],
-    'region' => 'your-region',
-    'version' => 'latest|version',
-]);
-$app->register(new WyriHaximus\SliFly\FlysystemServiceProvider(), [
-    'flysystem.filesystems' => [
-        'upload_dir' => [
-            'adapter' => 'League\Flysystem\Cached\CachedAdapter',
-            'args' => [
-               new  AwsS3Adapter($s3Client, 'your-bucket-name'),
-                new Cache($client)
-            ],
+if (getenv('cache') == 0 || !$app['params']['cache']) {
+    $adapter = 'League\Flysystem\AwsS3v3\AwsS3Adapter';
+    $args = [$s3Client, 'your-bucket-name'];
+} else {
+    $client = new Client('tcp://redis-service:6379');
+    $s3Client = S3Client::factory([
+        'credentials' => [
+            'key'    => 'your-key',
+            'secret' => 'your-secret',
         ],
-    ],
-]);
+        'region' => 'your-region',
+        'version' => 'latest|version',
+    ]);
+    
+    $adapter = 'League\Flysystem\Cached\CachedAdapter';
+     $args = [
+            new  AwsS3Adapter($s3Client, 'your-bucket-name'),
+            new Cache($client)
+        ];
+}
 ```
  
 
@@ -140,3 +127,18 @@ whitelist_domains:
     - www.domain-1.org
     - www.domain-2.org
 ```
+
+Demo:
+-----
+restricted_domains is activated, only images from www.mozilla.org domain is accepted
+
+- Quality 90%
+http://176.31.121.161:8080/upload/w_500,h_500,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg
+
+- Quality 10%
+http://176.31.121.161:8080/upload/w_500,h_500,q_10/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg
+
+
+Redis-commander (Disabled for now):
+
+http://176.31.121.161:8090

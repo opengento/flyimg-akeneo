@@ -1,0 +1,15 @@
+language: php
+
+php:
+  - 5.6
+  - 7.0
+
+before_script:
+  - composer install
+
+env:
+  - cache=0
+
+notifications:
+  email:
+    - sadoknet@gmail.com
