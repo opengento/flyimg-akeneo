@@ -2,26 +2,60 @@
 
 [![Build Status](https://travis-ci.org/sadok-f/fly-image.svg?branch=master)](https://travis-ci.org/sadok-f/fly-image)
 
-Image resizing and cropping on the fly based on ImageMagick + MozJPEG runs with Docker containers.
+Image resizing, cropping and compression on the fly with the impressive MozJPEG compression algorithm. A set of Docker containers to build your own Cloudinary-like service.
 
-Docker compose create the following containers:
+You pass the image URL (relative or absolute) and a set of keys with options, like size or compression. Fly-image will fetch the image, convert it, store it, cache it and serve it. The next time the request comes, it will serve the cached version.
+
+# Installation and setup
+
+## Requirements
+
+You will need to have Docker and Docker compose on your machine. Optionally you can use Docker machine to create a virtual environment.
+
+## Instalation
+
+Copy the files from this repo or clone it into your server.
+
+CD into the folder and to build the images run:
+
+```sh
+    $ docker-compose build
+```
+This will download and generate the different images needed for the different containers. It will take a few minutes. If you get some sort of error related to files not found by apt-get or simmilar, try this same command again.
+
+Then up the containers:
+
+```sh
+    $ docker-compose up -d
+```
+
+Docker compose will create the following containers:
 - **nginx** : Nginx 1.9
 - **fpm** : PHP 7 fpm
 - **redis**: Redis server
 - **redis-commander**: Redis-commander to help visualize data stored in Redis server
 
-
-
-Build the images:
+Now, only for the first time you need to run composer install inside one of the containers.
 
 ```sh
-    $ docker-compose build
+    $ docker exec -it fpm bash
 ```
-Up the containers:
+
+This will ssh you into the container, where you will install the composer dependencies for the fpm container.
 
 ```sh
-    $ docker-compose up -d
+    $ composer install
 ```
+
+Again, it will take a few minutes. Same as before, if you get some errors you should try running `composer install` again. After it's done, you can navigate to your machine's IP in port 8080 (ex: http://192.168.99.100:8080/ ) an you should get a message saying: **Hello from Docker!**. This means fpm is ready to work.
+
+You can test your image resizing service by navigating to: http://192.168.99.100:8080/upload/w_333,h_333,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg
+
+This is fetching an image from Mozilla, resizing it, saving it and serving it.
+
+More configuration details below.
+
+---
 
 Storage:
 --------
