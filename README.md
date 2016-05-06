@@ -4,7 +4,9 @@
 
 Image resizing, cropping and compression on the fly with the impressive MozJPEG compression algorithm. A set of Docker containers to build your own Cloudinary-like service.
 
-You pass the image URL (relative or absolute) and a set of keys with options, like size or compression. Fly-image will fetch the image, convert it, store it, cache it and serve it. The next time the request comes, it will serve the cached version.
+You pass the image URL and a set of keys with options, like size or compression. Fly-image will fetch the image, convert it, store it, cache it and serve it. The next time the request comes, it will serve the cached version.
+
+The application is based on [Silex](http://silex.sensiolabs.org/) microframework.
 
 # Installation and setup
 
