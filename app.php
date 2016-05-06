@@ -2,6 +2,7 @@
 
 use Core\Resolver\ControllerResolver;
 use Core\Service\ImageManager;
+use Monolog\Logger;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Routing\Loader\YamlFileLoader;
 use Symfony\Component\Routing\RouteCollection;
@@ -73,6 +74,7 @@ $app->register(new WyriHaximus\SliFly\FlysystemServiceProvider(), [
  */
 $app->register(new Silex\Provider\MonologServiceProvider(), array(
     'monolog.name' => 'fly-image',
+    'monolog.level' =>  Logger::ERROR,
     'monolog.logfile' => LOG_DIR . 'dev.log',
 ));
 
@@ -81,9 +83,7 @@ $app['resolver'] = $app->share(function () use ($app) {
 });
 
 $app['image.manager'] = $app->share(function ($app) {
-    return new ImageManager($app['params'], $app['flysystems']['upload_dir'], $app['monolog']);
+    return new ImageManager($app['params'], $app['flysystems']['upload_dir']);
 });
-
-$app['debug'] = true;
 
 return $app;
