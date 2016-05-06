@@ -126,12 +126,8 @@ in app.php:
 use Aws\S3\S3Client;
 use League\Flysystem\AwsS3v3\AwsS3Adapter;
 use League\Flysystem\Filesystem;
-if (getenv('cache') == 0 || !$app['params']['cache']) {
-    $adapter = 'League\Flysystem\AwsS3v3\AwsS3Adapter';
-    $args = [$s3Client, 'your-bucket-name'];
-} else {
-    $client = new Client('tcp://redis-service:6379');
-    $s3Client = S3Client::factory([
+
+$s3Client = S3Client::factory([
         'credentials' => [
             'key'    => 'your-key',
             'secret' => 'your-secret',
@@ -139,11 +135,16 @@ if (getenv('cache') == 0 || !$app['params']['cache']) {
         'region' => 'your-region',
         'version' => 'latest|version',
     ]);
-    
+
+if (getenv('cache') == 0 || !$app['params']['cache']) {
+    $adapter = 'League\Flysystem\AwsS3v3\AwsS3Adapter';
+    $args = [$s3Client, 'your-bucket-name'];
+} else {
+    $redisClient = new Client('tcp://redis-service:6379');
     $adapter = 'League\Flysystem\Cached\CachedAdapter';
      $args = [
             new  AwsS3Adapter($s3Client, 'your-bucket-name'),
-            new Cache($client)
+            new Cache($redisClient)
         ];
 }
 ```
