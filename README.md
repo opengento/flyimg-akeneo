@@ -16,7 +16,11 @@ You will need to have Docker and Docker compose on your machine. Optionally you 
 
 ## Instalation
 
-Copy the files from this repo or clone it into your server.
+Create the project with `composer create` or clone it into your server.
+
+```sh
+    $ composer create-project sadok-f/fly-image
+```
 
 CD into the folder and to build the images run:
 
