@@ -90,26 +90,20 @@ class ImageManager
         $newFilePath = TMP_DIR . $newFileName;
         $tmpFile = $this->saveToTemporaryFile($sourceFile);
         $commandStr = $this->generateCmdString($newFilePath, $tmpFile, $options);
-        try {
 
-            exec($commandStr, $output, $code);
-            if (count($output) === 0) {
-                $output = $code;
-            } else {
-                $output = implode(PHP_EOL, $output);
-            }
-
-            if ($code !== 0) {
-                throw new \Exception($output . ' Command line: ' . $commandStr);
-            }
-            $this->filesystem->write($newFileName, stream_get_contents(fopen($newFilePath, 'r')));
-            unlink($tmpFile);
-            unlink($newFilePath);
-
-        } catch (\Exception $e) {
-            var_dump('Exception: ' . $e->getMessage());
-            exit;
+        exec($commandStr, $output, $code);
+        if (count($output) === 0) {
+            $output = $code;
+        } else {
+            $output = implode(PHP_EOL, $output);
         }
+
+        if ($code !== 0) {
+            throw new \Exception($output . ' Command line: ' . $commandStr);
+        }
+        $this->filesystem->write($newFileName, stream_get_contents(fopen($newFilePath, 'r')));
+        unlink($tmpFile);
+        unlink($newFilePath);
     }
 
     /**
