@@ -52,11 +52,11 @@ if (getenv('cache') == 0 || !$app['params']['cache']) {
     $adapter = 'League\Flysystem\Adapter\Local';
     $args = [UPLOAD_DIR];
 } else {
-    $client = new Client('tcp://redis-service:6379');
+    $redisClient = new Client('tcp://redis-service:6379');
     $adapter = 'League\Flysystem\Cached\CachedAdapter';
     $args = [
         new League\Flysystem\Adapter\Local(UPLOAD_DIR),
-        new Cache($client)
+        new Cache($redisClient)
     ];
 }
 
