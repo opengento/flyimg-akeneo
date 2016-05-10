@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/sadok-f/fly-image.svg?branch=master)](https://travis-ci.org/sadok-f/fly-image)
 
-Image resizing, cropping and compression on the fly with the impressive MozJPEG compression algorithm. A set of Docker containers to build your own Cloudinary-like service.
+Image resizing, cropping and compression on the fly with the impressive [MozJPEG](http://calendar.perfplanet.com/2014/mozjpeg-3-0) compression algorithm. A set of Docker containers to build your own Cloudinary-like service.
 
 You pass the image URL and a set of keys with options, like size or compression. Fly-image will fetch the image, convert it, store it, cache it and serve it. The next time the request comes, it will serve the cached version.
 
