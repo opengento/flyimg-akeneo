@@ -1,1 +1,1 @@
-FROM sadokf/flyimage_php7fpm
+FROM sadokf/php7fpm_mozjpeg
