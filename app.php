@@ -48,7 +48,8 @@ $app['routes'] = $app->extend('routes', function (RouteCollection $routes) {
 /**
  * Register Fly System Provider
  */
-if (getenv('cache') == 0 || !$app['params']['cache']) {
+
+if (getenv('nocache') == 1 || !$app['params']['cache']) {
     $adapter = 'League\Flysystem\Adapter\Local';
     $args = [UPLOAD_DIR];
 } else {
