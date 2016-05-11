@@ -16,6 +16,7 @@ fpm:
     - ".:/var/www/html"
   links:
     - redis:redis-service
+  entrypoint: docker/php7-fpm/init.sh
 
 redis:
   container_name: redis
