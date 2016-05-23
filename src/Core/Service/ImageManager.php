@@ -3,7 +3,6 @@
 namespace Core\Service;
 
 use League\Flysystem\Filesystem;
-use Monolog\Logger;
 
 /**
  * Class ImageManager
@@ -22,22 +21,15 @@ class ImageManager
     protected $params;
 
     /**
-     * @var Logger
-     */
-    protected $logger;
-
-    /**
      * ImageManager constructor.
      *
      * @param array $params
      * @param Filesystem $filesystem
-     * @param Logger $logger
      */
-    public function __construct($params, Filesystem $filesystem, Logger $logger)
+    public function __construct($params, Filesystem $filesystem)
     {
         $this->params = $params;
         $this->filesystem = $filesystem;
-        $this->logger = $logger;
     }
 
     /**
@@ -98,28 +90,20 @@ class ImageManager
         $newFilePath = TMP_DIR . $newFileName;
         $tmpFile = $this->saveToTemporaryFile($sourceFile);
         $commandStr = $this->generateCmdString($newFilePath, $tmpFile, $options);
-        $this->logger->addInfo('CMD : ' . $commandStr);
-        try {
 
-            exec($commandStr, $output, $code);
-            if (count($output) === 0) {
-                $output = $code;
-            } else {
-                $output = implode(PHP_EOL, $output);
-            }
-
-            if ($code !== 0) {
-                throw new \Exception($output . ' Command line: ' . $commandStr);
-            }
-            $this->logger->addInfo('CMD outout : ' . $output);
-            $this->filesystem->write($newFileName, stream_get_contents(fopen($newFilePath, 'r')));
-            unlink($tmpFile);
-            unlink($newFilePath);
-
-        } catch (\Exception $e) {
-            var_dump('Exception: ' . $e->getMessage());
-            exit;
+        exec($commandStr, $output, $code);
+        if (count($output) === 0) {
+            $output = $code;
+        } else {
+            $output = implode(PHP_EOL, $output);
         }
+
+        if ($code !== 0) {
+            throw new \Exception($output . ' Command line: ' . $commandStr);
+        }
+        $this->filesystem->write($newFileName, stream_get_contents(fopen($newFilePath, 'r')));
+        unlink($tmpFile);
+        unlink($newFilePath);
     }
 
     /**
