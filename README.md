@@ -2,9 +2,11 @@
 
 [![Build Status](https://travis-ci.org/sadok-f/fly-image.svg?branch=master)](https://travis-ci.org/sadok-f/fly-image)
 
-Image resizing, cropping and compression on the fly with the impressive MozJPEG compression algorithm. A set of Docker containers to build your own Cloudinary-like service.
+Image resizing, cropping and compression on the fly with the impressive [MozJPEG](http://calendar.perfplanet.com/2014/mozjpeg-3-0) compression algorithm. A set of Docker containers to build your own Cloudinary-like service.
 
-You pass the image URL (relative or absolute) and a set of keys with options, like size or compression. Fly-image will fetch the image, convert it, store it, cache it and serve it. The next time the request comes, it will serve the cached version.
+You pass the image URL and a set of keys with options, like size or compression. Fly-image will fetch the image, convert it, store it, cache it and serve it. The next time the request comes, it will serve the cached version.
+
+The application is based on [Silex](http://silex.sensiolabs.org/) microframework.
 
 # Installation and setup
 
@@ -14,7 +16,11 @@ You will need to have Docker and Docker compose on your machine. Optionally you 
 
 ## Instalation
 
-Copy the files from this repo or clone it into your server.
+Create the project with `composer create` or clone it into your server.
+
+```sh
+    $ composer create-project sadok-f/fly-image
+```
 
 CD into the folder and to build the images run:
 
@@ -124,12 +130,8 @@ in app.php:
 use Aws\S3\S3Client;
 use League\Flysystem\AwsS3v3\AwsS3Adapter;
 use League\Flysystem\Filesystem;
-if (getenv('cache') == 0 || !$app['params']['cache']) {
-    $adapter = 'League\Flysystem\AwsS3v3\AwsS3Adapter';
-    $args = [$s3Client, 'your-bucket-name'];
-} else {
-    $client = new Client('tcp://redis-service:6379');
-    $s3Client = S3Client::factory([
+
+$s3Client = S3Client::factory([
         'credentials' => [
             'key'    => 'your-key',
             'secret' => 'your-secret',
@@ -137,11 +139,16 @@ if (getenv('cache') == 0 || !$app['params']['cache']) {
         'region' => 'your-region',
         'version' => 'latest|version',
     ]);
-    
+
+if (getenv('cache') == 0 || !$app['params']['cache']) {
+    $adapter = 'League\Flysystem\AwsS3v3\AwsS3Adapter';
+    $args = [$s3Client, 'your-bucket-name'];
+} else {
+    $redisClient = new Client('tcp://redis-service:6379');
     $adapter = 'League\Flysystem\Cached\CachedAdapter';
      $args = [
             new  AwsS3Adapter($s3Client, 'your-bucket-name'),
-            new Cache($client)
+            new Cache($redisClient)
         ];
 }
 ```

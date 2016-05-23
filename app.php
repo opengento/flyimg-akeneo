@@ -2,6 +2,7 @@
 
 use Core\Resolver\ControllerResolver;
 use Core\Service\ImageManager;
+use Monolog\Logger;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Routing\Loader\YamlFileLoader;
 use Symfony\Component\Routing\RouteCollection;
@@ -47,15 +48,16 @@ $app['routes'] = $app->extend('routes', function (RouteCollection $routes) {
 /**
  * Register Fly System Provider
  */
-if (getenv('cache') == 0 || !$app['params']['cache']) {
+
+if (getenv('nocache') == 1 || !$app['params']['cache']) {
     $adapter = 'League\Flysystem\Adapter\Local';
     $args = [UPLOAD_DIR];
 } else {
-    $client = new Client('tcp://redis-service:6379');
+    $redisClient = new Client('tcp://redis-service:6379');
     $adapter = 'League\Flysystem\Cached\CachedAdapter';
     $args = [
         new League\Flysystem\Adapter\Local(UPLOAD_DIR),
-        new Cache($client)
+        new Cache($redisClient)
     ];
 }
 
@@ -73,6 +75,7 @@ $app->register(new WyriHaximus\SliFly\FlysystemServiceProvider(), [
  */
 $app->register(new Silex\Provider\MonologServiceProvider(), array(
     'monolog.name' => 'fly-image',
+    'monolog.level' =>  Logger::ERROR,
     'monolog.logfile' => LOG_DIR . 'dev.log',
 ));
 
@@ -81,9 +84,7 @@ $app['resolver'] = $app->share(function () use ($app) {
 });
 
 $app['image.manager'] = $app->share(function ($app) {
-    return new ImageManager($app['params'], $app['flysystems']['upload_dir'], $app['monolog']);
+    return new ImageManager($app['params'], $app['flysystems']['upload_dir']);
 });
-
-$app['debug'] = true;
 
 return $app;
