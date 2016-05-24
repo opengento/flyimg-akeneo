@@ -20,7 +20,7 @@ $app = new Silex\Application();
 define('ROOT_DIR', __DIR__);
 define('UPLOAD_DIR', ROOT_DIR . '/var/upload/');
 define('TMP_DIR', ROOT_DIR . '/var/tmp/');
-define('LOG_DIR', ROOT_DIR . '/var/log  /');
+define('LOG_DIR', ROOT_DIR . '/var/log/');
 
 if(!is_dir(UPLOAD_DIR)){
     mkdir(UPLOAD_DIR, 0777, true);
