@@ -154,15 +154,15 @@ if (getenv('cache') == 0 || !$app['params']['cache']) {
 ```
  
 
-Unable Restricted Domains:
+Enable Restricted Domains:
 --------------------------
 
-Restricted domains disabled by default, to enable it change in config/parameters.yml
+Restricted domains disabled by default. This means that you can fetch a resource from any URL. To enable the domain restriction, change in config/parameters.yml 
 ```yml
 restricted_domains: true
 ```
 
-After you need to put the white list domains
+After enabling, you need to put the white listed domains
 ```yml
 whitelist_domains:
     - www.domain-1.org
