@@ -22,13 +22,13 @@ define('UPLOAD_DIR', ROOT_DIR . '/var/upload/');
 define('TMP_DIR', ROOT_DIR . '/var/tmp/');
 define('LOG_DIR', ROOT_DIR . '/var/log  /');
 
-if(!is_dir(UPLOAD_DIR)){
+if (!is_dir(UPLOAD_DIR)) {
     mkdir(UPLOAD_DIR, 0777, true);
 }
-if(!is_dir(TMP_DIR)){
+if (!is_dir(TMP_DIR)) {
     mkdir(TMP_DIR, 0777, true);
 }
-if(!is_dir(LOG_DIR)){
+if (!is_dir(LOG_DIR)) {
     mkdir(LOG_DIR, 0777, true);
 }
 
@@ -75,7 +75,7 @@ $app->register(new WyriHaximus\SliFly\FlysystemServiceProvider(), [
  */
 $app->register(new Silex\Provider\MonologServiceProvider(), array(
     'monolog.name' => 'fly-image',
-    'monolog.level' =>  Logger::ERROR,
+    'monolog.level' => Logger::ERROR,
     'monolog.logfile' => LOG_DIR . 'dev.log',
 ));
 
