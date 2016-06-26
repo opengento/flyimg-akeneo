@@ -22,7 +22,11 @@ class DefaultController extends CoreController
     {
         /** @var \Core\Service\ImageManager $manager */
         $manager = $this->app['image.manager'];
-        $image = $manager->process($options, $imageSrc);
+        try {
+            $image = $manager->process($options, $imageSrc);
+        } catch (\Exception $e) {
+            return new Response($e->getMessage(), Response::HTTP_FORBIDDEN);
+        }
         return $this->generateImageResponse($image);
     }
 }
