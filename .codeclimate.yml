@@ -1,5 +1,6 @@
+---
 engines:
- duplication:
+  duplication:
     enabled: true
     config:
       languages:
@@ -12,3 +13,14 @@ engines:
     exclude_fingerprintsi:
     - 34ba267521bf564ba3b7769d4ae46799
     - eadcb47d4e74f07cb22de550bb0db62b
+ratings:
+  paths:
+  - "**.inc"
+  - "**.js"
+  - "**.jsx"
+  - "**.module"
+  - "**.php"
+  - "**.py"
+  - "**.rb"
+exclude_paths:
+- config/
