@@ -1,6 +1,9 @@
 # Fly-Image
 
 [![Build Status](https://travis-ci.org/sadok-f/fly-image.svg?branch=master)](https://travis-ci.org/sadok-f/fly-image)
+[![Code Climate](https://codeclimate.com/github/sadok-f/fly-image/badges/gpa.svg)](https://codeclimate.com/github/sadok-f/fly-image)
+[![Issue Count](https://codeclimate.com/github/sadok-f/fly-image/badges/issue_count.svg)](https://codeclimate.com/github/sadok-f/fly-image)
+[![Test Coverage](https://codeclimate.com/github/sadok-f/fly-image/badges/coverage.svg)](https://codeclimate.com/github/sadok-f/fly-image/coverage)
 
 Image resizing, cropping and compression on the fly with the impressive [MozJPEG](http://calendar.perfplanet.com/2014/mozjpeg-3-0) compression algorithm. A set of Docker containers to build your own Cloudinary-like service.
 
