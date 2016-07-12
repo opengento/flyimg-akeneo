@@ -10,9 +10,9 @@ engines:
     enabled: true
   phpmd:
     enabled: true
-    exclude_fingerprintsi:
-    - 34ba267521bf564ba3b7769d4ae46799
-    - eadcb47d4e74f07cb22de550bb0db62b
+    checks:
+      CleanCode/ElseExpression:
+        enabled: false
 ratings:
   paths:
   - "**.inc"
