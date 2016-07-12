@@ -1,0 +1,16 @@
+engines:
+ duplication:
+    enabled: true
+    config:
+      languages:
+      - javascript
+      - php
+  fixme:
+    enabled: true
+  phpmd:
+    enabled: true
+    # ... CONFIG CONTENT ...
+    exclude_fingerprintsi:
+    - 34ba267521bf564ba3b7769d4ae46799
+    - eadcb47d4e74f07cb22de550bb0db62b
+# ... CONFIG CONTENT ...
