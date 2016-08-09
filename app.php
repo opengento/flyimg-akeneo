@@ -49,7 +49,7 @@ $app['routes'] = $app->extend('routes', function (RouteCollection $routes) {
 $app->register(new WyriHaximus\SliFly\FlysystemServiceProvider(), [
     'flysystem.filesystems' => [
         'upload_dir' => [
-            'adapter' =>  'League\Flysystem\Adapter\Local',
+            'adapter' => 'League\Flysystem\Adapter\Local',
             'args' => [UPLOAD_DIR]
         ],
     ],

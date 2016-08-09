@@ -168,3 +168,4 @@ http://176.31.121.161:8080/upload/w_500,h_500,q_90/https://www.mozilla.org/media
 
 - Quality 10%
 http://176.31.121.161:8080/upload/w_500,h_500,q_10/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg
+

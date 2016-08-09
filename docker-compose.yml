@@ -1,0 +1,31 @@
+nginx:
+  container_name: nginx
+  build: docker/nginx
+  volumes:
+    - ".:/var/www/html"
+  ports:
+    - "8080:80"
+  links:
+    - fpm:fpm-service
+    - redis:redis-service
+
+fpm:
+  container_name: fpm
+  build: docker/php7-fpm
+  volumes:
+    - ".:/var/www/html"
+  links:
+    - redis:redis-service
+  entrypoint: docker/php7-fpm/init.sh
+
+redis:
+  container_name: redis
+  build: docker/redis
+
+redis-commander:
+  container_name: redis-commander
+  build: docker/redis-commander
+  ports:
+    - "8090:8081"
+  links:
+    - redis:redis-service
