@@ -7,8 +7,6 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Routing\Loader\YamlFileLoader;
 use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Yaml\Yaml;
-use League\Flysystem\Cached\Storage\Predis as Cache;
-use Predis\Client;
 
 $loader = require_once __DIR__ . '/vendor/autoload.php';
 
@@ -48,24 +46,11 @@ $app['routes'] = $app->extend('routes', function (RouteCollection $routes) {
 /**
  * Register Fly System Provider
  */
-
-if (getenv('nocache') == 1 || !$app['params']['cache']) {
-    $adapter = 'League\Flysystem\Adapter\Local';
-    $args = [UPLOAD_DIR];
-} else {
-    $redisClient = new Client('tcp://redis-service:6379');
-    $adapter = 'League\Flysystem\Cached\CachedAdapter';
-    $args = [
-        new League\Flysystem\Adapter\Local(UPLOAD_DIR),
-        new Cache($redisClient)
-    ];
-}
-
 $app->register(new WyriHaximus\SliFly\FlysystemServiceProvider(), [
     'flysystem.filesystems' => [
         'upload_dir' => [
-            'adapter' => $adapter,
-            'args' => $args
+            'adapter' =>  'League\Flysystem\Adapter\Local',
+            'args' => [UPLOAD_DIR]
         ],
     ],
 ]);
@@ -86,5 +71,8 @@ $app['resolver'] = $app->share(function () use ($app) {
 $app['image.manager'] = $app->share(function ($app) {
     return new ImageManager($app['params'], $app['flysystems']['upload_dir']);
 });
+
+/** debug conf */
+$app['debug'] = $app['params']['debug'];
 
 return $app;
