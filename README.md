@@ -5,7 +5,7 @@
 [![Issue Count](https://codeclimate.com/github/sadok-f/fly-image/badges/issue_count.svg)](https://codeclimate.com/github/sadok-f/fly-image)
 [![Test Coverage](https://codeclimate.com/github/sadok-f/fly-image/badges/coverage.svg)](https://codeclimate.com/github/sadok-f/fly-image/coverage)
 
-Image resizing, cropping and compression on the fly with the impressive [MozJPEG](http://calendar.perfplanet.com/2014/mozjpeg-3-0) compression algorithm. A set of Docker containers to build your own Cloudinary-like service.
+Image resizing, cropping and compression on the fly with the impressive [MozJPEG](http://calendar.perfplanet.com/2014/mozjpeg-3-0) compression algorithm. A one Docker container to build your own Cloudinary-like service.
 
 You pass the image URL and a set of keys with options, like size or compression. Fly-image will fetch the image, convert it, store it, cache it and serve it. The next time the request comes, it will serve the cached version.
 
@@ -15,7 +15,7 @@ The application is based on [Silex](http://silex.sensiolabs.org/) microframework
 
 ## Requirements
 
-You will need to have Docker and Docker compose on your machine. Optionally you can use Docker machine to create a virtual environment.
+You will need to have Docker on your machine. Optionally you can use Docker machine to create a virtual environment.
 
 ## Instalation
 
@@ -28,37 +28,28 @@ Create the project with `composer create` or clone it into your server.
 CD into the folder and to build the images run:
 
 ```sh
-    $ docker-compose build
+    $ docker build -t fly-img .
 ```
-This will download and generate the different images needed for the different containers. It will take a few minutes. If you get some sort of error related to files not found by apt-get or simmilar, try this same command again.
+This will download and build the main image, It will take a few minutes. If you get some sort of error related to files not found by apt-get or simmilar, try this same command again.
 
-Then up the containers:
+Then run the container:
 
 ```sh
-    $ docker-compose up -d
+    $ docker run -t -d -i -p 8080:80 -v /Users/s.ferjani/DockerProjects/flyimage:/var/www/html --name fly-img fly-img
 ```
 
-Docker compose will create the following containers:
-- **nginx** : Nginx 1.9
-- **fpm** : PHP 7 fpm
-- **redis**: Redis server
-- **redis-commander**: Redis-commander to help visualize data stored in Redis server
+Dockerfile run supervisord command which lunch 2 process nginx and php-fpm
 
-Now, only for the first time you need to run composer install inside one of the containers.
+Now, only for the first time you need to run composer install inside the main container:
 
 ```sh
-    $ docker exec -it fpm bash
+    $ docker exec -it fly-img composer install
 ```
 
-This will ssh you into the container, where you will install the composer dependencies for the fpm container.
-
-```sh
-    $ composer install
-```
 
 Again, it will take a few minutes. Same as before, if you get some errors you should try running `composer install` again. After it's done, you can navigate to your machine's IP in port 8080 (ex: http://192.168.99.100:8080/ ) an you should get a message saying: **Hello from Docker!**. This means fpm is ready to work.
 
-You can test your image resizing service by navigating to: http://192.168.99.100:8080/upload/w_333,h_333,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg
+You can test your image resizing service by navigating to: http://127.0.0.1:8080/upload/w_333,h_333,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg
 
 This is fetching an image from Mozilla, resizing it, saving it and serving it.
 
@@ -130,11 +121,7 @@ Example of using AWS S3 Adapter:
 in app.php:
 
 ```php
-use Aws\S3\S3Client;
-use League\Flysystem\AwsS3v3\AwsS3Adapter;
-use League\Flysystem\Filesystem;
-
-$s3Client = S3Client::factory([
+$s3Client = \Aws\S3\S3Client::factory([
         'credentials' => [
             'key'    => 'your-key',
             'secret' => 'your-secret',
@@ -143,17 +130,17 @@ $s3Client = S3Client::factory([
         'version' => 'latest|version',
     ]);
 
-if (getenv('cache') == 0 || !$app['params']['cache']) {
-    $adapter = 'League\Flysystem\AwsS3v3\AwsS3Adapter';
-    $args = [$s3Client, 'your-bucket-name'];
-} else {
-    $redisClient = new Client('tcp://redis-service:6379');
-    $adapter = 'League\Flysystem\Cached\CachedAdapter';
-     $args = [
-            new  AwsS3Adapter($s3Client, 'your-bucket-name'),
-            new Cache($redisClient)
-        ];
-}
+$app->register(new WyriHaximus\SliFly\FlysystemServiceProvider(), [
+    'flysystem.filesystems' => [
+        'upload_dir' => [
+            'adapter' => 'League\Flysystem\AwsS3v3\AwsS3Adapter',
+            'args' => [
+                $s3Client,
+                'your-bucket-name'
+            ]
+        ]
+    ]
+]);
 ```
  
 
@@ -182,7 +169,3 @@ http://176.31.121.161:8080/upload/w_500,h_500,q_90/https://www.mozilla.org/media
 - Quality 10%
 http://176.31.121.161:8080/upload/w_500,h_500,q_10/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg
 
-
-Redis-commander (Disabled for now):
-
-http://176.31.121.161:8090

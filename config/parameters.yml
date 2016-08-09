@@ -1,7 +1,10 @@
+#debug
+debug: false
+
 #path to mozjpeg bin
 mozjpeg_path: /opt/mozjpeg/bin/cjpeg
 
-#By default cahing is enabled and it use Redis for aching meta-data
+#by default cahing is enabled and it use Redis for aching meta-data
 cache: true
 
 #TODO implement logic for graphicsmagick
