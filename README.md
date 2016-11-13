@@ -63,10 +63,6 @@ Storage files based on [Flysystem](http://flysystem.thephpleague.com/) which is 
 
 Default storage is Local, but you can use other Adapters like AWS S3, Azure, FTP, Dropbox, ... 
 
-Caching:
---------
-Use Redis for meta-data caching
-
 
 Options keys:
 -------------
