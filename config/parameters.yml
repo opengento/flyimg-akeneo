@@ -7,7 +7,7 @@ mozjpeg_path: /opt/mozjpeg/bin/cjpeg
 #by default cahing is enabled and it use Redis for aching meta-data
 cache: true
 
-#TODO implement logic for graphicsmagick
+#implement logic for graphicsmagick
 #use_graphicsmagick: false
 
 #options separator
