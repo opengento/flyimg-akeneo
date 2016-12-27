@@ -42,6 +42,16 @@ $app['routes'] = $app->extend('routes', function (RouteCollection $routes) {
     return $routes;
 });
 
+/**
+ * Twig
+ */
+$app->register(new Silex\Provider\TwigServiceProvider());
+$app['twig.loader.filesystem']->addPath(__DIR__ . '/src/Core/Views', 'Core');
+$app['twig'] = $app->share($app->extend('twig', function ($twig, $app) {
+    // add custom filters, globals, tags...
+    return $twig;
+}));
+
 
 /**
  * Register Fly System Provider
