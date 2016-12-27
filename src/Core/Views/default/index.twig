@@ -1,5 +1,130 @@
 {% extends '@Core/layout.twig' %}
 
 {% block body %}
-    Hello Silex !
+    <h1 id="fly-image">Fly-Image</h1>
+    <p><a href="https://travis-ci.org/sadok-f/fly-image">
+            <embed src="https://travis-ci.org/sadok-f/fly-image.svg?branch=master"/>
+        </a> <a href="https://codeclimate.com/github/sadok-f/fly-image"><img
+                    src="https://codeclimate.com/github/sadok-f/fly-image/badges/gpa.svg" alt="Code Climate"/></a> <a
+                href="https://codeclimate.com/github/sadok-f/fly-image"><img
+                    src="https://codeclimate.com/github/sadok-f/fly-image/badges/issue_count.svg"
+                    alt="Issue Count"/></a> <a href="https://codeclimate.com/github/sadok-f/fly-image/coverage"><img
+                    src="https://codeclimate.com/github/sadok-f/fly-image/badges/coverage.svg" alt="Test Coverage"/></a>
+        <a href="https://insight.sensiolabs.com/projects/2aba5c2b-55c5-49b7-87aa-c22307e9b849"><img
+                    src="https://insight.sensiolabs.com/projects/2aba5c2b-55c5-49b7-87aa-c22307e9b849/mini.png"
+                    alt="SensioLabsInsight"/></a></p>
+    <p>Image resizing, cropping and compression on the fly with the impressive <a
+                href="http://calendar.perfplanet.com/2014/mozjpeg-3-0">MozJPEG</a> compression algorithm. A one Docker
+        container to build your own Cloudinary-like service.</p>
+    <p>You pass the image URL and a set of keys with options, like size or compression. Fly-image will fetch the image,
+        convert it, store it, cache it and serve it. The next time the request comes, it will serve the cached
+        version.</p>
+    <p>The application is based on <a href="http://silex.sensiolabs.org/">Silex</a> microframework.</p>
+    <h1 id="installation-and-setup">Installation and setup</h1>
+    <h2 id="requirements">Requirements</h2>
+    <p>You will need to have Docker on your machine. Optionally you can use Docker machine to create a virtual
+        environment.</p>
+    <h2 id="instalation">Instalation</h2>
+    <p>Create the project with <code>composer create</code> or clone it into your server.</p>
+    <pre class="sh"><code>    $ composer create-project sadok-f/fly-image</code></pre>
+    <p>CD into the folder and to build the images run:</p>
+    <pre class="sh"><code>    $ docker build -t fly-img .</code></pre>
+    <p>This will download and build the main image, It will take a few minutes. If you get some sort of error related to
+        files not found by apt-get or simmilar, try this same command again.</p>
+    <p>Then run the container:</p>
+    <pre class="sh"><code>    $ docker run -t -d -i -p 8080:80 -v /Users/s.ferjani/DockerProjects/flyimage:/var/www/html --name fly-img fly-img</code></pre>
+    <p>Dockerfile run supervisord command which lunch 2 process nginx and php-fpm</p>
+    <p>Now, only for the first time you need to run composer install inside the main container:</p>
+    <pre class="sh"><code>    $ docker exec -it fly-img composer install</code></pre>
+    <p>Again, it will take a few minutes. Same as before, if you get some errors you should try running <code>composer
+            install</code> again. After it's done, you can navigate to your machine's IP in port 8080 (ex:
+        http://192.168.99.100:8080/ ) an you should get a message saying: <strong>Hello from Docker!</strong>. This
+        means fpm is ready to work.</p>
+    <p>You can test your image resizing service by navigating to:
+        http://127.0.0.1:8080/upload/w_333,h_333,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg</p>
+    <p>This is fetching an image from Mozilla, resizing it, saving it and serving it.</p>
+    <p>More configuration details below.</p>
+    <hr/>
+    <h2 id="storage">Storage:</h2>
+    <p>Storage files based on <a href="http://flysystem.thephpleague.com/">Flysystem</a> which is <code>a filesystem
+            abstraction allows you to easily swap out a local filesystem for a remote one. Technical debt is reduced as
+            is the chance of vendor lock-in.</code></p>
+    <p>Default storage is Local, but you can use other Adapters like AWS S3, Azure, FTP, Dropbox, ...</p>
+    <h2 id="options-keys">Options keys:</h2>
+    <pre class="yml"><code>options_keys:
+  moz: mozjpeg
+  q: quality
+  unsh: unsharp
+  w: width
+  h: height
+  c: crop
+  bg: background
+  st: strip
+  rz: resize
+  g: gravity
+  th: thread
+  thb: thumbnail
+  f: filter
+  sc: scale
+  sf: sampling-factor
+  rf: refresh</code></pre>
+    <h2 id="default-options-values">Default options values:</h2>
+    <pre class="yml"><code>default_options:
+  mozjpeg: 1
+  quality: 90
+  unsharp: null
+  width: null
+  height: null
+  crop: null
+  background: null
+  strip: 1
+  resize: null
+  gravity: Center
+  thread: 1
+  thumbnail: null
+  filter: Lanczos
+  scale: null
+  sampling-factor: 1x1
+  refresh: false</code></pre>
+    <h2 id="example-of-using-aws-s3-adapter">Example of using AWS S3 Adapter:</h2>
+    <p>in app.php:</p>
+    <pre class="sourceCode php"><code class="sourceCode php">$s3Client = \Aws\S3\S3Client::factory([
+        &#39;credentials&#39; =&gt; [
+            &#39;key&#39;    =&gt; &#39;your-key&#39;,
+            &#39;secret&#39; =&gt; &#39;your-secret&#39;,
+        ],
+        &#39;region&#39; =&gt; &#39;your-region&#39;,
+        &#39;version&#39; =&gt; &#39;latest|version&#39;,
+    ]);
+
+$app-&gt;register(new WyriHaximus\SliFly\FlysystemServiceProvider(), [
+    &#39;flysystem.filesystems&#39; =&gt; [
+        &#39;upload_dir&#39; =&gt; [
+            &#39;adapter&#39; =&gt; &#39;League\Flysystem\AwsS3v3\AwsS3Adapter&#39;,
+            &#39;args&#39; =&gt; [
+                $s3Client,
+                &#39;your-bucket-name&#39;
+            ]
+        ]
+    ]
+]);</code></pre>
+    <h2 id="enable-restricted-domains">Enable Restricted Domains:</h2>
+    <p>Restricted domains disabled by default. This means that you can fetch a resource from any URL. To enable the
+        domain restriction, change in config/parameters.yml</p>
+    <pre class="yml"><code>restricted_domains: true</code></pre>
+    <p>After enabling, you need to put the white listed domains</p>
+    <pre class="yml"><code>whitelist_domains:
+    - www.domain-1.org
+    - www.domain-2.org</code></pre>
+    <h2 id="demo">Demo:</h2>
+    <p>Our application is available here: <a href="http://www.flyimg.io">flyimg.io</a></p>
+    <ul>
+        <li><p>Quality 90%
+                http://www.flyimg.io/upload/w_500,h_500,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg</p>
+        </li>
+        <li><p>Quality 10%
+                http://www.flyimg.io/upload/w_500,h_500,q_10/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg</p>
+        </li>
+    </ul>
+
 {% endblock %}

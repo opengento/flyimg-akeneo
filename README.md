@@ -158,7 +158,7 @@ whitelist_domains:
 
 Demo:
 -----
-Our application is available to free demo in [flyimg.io](http://www.flyimg.io)
+Our application is available here: [flyimg.io](http://www.flyimg.io)
 
 - Quality 90%
 http://www.flyimg.io/upload/w_500,h_500,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg
