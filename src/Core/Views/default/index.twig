@@ -2,17 +2,7 @@
 
 {% block body %}
     <h1 id="fly-image">Fly-Image</h1>
-    <p><a href="https://travis-ci.org/sadok-f/fly-image">
-            <embed src="https://travis-ci.org/sadok-f/fly-image.svg?branch=master"/>
-        </a> <a href="https://codeclimate.com/github/sadok-f/fly-image"><img
-                    src="https://codeclimate.com/github/sadok-f/fly-image/badges/gpa.svg" alt="Code Climate"/></a> <a
-                href="https://codeclimate.com/github/sadok-f/fly-image"><img
-                    src="https://codeclimate.com/github/sadok-f/fly-image/badges/issue_count.svg"
-                    alt="Issue Count"/></a> <a href="https://codeclimate.com/github/sadok-f/fly-image/coverage"><img
-                    src="https://codeclimate.com/github/sadok-f/fly-image/badges/coverage.svg" alt="Test Coverage"/></a>
-        <a href="https://insight.sensiolabs.com/projects/2aba5c2b-55c5-49b7-87aa-c22307e9b849"><img
-                    src="https://insight.sensiolabs.com/projects/2aba5c2b-55c5-49b7-87aa-c22307e9b849/mini.png"
-                    alt="SensioLabsInsight"/></a></p>
+
     <p>Image resizing, cropping and compression on the fly with the impressive <a
                 href="http://calendar.perfplanet.com/2014/mozjpeg-3-0">MozJPEG</a> compression algorithm. A one Docker
         container to build your own Cloudinary-like service.</p>
@@ -117,14 +107,27 @@ $app-&gt;register(new WyriHaximus\SliFly\FlysystemServiceProvider(), [
     - www.domain-1.org
     - www.domain-2.org</code></pre>
     <h2 id="demo">Demo:</h2>
-    <p>Our application is available here: <a href="http://www.flyimg.io">flyimg.io</a></p>
     <ul>
-        <li><p>Quality 90%
-                http://www.flyimg.io/upload/w_500,h_500,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg</p>
+        <li><p>
+                Quality 90%
+                <a href=" http://www.flyimg.io/upload/w_500,h_500,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg"
+                   target="_blank">
+                    http://www.flyimg.io/upload/w_500,h_500,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg</a>
+            </p>
         </li>
-        <li><p>Quality 10%
-                http://www.flyimg.io/upload/w_500,h_500,q_10/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg</p>
+        <li><p>
+                Quality 10%
+                <a href="http://www.flyimg.io/upload/w_500,h_500,q_10/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg"
+                   target="_blank">
+                    http://www.flyimg.io/upload/w_500,h_500,q_10/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg</a>
+            </p>
         </li>
     </ul>
 
+    <a href="https://github.com/sadok-f/fly-image" target="_blank">
+        <img class="fork-me"
+             src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67"
+             alt="Fork me on GitHub"
+             data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png">
+    </a>
 {% endblock %}
