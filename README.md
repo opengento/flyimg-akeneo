@@ -117,7 +117,7 @@ Example of using AWS S3 Adapter:
 --------------------------------
 in app.php:
 
-```
+```php
 $s3Client = \Aws\S3\S3Client::factory([
         'credentials' => [
             'key'    => 'your-key',
