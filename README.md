@@ -23,20 +23,20 @@ You will need to have Docker on your machine. Optionally you can use Docker mach
 Create the project with `composer create` or clone it into your server.
 
 ```sh
-    $ composer create-project sadok-f/fly-image
+composer create-project sadok-f/fly-image
 ```
 
 CD into the folder and to build the images run:
 
 ```sh
-    $ docker build -t fly-img .
+docker build -t fly-img .
 ```
 This will download and build the main image, It will take a few minutes. If you get some sort of error related to files not found by apt-get or simmilar, try this same command again.
 
 Then run the container:
 
 ```sh
-    $ docker run -t -d -i -p 8080:80 -v /Users/s.ferjani/DockerProjects/flyimage:/var/www/html --name fly-img fly-img
+docker run -t -d -i -p 8080:80 -v /Users/s.ferjani/DockerProjects/flyimage:/var/www/html --name fly-img fly-img
 ```
 
 Dockerfile run supervisord command which lunch 2 process nginx and php-fpm
@@ -44,7 +44,7 @@ Dockerfile run supervisord command which lunch 2 process nginx and php-fpm
 Now, only for the first time you need to run composer install inside the main container:
 
 ```sh
-    $ docker exec -it fly-img composer install
+docker exec -it fly-img composer install
 ```
 
 
@@ -145,11 +145,13 @@ Enable Restricted Domains:
 --------------------------
 
 Restricted domains disabled by default. This means that you can fetch a resource from any URL. To enable the domain restriction, change in config/parameters.yml 
+
 ```yml
 restricted_domains: true
 ```
 
 After enabling, you need to put the white listed domains
+
 ```yml
 whitelist_domains:
     - www.domain-1.org
