@@ -108,7 +108,7 @@ class ImageManager
         }
 
         if ($code !== 0) {
-            throw new \Exception($output . ' Command line: ' . $commandStr);
+            throw new \Exception("Command failed. The exit code: " . $output . "<br>The last line of output: " . $commandStr);
         }
         $this->filesystem->write($newFileName, stream_get_contents(fopen($newFilePath, 'r')));
         unlink($tmpFile);
