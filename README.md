@@ -1,4 +1,4 @@
-# Fly-Image
+# Flyimg
 
 [![Build Status](https://travis-ci.org/sadok-f/fly-image.svg?branch=master)](https://travis-ci.org/sadok-f/fly-image)
 [![Code Climate](https://codeclimate.com/github/sadok-f/fly-image/badges/gpa.svg)](https://codeclimate.com/github/sadok-f/fly-image)
@@ -8,7 +8,7 @@
 
 Image resizing, cropping and compression on the fly with the impressive [MozJPEG](http://calendar.perfplanet.com/2014/mozjpeg-3-0) compression algorithm. A one Docker container to build your own Cloudinary-like service.
 
-You pass the image URL and a set of keys with options, like size or compression. Fly-image will fetch the image, convert it, store it, cache it and serve it. The next time the request comes, it will serve the cached version.
+You pass the image URL and a set of keys with options, like size or compression. Flyimg will fetch the image, convert it, store it, cache it and serve it. The next time the request comes, it will serve the cached version.
 
 The application is based on [Silex](http://silex.sensiolabs.org/) microframework.
 
@@ -23,20 +23,20 @@ You will need to have Docker on your machine. Optionally you can use Docker mach
 Create the project with `composer create` or clone it into your server.
 
 ```sh
-composer create-project sadok-f/fly-image
+composer create-project sadok-f/flyimg
 ```
 
 CD into the folder and to build the images run:
 
 ```sh
-docker build -t fly-img .
+docker build -t flyimg .
 ```
 This will download and build the main image, It will take a few minutes. If you get some sort of error related to files not found by apt-get or simmilar, try this same command again.
 
 Then run the container:
 
 ```sh
-docker run -t -d -i -p 8080:80 -v /Users/s.ferjani/DockerProjects/flyimage:/var/www/html --name fly-img fly-img
+docker run -t -d -i -p 8080:80 -v /Users/s.ferjani/DockerProjects/flyimage:/var/www/html --name flyimg flyimg
 ```
 
 Dockerfile run supervisord command which lunch 2 process nginx and php-fpm
@@ -44,7 +44,7 @@ Dockerfile run supervisord command which lunch 2 process nginx and php-fpm
 Now, only for the first time you need to run composer install inside the main container:
 
 ```sh
-docker exec -it fly-img composer install
+docker exec -it flyimg composer install
 ```
 
 
@@ -160,7 +160,7 @@ whitelist_domains:
 
 Demo:
 -----
-Our application is available here: [flyimg.io](http://www.flyimg.io)
+Our application is available here: [flyimg.io](http://flyimg.io)
 
 - Quality 90%
 [http://oi.flyimg.io/upload/w_500,h_500,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg](http://oi.flyimg.io/upload/w_500,h_500,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg)
