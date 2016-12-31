@@ -42,7 +42,6 @@ $app['routes'] = $app->extend('routes', function (RouteCollection $routes) {
     return $routes;
 });
 
-
 /**
  * Register Fly System Provider
  */
