@@ -14,4 +14,10 @@
             <directory>./src/Core/Tests</directory>
         </testsuite>
     </testsuites>
+
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix="Test.php">./src/Core/Tests</directory>
+        </whitelist>
+    </filter>
 </phpunit>

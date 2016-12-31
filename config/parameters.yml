@@ -1,3 +1,8 @@
+application_name: Flyimg.io
+
+#debug
+debug: false
+
 #path to mozjpeg bin
 mozjpeg_path: /opt/mozjpeg/bin/cjpeg
 
