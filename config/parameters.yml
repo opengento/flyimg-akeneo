@@ -6,10 +6,10 @@ debug: false
 #path to mozjpeg bin
 mozjpeg_path: /opt/mozjpeg/bin/cjpeg
 
-#by default cahing is enabled and it use Redis for aching meta-data
+#By default cahing is enabled and it use Redis for aching meta-data
 cache: true
 
-#implement logic for graphicsmagick
+#TODO implement logic for graphicsmagick
 #use_graphicsmagick: false
 
 #options separator
@@ -33,12 +33,15 @@ options_keys:
   st: strip
   rz: resize
   g: gravity
-  th: thread
   thb: thumbnail
   f: filter
   sc: scale
   sf: sampling-factor
   rf: refresh
+  ett: extent
+  par: preserve-aspect-ratio
+  pns: preserve-natural-size
+
 
 #Default options values
 default_options:
@@ -52,9 +55,13 @@ default_options:
   strip: 1
   resize: null
   gravity: Center
-  thread: 1
-  thumbnail: null
+  thumbnail: 1
   filter: Lanczos
   scale: null
   sampling-factor: 1x1
   refresh: false
+  extent: null
+  preserve-aspect-ratio: 1
+  preserve-natural-size: 1
+  # private options set here
+  thread: 1

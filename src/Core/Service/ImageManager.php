@@ -56,7 +56,6 @@ class ImageManager
         if ($this->filesystem->has($newFileName) && $options['refresh']) {
             $this->filesystem->delete($newFileName);
         }
-
         if (!$this->filesystem->has($newFileName)) {
             $this->saveNewFile($sourceFile, $newFileName, $options);
         }
@@ -122,24 +121,68 @@ class ImageManager
      * @param $tmpFile
      * @param $newFilePath
      * @return string
+     *
+     * TODO: move the geometry logic to it's own function
      */
     public function generateCmdString($newFilePath, $tmpFile, $options)
     {
-        $this->extractByKey($options, 'refresh');
+        $refresh = $this->extractByKey($options, 'refresh');
         $quality = $this->extractByKey($options, 'quality');
         $strip = $this->extractByKey($options, 'strip');
         $mozJPEG = $this->extractByKey($options, 'mozjpeg');
         $thread = $this->extractByKey($options, 'thread');
-        $size = $this->extractByKey($options, 'width') . 'x' . $this->extractByKey($options, 'height');
+        $targetWidth = $this->extractByKey($options, 'width');
+        $targetHeight = $this->extractByKey($options, 'height');
+        $resize = $this->extractByKey($options, 'resize');
+        $thumbnail = $this->extractByKey($options, 'thumbnail');
+        $crop = $this->extractByKey($options, 'crop');
 
+        // getting the original dimensions is not used so far.
+        //$originalDimensions = $this->getImgSize($tmpFile);
+
+        $size = '';
+
+        if ($targetWidth) {
+            $size .= (string) $targetWidth;
+        }
+        if ($targetHeight) {
+            $size .= (string) 'x' . $targetHeight;
+        }
+        
+        // When width and height a whole bunch of special cases must be taken into consideration.
+        // resizing constraints (< > ^ !) can only be applied to geometry with both width AND height
+        $preserveNaturalSize = $this->extractByKey($options, 'preserve-natural-size');
+        $preserveAspectRatio = $this->extractByKey($options, 'preserve-aspect-ratio');
+        $gravityValue = $this->extractByKey($options, 'gravity');
+        $extent = '';
+        $gravity = '';
+        if($targetWidth && $targetHeight) {
+            $extent = ' -extent ' . $size;
+            $gravity = ' -gravity ' . $gravityValue;
+            $resizingConstraints = '';
+            $resizingConstraints .= $preserveNaturalSize ? '\>' : '';
+            if($crop) {
+                $resizingConstraints .= '^';
+                //$extent .= '+repage';// still need to solve the combination of ^ , -extent and +repage . Will need to do calculations with the original image dimentions vs. the target dimentions.
+            } else {
+                $extent .= '+repage ';
+            }
+            $resizingConstraints .= $preserveAspectRatio ? '' : '!';
+            $size .= $resizingConstraints;
+        } else {
+            $size .= $preserveNaturalSize ? '\>' : '';
+        }
+
+        // we dafault to thumbnail 
+        $resizeOperator = $resize ? 'resize' : 'thumbnail';
         $command = [];
-        $command[] = "/usr/bin/convert " . $tmpFile . "'[" . escapeshellarg($size) . "]'";
-        $command[] = "-extent " . escapeshellarg($size);
+        $command[] = "/usr/bin/convert " . $tmpFile . ' -' . $resizeOperator . ' ' . $size . $gravity . $extent .' -colorspace sRGB';
 
         if (!empty($thread)) {
             $command[] = "-limit thread " . escapeshellarg($thread);
         }
 
+        // strip is added internally by ImageMagik when using -thumbmail
         if (!empty($strip)) {
             $command[] = "-strip ";
         }
@@ -157,6 +200,13 @@ class ImageManager
         }
 
         $commandStr = implode(' ', $command);
+
+        // if there's a request to refresh, we will assume it's for debugging purposes and we will send back a header with the parsed im command that we are executing.
+        if($refresh) {
+            header('src-img-size: ' . implode(' x ', $this->getImgSize($tmpFile)));
+            header('im-command: ' . $commandStr);
+        }
+
         return $commandStr;
     }
 
@@ -175,6 +225,11 @@ class ImageManager
             unset($array[$key]);
         }
         return $value;
+    }
+
+    public function getImgSize($imgPath) {
+        exec("/usr/bin/convert " . $imgPath . ' -ping -format "%w x %h" info:', $output, $code);
+        return explode(' x ', $output[0]);
     }
 
     /**
