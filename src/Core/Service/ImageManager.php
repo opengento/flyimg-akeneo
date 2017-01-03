@@ -155,13 +155,9 @@ class ImageManager
         // we default to thumbnail
         $resizeOperator = $resize ? 'resize' : 'thumbnail';
         $command = [];
-        $baseConverter = '/usr/bin/convert';
-        if ($this->params['use_graphicsmagick']) {
-            $baseConverter = '/usr/bin/gm convert';
-        }
-        $command[] = $baseConverter . " " . $tmpFile . ' -' . $resizeOperator . ' ' . $size . $gravity . $extent . ' -colorspace sRGB';
+        $command[] = "/usr/bin/convert " . $tmpFile . ' -' . $resizeOperator . ' ' . $size . $gravity . $extent . ' -colorspace sRGB';
 
-        if (!empty($thread) && !$this->params['use_graphicsmagick']) {
+        if (!empty($thread)) {
             $command[] = "-limit thread " . escapeshellarg($thread);
         }
 
@@ -186,6 +182,8 @@ class ImageManager
     }
 
     /**
+     * Size and Crop logic
+     *
      * @param $options
      * @return array
      */
@@ -234,6 +232,8 @@ class ImageManager
 
 
     /**
+     * Check MozJpeg configuration if it's enabled and append it to main convert command
+     *
      * @param $command
      * @param $newFilePath
      * @param $quality
@@ -248,16 +248,6 @@ class ImageManager
             $command[] = "-quality " . escapeshellarg($quality) . " " . escapeshellarg($newFilePath);
         }
         return $command;
-    }
-
-    /**
-     * @param $imgPath
-     * @return array
-     */
-    public function getImgSize($imgPath)
-    {
-        exec("/usr/bin/convert " . $imgPath . ' -ping -format "%w x %h" info:', $output);
-        return explode(' x ', $output[0]);
     }
 
     /**
@@ -281,8 +271,10 @@ class ImageManager
         return $tmpFile;
     }
 
-    /** If there's a request to refresh,
-     *  We will assume it's for debugging purposes and we will send back a header with the parsed im command that we are executing.
+    /**
+     * If there's a request to refresh,
+     * We will assume it's for debugging purposes and we will send back a header with the parsed im command that we are executing.
+     *
      * @param $refresh
      * @param $commandStr
      * @param $tmpFile
@@ -294,5 +286,17 @@ class ImageManager
         }
         header('src-img-size: ' . implode(' x ', $this->getImgSize($tmpFile)));
         header('im-command: ' . $commandStr);
+    }
+
+    /**
+     * Get the image size
+     *
+     * @param $imgPath
+     * @return array
+     */
+    public function getImgSize($imgPath)
+    {
+        exec("/usr/bin/convert " . $imgPath . ' -ping -format "%w x %h" info:', $output);
+        return explode(' x ', $output[0]);
     }
 }
