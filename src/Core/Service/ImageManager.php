@@ -87,6 +87,23 @@ class ImageManager
     }
 
     /**
+     * Extract a value from given array and unset it.
+     *
+     * @param $array
+     * @param $key
+     * @return null
+     */
+    public function extractByKey(&$array, $key)
+    {
+        $value = null;
+        if (isset($array[$key])) {
+            $value = $array[$key];
+            unset($array[$key]);
+        }
+        return $value;
+    }
+
+    /**
      * Save new FileName based on source file and list of options
      *
      * @param $sourceFile
@@ -126,16 +143,16 @@ class ImageManager
     public function generateCmdString($newFilePath, $tmpFile, $options)
     {
         $refresh = $this->extractByKey($options, 'refresh');
-        $quality = $this->extractByKey($options, 'quality');
         $strip = $this->extractByKey($options, 'strip');
-        $mozJPEG = $this->extractByKey($options, 'mozjpeg');
         $thread = $this->extractByKey($options, 'thread');
         $resize = $this->extractByKey($options, 'resize');
+        $quality = $this->extractByKey($options, 'quality');
+        $mozJPEG = $this->extractByKey($options, 'mozjpeg');
+
 
         list($size, $extent, $gravity) = $this->generateSize($options);
 
-
-        // we dafault to thumbnail
+        // we default to thumbnail
         $resizeOperator = $resize ? 'resize' : 'thumbnail';
         $command = [];
         $baseConverter = '/usr/bin/convert';
@@ -148,7 +165,7 @@ class ImageManager
             $command[] = "-limit thread " . escapeshellarg($thread);
         }
 
-        // strip is added internally by ImageMagik when using -thumbmail
+        // strip is added internally by ImageMagick when using -thumbnail
         if (!empty($strip)) {
             $command[] = "-strip ";
         }
@@ -159,69 +176,13 @@ class ImageManager
             }
         }
 
-        if (is_executable($this->params['mozjpeg_path']) && $mozJPEG == 1) {
-            $command[] = "TGA:- | " . escapeshellarg($this->params['mozjpeg_path']) . " -quality " . escapeshellarg($quality) . " -outfile " . escapeshellarg($newFilePath) . " -targa";
-        } else {
-            $command[] = "-quality " . escapeshellarg($quality) . " " . escapeshellarg($newFilePath);
-        }
+        $command = $this->checkMozJpeg($command, $newFilePath, $quality, $mozJPEG);
 
         $commandStr = implode(' ', $command);
 
-        // if there's a request to refresh, we will assume it's for debugging purposes and we will send back a header with the parsed im command that we are executing.
-        if ($refresh) {
-            header('src-img-size: ' . implode(' x ', $this->getImgSize($tmpFile)));
-            header('im-command: ' . $commandStr);
-        }
+        $this->sendDebugHeader($refresh, $commandStr, $tmpFile);
 
         return $commandStr;
-    }
-
-    /**
-     * Extract a value from given array and unset it.
-     *
-     * @param $array
-     * @param $key
-     * @return null
-     */
-    public function extractByKey(&$array, $key)
-    {
-        $value = null;
-        if (isset($array[$key])) {
-            $value = $array[$key];
-            unset($array[$key]);
-        }
-        return $value;
-    }
-
-    /**
-     * @param $imgPath
-     * @return array
-     */
-    public function getImgSize($imgPath)
-    {
-        exec("/usr/bin/convert " . $imgPath . ' -ping -format "%w x %h" info:', $output, $code);
-        return explode(' x ', $output[0]);
-    }
-
-    /**
-     * Save given image to temporary file and return the path
-     *
-     * @param $fileUrl
-     * @return string
-     * @throws \Exception
-     */
-    public function saveToTemporaryFile($fileUrl)
-    {
-        if (!$resource = @fopen($fileUrl, "r")) {
-            throw  new \Exception('Error occurred while trying to read the file Url : ' . $fileUrl);
-        }
-        $content = "";
-        while ($line = fread($resource, 1024)) {
-            $content .= $line;
-        }
-        $tmpFile = TMP_DIR . uniqid("", true);
-        file_put_contents($tmpFile, $content);
-        return $tmpFile;
     }
 
     /**
@@ -269,5 +230,69 @@ class ImageManager
         }
 
         return [$size, $extent, $gravity];
+    }
+
+
+    /**
+     * @param $command
+     * @param $newFilePath
+     * @param $quality
+     * @param $mozJPEG
+     * @return array
+     */
+    private function checkMozJpeg($command, $newFilePath, $quality, $mozJPEG)
+    {
+        if (is_executable($this->params['mozjpeg_path']) && $mozJPEG == 1) {
+            $command[] = "TGA:- | " . escapeshellarg($this->params['mozjpeg_path']) . " -quality " . escapeshellarg($quality) . " -outfile " . escapeshellarg($newFilePath) . " -targa";
+        } else {
+            $command[] = "-quality " . escapeshellarg($quality) . " " . escapeshellarg($newFilePath);
+        }
+        return $command;
+    }
+
+    /**
+     * @param $imgPath
+     * @return array
+     */
+    public function getImgSize($imgPath)
+    {
+        exec("/usr/bin/convert " . $imgPath . ' -ping -format "%w x %h" info:', $output);
+        return explode(' x ', $output[0]);
+    }
+
+    /**
+     * Save given image to temporary file and return the path
+     *
+     * @param $fileUrl
+     * @return string
+     * @throws \Exception
+     */
+    public function saveToTemporaryFile($fileUrl)
+    {
+        if (!$resource = @fopen($fileUrl, "r")) {
+            throw  new \Exception('Error occurred while trying to read the file Url : ' . $fileUrl);
+        }
+        $content = "";
+        while ($line = fread($resource, 1024)) {
+            $content .= $line;
+        }
+        $tmpFile = TMP_DIR . uniqid("", true);
+        file_put_contents($tmpFile, $content);
+        return $tmpFile;
+    }
+
+    /** If there's a request to refresh,
+     *  We will assume it's for debugging purposes and we will send back a header with the parsed im command that we are executing.
+     * @param $refresh
+     * @param $commandStr
+     * @param $tmpFile
+     */
+    private function sendDebugHeader($refresh, $commandStr, $tmpFile)
+    {
+        if (!$refresh) {
+            return;
+        }
+        header('src-img-size: ' . implode(' x ', $this->getImgSize($tmpFile)));
+        header('im-command: ' . $commandStr);
     }
 }
