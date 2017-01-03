@@ -1,6 +1,6 @@
 # Flyimg
 
-[![Build Status](https://travis-ci.org/sadok-f/fly-image.svg?branch=master)](https://travis-ci.org/sadok-f/fly-image)
+[![Build Status](https://travis-ci.org/sadok-f/flyimg.svg?branch=master)](https://travis-ci.org/sadok-f/fly-image)
 [![Code Climate](https://codeclimate.com/github/sadok-f/fly-image/badges/gpa.svg)](https://codeclimate.com/github/sadok-f/fly-image)
 [![Issue Count](https://codeclimate.com/github/sadok-f/fly-image/badges/issue_count.svg)](https://codeclimate.com/github/sadok-f/fly-image)
 [![Test Coverage](https://codeclimate.com/github/sadok-f/fly-image/badges/coverage.svg)](https://codeclimate.com/github/sadok-f/fly-image/coverage)
@@ -134,6 +134,7 @@ By default; width, height, or both will **not scale up** an image that is smalle
 ### gravity `string`
 **default: Center** : When crop is applied, changing the gravity will define which part of the image is kept inside the crop area.
 The basic options are: `NorthWest`, `North`, `NorthEast`, `West`, `Center`, `East`, `SouthWest`, `South`, `SouthEast`.
+
 ```sh
    [...] -gravity NorthWest ...
 
@@ -141,6 +142,7 @@ The basic options are: `NorthWest`, `North`, `NorthEast`, `West`, `Center`, `Eas
 
 ### background `color` (multiple formats) 
 **default: white** : Sets the background of the canvas for the cases where padding is added to the images. It suports hex, css color names, rgb. Only css color names are supported without quotation marks.
+
 ```sh
   [...] -background red ...
   [...] -background "#ff4455" ...
@@ -155,12 +157,14 @@ The basic options are: `NorthWest`, `North`, `NorthEast`, `West`, `Center`, `Eas
 
 ### unsharp `radiusxsigma{+gain}{+threshold}` 
 **default: null** : Sharpens an image with a convolved Gausian operator. A good example `0.25x0.25+8+0.065`.
+
 ```sh
    [...] -unsharp 0.25x0.25+8+0.065 ...
 ```
 
 ### filter `string`
 **default: Lanczos** : Resizing algorithm, Triangle is a smoother lighter option
+
 ```sh
    [...] -filter Triangle
 ```
