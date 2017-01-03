@@ -9,8 +9,8 @@ mozjpeg_path: /opt/mozjpeg/bin/cjpeg
 #By default cahing is enabled and it use Redis for aching meta-data
 cache: true
 
-#TODO implement logic for graphicsmagick
-#use_graphicsmagick: false
+#implement logic for graphicsmagick
+use_graphicsmagick: true
 
 #options separator
 options_separator: ,
@@ -33,7 +33,6 @@ options_keys:
   st: strip
   rz: resize
   g: gravity
-  thb: thumbnail
   f: filter
   sc: scale
   sf: sampling-factor
@@ -55,7 +54,6 @@ default_options:
   strip: 1
   resize: null
   gravity: Center
-  thumbnail: 1
   filter: Lanczos
   scale: null
   sampling-factor: 1x1

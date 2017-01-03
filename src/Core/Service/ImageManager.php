@@ -38,6 +38,7 @@ class ImageManager
      * @param array $options
      * @param $sourceFile
      * @return string
+     * @throws \Exception
      */
     public function process($options, $sourceFile)
     {
@@ -121,8 +122,6 @@ class ImageManager
      * @param $tmpFile
      * @param $newFilePath
      * @return string
-     *
-     * TODO: move the geometry logic to it's own function
      */
     public function generateCmdString($newFilePath, $tmpFile, $options)
     {
@@ -131,54 +130,21 @@ class ImageManager
         $strip = $this->extractByKey($options, 'strip');
         $mozJPEG = $this->extractByKey($options, 'mozjpeg');
         $thread = $this->extractByKey($options, 'thread');
-        $targetWidth = $this->extractByKey($options, 'width');
-        $targetHeight = $this->extractByKey($options, 'height');
         $resize = $this->extractByKey($options, 'resize');
-        $thumbnail = $this->extractByKey($options, 'thumbnail');
-        $crop = $this->extractByKey($options, 'crop');
 
-        // getting the original dimensions is not used so far.
-        //$originalDimensions = $this->getImgSize($tmpFile);
+        list($size, $extent, $gravity) = $this->generateSize($options);
 
-        $size = '';
 
-        if ($targetWidth) {
-            $size .= (string) $targetWidth;
-        }
-        if ($targetHeight) {
-            $size .= (string) 'x' . $targetHeight;
-        }
-        
-        // When width and height a whole bunch of special cases must be taken into consideration.
-        // resizing constraints (< > ^ !) can only be applied to geometry with both width AND height
-        $preserveNaturalSize = $this->extractByKey($options, 'preserve-natural-size');
-        $preserveAspectRatio = $this->extractByKey($options, 'preserve-aspect-ratio');
-        $gravityValue = $this->extractByKey($options, 'gravity');
-        $extent = '';
-        $gravity = '';
-        if($targetWidth && $targetHeight) {
-            $extent = ' -extent ' . $size;
-            $gravity = ' -gravity ' . $gravityValue;
-            $resizingConstraints = '';
-            $resizingConstraints .= $preserveNaturalSize ? '\>' : '';
-            if($crop) {
-                $resizingConstraints .= '^';
-                //$extent .= '+repage';// still need to solve the combination of ^ , -extent and +repage . Will need to do calculations with the original image dimentions vs. the target dimentions.
-            } else {
-                $extent .= '+repage ';
-            }
-            $resizingConstraints .= $preserveAspectRatio ? '' : '!';
-            $size .= $resizingConstraints;
-        } else {
-            $size .= $preserveNaturalSize ? '\>' : '';
-        }
-
-        // we dafault to thumbnail 
+        // we dafault to thumbnail
         $resizeOperator = $resize ? 'resize' : 'thumbnail';
         $command = [];
-        $command[] = "/usr/bin/convert " . $tmpFile . ' -' . $resizeOperator . ' ' . $size . $gravity . $extent .' -colorspace sRGB';
+        $baseConverter = '/usr/bin/convert';
+        if ($this->params['use_graphicsmagick']) {
+            $baseConverter = '/usr/bin/gm convert';
+        }
+        $command[] = $baseConverter . " " . $tmpFile . ' -' . $resizeOperator . ' ' . $size . $gravity . $extent . ' -colorspace sRGB';
 
-        if (!empty($thread)) {
+        if (!empty($thread) && !$this->params['use_graphicsmagick']) {
             $command[] = "-limit thread " . escapeshellarg($thread);
         }
 
@@ -202,7 +168,7 @@ class ImageManager
         $commandStr = implode(' ', $command);
 
         // if there's a request to refresh, we will assume it's for debugging purposes and we will send back a header with the parsed im command that we are executing.
-        if($refresh) {
+        if ($refresh) {
             header('src-img-size: ' . implode(' x ', $this->getImgSize($tmpFile)));
             header('im-command: ' . $commandStr);
         }
@@ -227,7 +193,12 @@ class ImageManager
         return $value;
     }
 
-    public function getImgSize($imgPath) {
+    /**
+     * @param $imgPath
+     * @return array
+     */
+    public function getImgSize($imgPath)
+    {
         exec("/usr/bin/convert " . $imgPath . ' -ping -format "%w x %h" info:', $output, $code);
         return explode(' x ', $output[0]);
     }
@@ -242,7 +213,7 @@ class ImageManager
     public function saveToTemporaryFile($fileUrl)
     {
         if (!$resource = @fopen($fileUrl, "r")) {
-            throw  new \Exception('Error occured while trying to read the file Url : ' . $fileUrl);
+            throw  new \Exception('Error occurred while trying to read the file Url : ' . $fileUrl);
         }
         $content = "";
         while ($line = fread($resource, 1024)) {
@@ -251,5 +222,52 @@ class ImageManager
         $tmpFile = TMP_DIR . uniqid("", true);
         file_put_contents($tmpFile, $content);
         return $tmpFile;
+    }
+
+    /**
+     * @param $options
+     * @return array
+     */
+    private function generateSize(&$options)
+    {
+        $targetWidth = $this->extractByKey($options, 'width');
+        $targetHeight = $this->extractByKey($options, 'height');
+        $crop = $this->extractByKey($options, 'crop');
+
+        $size = '';
+
+        if ($targetWidth) {
+            $size .= (string)$targetWidth;
+        }
+        if ($targetHeight) {
+            $size .= (string)'x' . $targetHeight;
+        }
+
+        // When width and height a whole bunch of special cases must be taken into consideration.
+        // resizing constraints (< > ^ !) can only be applied to geometry with both width AND height
+        $preserveNaturalSize = $this->extractByKey($options, 'preserve-natural-size');
+        $preserveAspectRatio = $this->extractByKey($options, 'preserve-aspect-ratio');
+        $gravityValue = $this->extractByKey($options, 'gravity');
+        $extent = '';
+        $gravity = '';
+
+        if ($targetWidth && $targetHeight) {
+            $extent = ' -extent ' . $size;
+            $gravity = ' -gravity ' . $gravityValue;
+            $resizingConstraints = '';
+            $resizingConstraints .= $preserveNaturalSize ? '\>' : '';
+            if ($crop) {
+                $resizingConstraints .= '^';
+                //$extent .= '+repage';// still need to solve the combination of ^ , -extent and +repage . Will need to do calculations with the original image dimentions vs. the target dimentions.
+            } else {
+                $extent .= '+repage ';
+            }
+            $resizingConstraints .= $preserveAspectRatio ? '' : '!';
+            $size .= $resizingConstraints;
+        } else {
+            $size .= $preserveNaturalSize ? '\>' : '';
+        }
+
+        return [$size, $extent, $gravity];
     }
 }

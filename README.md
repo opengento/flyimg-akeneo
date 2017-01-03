@@ -80,7 +80,6 @@ options_keys:
   st: strip
   rz: resize
   g: gravity
-  thb: thumbnail
   f: filter
   sc: scale
   sf: sampling-factor
@@ -102,7 +101,6 @@ default_options:
   strip: 1
   resize: null
   gravity: Center
-  thumbnail: null
   filter: Lanczos
   scale: null
   sampling-factor: 1x1
