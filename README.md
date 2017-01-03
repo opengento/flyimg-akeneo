@@ -80,7 +80,6 @@ options_keys:
   st: strip
   rz: resize
   g: gravity
-  th: thread
   thb: thumbnail
   f: filter
   sc: scale
@@ -103,7 +102,6 @@ default_options:
   strip: 1
   resize: null
   gravity: Center
-  thread: 1
   thumbnail: null
   filter: Lanczos
   scale: null
@@ -111,19 +109,19 @@ default_options:
   refresh: false
 ```
 
-Most of these options are Imagemagick flags, many can get pretty advanced, use the [Imagemagick docs](http://www.imagemagick.org/script/command-line-options.php).
+Most of these options are ImageMagick flags, many can get pretty advanced, use the [ImageMagick docs](http://www.imagemagick.org/script/command-line-options.php).
 
 ### mozjpeg `bool`
-**default: 1** - Use moz-jpeg compression library, if `false` it fallsback to the default Imagemagick compression algorithm. 
+**default: 1** : Use moz-jpeg compression library, if `false` it fallback to the default ImageMagick compression algorithm. 
 
 ### quality `int` (0-100)
-**default: 90** - Sets the compression level for the output image.
+**default: 90** : Sets the compression level for the output image.
 
 ### width `int`
-**default: null** - Sets the target width of the image. If not set, width will be calculated in order to keep aspect ratio.
+**default: null** : Sets the target width of the image. If not set, width will be calculated in order to keep aspect ratio.
 
 ### height `int`
-**default: null** - Sets the target height of the image. If not set, height will be calculated in order to keep aspect ratio.
+**default: null** : Sets the target height of the image. If not set, height will be calculated in order to keep aspect ratio.
 
 ### Using width AND height
 By default setting width and height together, works like defining a rectangle that will define a **max-width** and **max-height** and the image will scale propotionally to fit that area without cropping.
@@ -133,16 +131,18 @@ By default; width, height, or both will **not scale up** an image that is smalle
 <!-- in the future put example images here-->
 
 ### crop `bool` 
-**default: false** - When both width and height are set, this allows the image to be cropped so it fills the **width x height** area.
+**default: false** : When both width and height are set, this allows the image to be cropped so it fills the **width x height** area.
 
-### gravity `int`
-**default: Center** - When crop is applied, changing the gravity will define which part of the image is kept inside the crop area.
+### gravity `string`
+**default: Center** : When crop is applied, changing the gravity will define which part of the image is kept inside the crop area.
 The basic options are: `NorthWest`, `North`, `NorthEast`, `West`, `Center`, `East`, `SouthWest`, `South`, `SouthEast`.
 ```sh
    [...] -gravity NorthWest ...
 
+```
+
 ### background `color` (multiple formats) 
-**default: white** - Sets the background of the canvas for the cases where padding is added to the images. It suports hex, css color names, rgb. Only css color names are supported without quotation marks.
+**default: white** : Sets the background of the canvas for the cases where padding is added to the images. It suports hex, css color names, rgb. Only css color names are supported without quotation marks.
 ```sh
   [...] -background red ...
   [...] -background "#ff4455" ...
@@ -150,29 +150,28 @@ The basic options are: `NorthWest`, `North`, `NorthEast`, `West`, `Center`, `Eas
 ```
 
 ### strip `int`
-**default: 1** - removes exif data and aditional color profile.
+**default: 1** : removes exif data and additional color profile.
 
 ### resize `int`
-**default: null** - The alternative resizing method to -thumbnail.
-```
+**default: null** : The alternative resizing method to -thumbnail.
 
 ### unsharp `radiusxsigma{+gain}{+threshold}` 
-**default: null** - Sharpens an image with a convolved Gausian operator. A good example `0.25x0.25+8+0.065`.
+**default: null** : Sharpens an image with a convolved Gausian operator. A good example `0.25x0.25+8+0.065`.
 ```sh
    [...] -unsharp 0.25x0.25+8+0.065 ...
 ```
 
-### filter `int`
-**default: Lanczos** - Resizing algorithm, Triangle is a smoother lighter option
+### filter `string`
+**default: Lanczos** : Resizing algorithm, Triangle is a smoother lighter option
 ```sh
    [...] -filter Triangle
 ```
 
 ### scale `int`
-**default: null** - The "-scale" resize operator is a simplified, faster form of the resize command. Usefule for fast exact scaling of pixels.
+**default: null** : The "-scale" resize operator is a simplified, faster form of the resize command. Useful for fast exact scaling of pixels.
 
 ### refresh `int`
-**default: false** - Refresh will delete the local cached copy of the file requested and will generate the image again. Also it will send headers with the comand done on the image and the original image size.
+**default: false** : Refresh will delete the local cached copy of the file requested and will generate the image again. Also it will send headers with the command done on the image and the original image size.
 
 
 
