@@ -1,0 +1,14 @@
+.git/**/*
+git/**/*
+.idea/*
+
+.travis.yml
+.codeclimate.yml
+_config.yml
+README.md
+LICENSE
+phpunit.xml.dist
+
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
