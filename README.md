@@ -66,9 +66,19 @@ Default storage is Local, but you can use other Adapters like AWS S3, Azure, FTP
 
 Currently, only the local and S3 are implemented as Storage Provider in Flyimg application, but you can add your specific one easily in `src/Core/Provider/StorageProvider.php` 
 
-**Using AWS S3 as Storage Provider**:
-in parameters.yml change the `storage_system` option from local to s3, and put in aws_s3 options AWS S3 access : Access id, Secret key, Region and Bucket name
+##Using AWS S3 as Storage Provider:
 
+in parameters.yml change the `storage_system` option from local to s3, and fill in the aws_s3 options :
+
+```yml
+storage_system: s3
+
+aws_s3:
+  access_id: "s3-access-id"
+  secret_key: "s3-secret-id"
+  region: "s3-region"
+  bucket_name: "s3-bucket-name"
+```
 
 Options keys:
 -------------
@@ -180,6 +190,7 @@ The basic options are: `NorthWest`, `North`, `NorthEast`, `West`, `Center`, `Eas
 ### refresh `int`
 **default: false** : Refresh will delete the local cached copy of the file requested and will generate the image again. Also it will send headers with the command done on the image and the original image size.
  
+
 
 Enable Restricted Domains:
 --------------------------
