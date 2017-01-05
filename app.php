@@ -43,22 +43,15 @@ $app['routes'] = $app->extend('routes', function (RouteCollection $routes) {
 });
 
 /**
- * Register Fly System Provider
+ * Register Storage provider
  */
-$app->register(new WyriHaximus\SliFly\FlysystemServiceProvider(), [
-    'flysystem.filesystems' => [
-        'upload_dir' => [
-            'adapter' => 'League\Flysystem\Adapter\Local',
-            'args' => [UPLOAD_DIR]
-        ],
-    ],
-]);
+$app->register(new \Core\Provider\StorageProvider());
 
 /**
  * Monolog Service
  */
 $app->register(new Silex\Provider\MonologServiceProvider(), array(
-    'monolog.name' => 'fly-image',
+    'monolog.name' => 'flyimg',
     'monolog.level' => Logger::ERROR,
     'monolog.logfile' => LOG_DIR . 'dev.log',
 ));

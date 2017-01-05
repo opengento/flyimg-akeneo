@@ -14,9 +14,21 @@ options_separator: ,
 
 #restrict domains, false by default
 restricted_domains: false
+
 #if restricted_domains is enabled, put whitelist domains here
 whitelist_domains:
     - www.mozilla.org
+
+#Default storage system is local, to use use AWS S3, change this param to s3
+storage_system: local
+
+#In case storage_system: s3, you need to add those AWS S3 parameters:
+aws_s3:
+  access_id: ""
+  secret_key: ""
+  region: ""
+  bucket_name: ""
+
 
 #Keys used in url to match options. Ex: q_80,w_200,h_100
 options_keys:

@@ -36,7 +36,7 @@ This will download and build the main image, It will take a few minutes. If you 
 Then run the container:
 
 ```sh
-docker run -t -d -i -p 8080:80 -v /Users/s.ferjani/DockerProjects/flyimage:/var/www/html --name flyimg flyimg
+docker run -t -d -i -p 8080:80 -v /Users/s.ferjani/DockerProjects/flyimg:/var/www/html --name flyimg flyimg
 ```
 
 Dockerfile run supervisord command which lunch 2 process nginx and php-fpm
@@ -63,6 +63,11 @@ Storage:
 Storage files based on [Flysystem](http://flysystem.thephpleague.com/) which is `a filesystem abstraction allows you to easily swap out a local filesystem for a remote one. Technical debt is reduced as is the chance of vendor lock-in.`
 
 Default storage is Local, but you can use other Adapters like AWS S3, Azure, FTP, Dropbox, ... 
+
+Currently, only the local and S3 are implemented as Storage Provider in Flyimg application, but you can add your specific one easily in `src/Core/Provider/StorageProvider.php` 
+
+**Using AWS S3 as Storage Provider**:
+in parameters.yml change the `storage_system` option from local to s3, and put in aws_s3 options AWS S3 access : Access id, Secret key, Region and Bucket name
 
 
 Options keys:
@@ -174,35 +179,6 @@ The basic options are: `NorthWest`, `North`, `NorthEast`, `West`, `Center`, `Eas
 
 ### refresh `int`
 **default: false** : Refresh will delete the local cached copy of the file requested and will generate the image again. Also it will send headers with the command done on the image and the original image size.
-
-
-
-Example of using AWS S3 Adapter:
---------------------------------
-in app.php:
-
-```php
-$s3Client = \Aws\S3\S3Client::factory([
-        'credentials' => [
-            'key'    => 'your-key',
-            'secret' => 'your-secret',
-        ],
-        'region' => 'your-region',
-        'version' => 'latest|version',
-    ]);
-
-$app->register(new WyriHaximus\SliFly\FlysystemServiceProvider(), [
-    'flysystem.filesystems' => [
-        'upload_dir' => [
-            'adapter' => 'League\Flysystem\AwsS3v3\AwsS3Adapter',
-            'args' => [
-                $s3Client,
-                'your-bucket-name'
-            ]
-        ]
-    ]
-]);
-```
  
 
 Enable Restricted Domains:
