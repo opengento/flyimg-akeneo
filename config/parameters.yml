@@ -42,6 +42,7 @@ options_keys:
   rz: resize
   g: gravity
   f: filter
+  r: rotate
   sc: scale
   sf: sampling-factor
   rf: refresh
@@ -63,6 +64,7 @@ default_options:
   resize: null
   gravity: Center
   filter: Lanczos
+  rotate: null
   scale: null
   sampling-factor: 1x1
   refresh: false

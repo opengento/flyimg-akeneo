@@ -187,6 +187,11 @@ The basic options are: `NorthWest`, `North`, `NorthEast`, `West`, `Center`, `Eas
 ### scale `int`
 **default: null** : The "-scale" resize operator is a simplified, faster form of the resize command. Useful for fast exact scaling of pixels.
 
+
+### rotate `string`
+**default: null** : Apply image rotation (using shear operations) to the image. For example `r_90` `r_-180`
+
+ 
 ### refresh `int`
 **default: false** : Refresh will delete the local cached copy of the file requested and will generate the image again. Also it will send headers with the command done on the image and the original image size.
  
