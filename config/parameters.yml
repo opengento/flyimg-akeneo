@@ -29,7 +29,6 @@ aws_s3:
   region: ""
   bucket_name: ""
 
-
 #Keys used in url to match options. Ex: q_80,w_200,h_100
 options_keys:
   moz: mozjpeg
