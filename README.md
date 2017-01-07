@@ -41,7 +41,7 @@ docker run -t -d -i -p 8080:80 -v /Users/s.ferjani/DockerProjects/flyimg:/var/ww
 
 Dockerfile run supervisord command which lunch 2 process nginx and php-fpm
 
-Now, only for the first time you need to run composer install inside the main container:
+If you cloned the project, for the first time you need to run composer install inside the main container:
 
 ```sh
 docker exec -it flyimg composer install
@@ -224,8 +224,11 @@ The basic options are: `NorthWest`, `North`, `NorthEast`, `West`, `Center`, `Eas
 
  
 ### refresh `int`
-**default: false** : Refresh will delete the local cached copy of the file requested and will generate the image again. Also it will send headers with the command done on the image and the original image size.
- 
+**default: false** : Refresh will delete the local cached copy of the file requested and will generate the image again. 
+Also it will send headers with the command done on the image + info returned by the command identity from IM.
+
+`rf_1` 
+![moz_0](http://oi.flyimg.io/upload/rf_1,w_400,h_400,q_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
 
 
 Enable Restricted Domains:
