@@ -169,8 +169,8 @@ By default; width, height, or both will **not scale up** an image that is smalle
 ### crop `bool` 
 **default: false** : When both width and height are set, this allows the image to be cropped so it fills the **width x height** area.
 
-`c_1` 
-![moz_0](http://oi.flyimg.io/upload/c_1/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
+`c_1,h_400,w_400` 
+![moz_0](http://oi.flyimg.io/upload/c_1,h_400,w_400/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
 
 
 ### gravity `string`
