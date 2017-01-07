@@ -1,5 +1,5 @@
 {
-  "name": "sadok-f/flyimg",
+  "name": "flyimg/flyimg",
   "description": "Server image resizing and cropping on the fly base on ImageMagick+MozJPEG",
   "type": "project",
   "keywords": [
@@ -10,7 +10,7 @@
     "flysystem",
     "mozjpeg"
   ],
-  "homepage": "https://github.com/sadok-f/flyimg",
+  "homepage": "https://github.com/flyimg/flyimg",
   "license": "MIT",
   "authors": [
     {
