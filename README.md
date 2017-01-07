@@ -1,9 +1,9 @@
 # Flyimg
 
-[![Build Status](https://travis-ci.org/sadok-f/flyimg.svg?branch=master)](https://travis-ci.org/sadok-f/flyimg)
-[![Code Climate](https://codeclimate.com/github/sadok-f/flyimg/badges/gpa.svg)](https://codeclimate.com/github/sadok-f/flyimg)
-[![Issue Count](https://codeclimate.com/github/sadok-f/flyimg/badges/issue_count.svg)](https://codeclimate.com/github/sadok-f/flyimg)
-[![Test Coverage](https://codeclimate.com/github/sadok-f/flyimg/badges/coverage.svg)](https://codeclimate.com/github/sadok-f/flyimg/coverage)
+[![Build Status](https://travis-ci.org/flyimg/flyimg.svg?branch=master)](https://travis-ci.org/flyimg/flyimg)
+[![Code Climate](https://codeclimate.com/github/flyimg/flyimg/badges/gpa.svg)](https://codeclimate.com/github/flyimg/flyimg)
+[![Issue Count](https://codeclimate.com/github/flyimg/flyimg/badges/issue_count.svg)](https://codeclimate.com/github/flyimg/flyimg)
+[![Test Coverage](https://codeclimate.com/github/flyimg/flyimg/badges/coverage.svg)](https://codeclimate.com/github/flyimg/flyimg/coverage)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/2aba5c2b-55c5-49b7-87aa-c22307e9b849/mini.png)](https://insight.sensiolabs.com/projects/2aba5c2b-55c5-49b7-87aa-c22307e9b849)
 
 Image resizing, cropping and compression on the fly with the impressive [MozJPEG](http://calendar.perfplanet.com/2014/mozjpeg-3-0) compression algorithm. A one Docker container to build your own Cloudinary-like service.
@@ -23,7 +23,7 @@ You will need to have Docker on your machine. Optionally you can use Docker mach
 Create the project with `composer create` or clone it into your server.
 
 ```sh
-composer create-project sadok-f/flyimg
+composer create-project flyimg/flyimg
 ```
 
 CD into the folder and to build the images run:
@@ -96,6 +96,7 @@ options_keys:
   rz: resize
   g: gravity
   f: filter
+  r: rotate
   sc: scale
   sf: sampling-factor
   rf: refresh
@@ -117,6 +118,7 @@ default_options:
   resize: null
   gravity: Center
   filter: Lanczos
+  rotate: Lanczos
   scale: null
   sampling-factor: 1x1
   refresh: false
@@ -189,7 +191,8 @@ The basic options are: `NorthWest`, `North`, `NorthEast`, `West`, `Center`, `Eas
 
 
 ### rotate `string`
-**default: null** : Apply image rotation (using shear operations) to the image. For example `r_90` `r_-180`
+**default: null** : Apply image rotation (using shear operations) to the image. 
+**example: `r_90` or `r_-180`**
 
  
 ### refresh `int`
