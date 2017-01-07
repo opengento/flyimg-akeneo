@@ -219,6 +219,9 @@ The basic options are: `NorthWest`, `North`, `NorthEast`, `West`, `Center`, `Eas
 **default: null** : Apply image rotation (using shear operations) to the image. 
 **example: `r_90` or `r_-180`**
 
+`r_45` 
+![moz_0](http://oi.flyimg.io/upload/r_45,w_400,h_400/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
+
  
 ### refresh `int`
 **default: false** : Refresh will delete the local cached copy of the file requested and will generate the image again. Also it will send headers with the command done on the image and the original image size.
