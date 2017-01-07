@@ -129,24 +129,49 @@ Most of these options are ImageMagick flags, many can get pretty advanced, use t
 ### mozjpeg `bool`
 **default: 1** : Use moz-jpeg compression library, if `false` it fallback to the default ImageMagick compression algorithm. 
 
+`moz_0` 
+![moz_0](http://oi.flyimg.io/upload/moz_0/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
+ 
+`moz_1` 
+![moz_0](http://oi.flyimg.io/upload/moz_1/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
+
 ### quality `int` (0-100)
 **default: 90** : Sets the compression level for the output image.
+
+`q_30` 
+![moz_0](http://oi.flyimg.io/upload/q_30/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
+
+`q_100` 
+![moz_0](http://oi.flyimg.io/upload/q_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
 
 ### width `int`
 **default: null** : Sets the target width of the image. If not set, width will be calculated in order to keep aspect ratio.
 
+`w_100` 
+![moz_0](http://oi.flyimg.io/upload/w_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
+
 ### height `int`
 **default: null** : Sets the target height of the image. If not set, height will be calculated in order to keep aspect ratio.
+
+`h_100` 
+![moz_0](http://oi.flyimg.io/upload/h_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
 
 ### Using width AND height
 By default setting width and height together, works like defining a rectangle that will define a **max-width** and **max-height** and the image will scale propotionally to fit that area without cropping.
 <!-- in the future put example images here-->
 
-By default; width, height, or both will **not scale up** an image that is smaller than the defined dimentions.
+By default; width, height, or both will **not scale up** an image that is smaller than the defined dimensions.
 <!-- in the future put example images here-->
+
+`h_300,w_300` 
+![moz_0](http://oi.flyimg.io/upload/h_300,w_300/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
 
 ### crop `bool` 
 **default: false** : When both width and height are set, this allows the image to be cropped so it fills the **width x height** area.
+
+`c_1` 
+![moz_0](http://oi.flyimg.io/upload/c_1/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
+
 
 ### gravity `string`
 **default: Center** : When crop is applied, changing the gravity will define which part of the image is kept inside the crop area.
