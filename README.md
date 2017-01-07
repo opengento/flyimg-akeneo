@@ -4,7 +4,7 @@
 [![Code Climate](https://codeclimate.com/github/flyimg/flyimg/badges/gpa.svg)](https://codeclimate.com/github/flyimg/flyimg)
 [![Issue Count](https://codeclimate.com/github/flyimg/flyimg/badges/issue_count.svg)](https://codeclimate.com/github/flyimg/flyimg)
 [![Test Coverage](https://codeclimate.com/github/flyimg/flyimg/badges/coverage.svg)](https://codeclimate.com/github/flyimg/flyimg/coverage)
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/2aba5c2b-55c5-49b7-87aa-c22307e9b849/mini.png)](https://insight.sensiolabs.com/projects/2aba5c2b-55c5-49b7-87aa-c22307e9b849)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/89b18390-ac79-4c3e-bf6c-92cd9993e8d3/mini.png)](https://insight.sensiolabs.com/projects/89b18390-ac79-4c3e-bf6c-92cd9993e8d39)
 
 Image resizing, cropping and compression on the fly with the impressive [MozJPEG](http://calendar.perfplanet.com/2014/mozjpeg-3-0) compression algorithm. A one Docker container to build your own Cloudinary-like service.
 

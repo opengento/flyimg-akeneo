@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "d7a8a7c39871f8efec4f2d3c240ef58d",
+    "content-hash": "22c2f9ce1e2dd6f0ec8b3fcf7ec02d59",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.20.12",
+            "version": "3.20.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "8725e67cb77b057b55596b4468ce9a1a95c5fe96"
+                "reference": "343c6c96468de5087ae5e7df4ccee2668857a5aa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/8725e67cb77b057b55596b4468ce9a1a95c5fe96",
-                "reference": "8725e67cb77b057b55596b4468ce9a1a95c5fe96",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/343c6c96468de5087ae5e7df4ccee2668857a5aa",
+                "reference": "343c6c96468de5087ae5e7df4ccee2668857a5aa",
                 "shasum": ""
             },
             "require": {
@@ -84,7 +84,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2016-12-30T00:41:36+00:00"
+            "time": "2017-01-04T18:20:17+00:00"
         },
         {
             "name": "doctrine/instantiator",
@@ -2840,7 +2840,7 @@
                 "codeclimate",
                 "coverage"
             ],
-            "time": "2016-12-29T16:42:14+00:00"
+            "time": "2016-12-29 16:42:14"
         },
         {
             "name": "guzzle/guzzle",
