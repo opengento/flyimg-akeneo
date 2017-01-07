@@ -44,6 +44,7 @@ class StorageProvider implements ServiceProviderInterface
      */
     public function boot(Application $app)
     {
+        $app['params'];
     }
 
     /**
