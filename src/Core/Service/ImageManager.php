@@ -113,6 +113,8 @@ class ImageManager
      */
     public function saveNewFile($sourceFile, $newFileName, $options)
     {
+        $refresh = $this->extractByKey($options, 'refresh');
+
         $newFilePath = TMP_DIR . $newFileName;
         $tmpFile = $this->saveToTemporaryFile($sourceFile);
         $commandStr = $this->generateCmdString($newFilePath, $tmpFile, $options);
@@ -127,6 +129,9 @@ class ImageManager
         if ($code !== 0) {
             throw new \Exception("Command failed. The exit code: " . $output . "<br>The last line of output: " . $commandStr);
         }
+        //Add Debug Header in case refresh option is 1
+        $this->sendDebugHeader($refresh, $commandStr, $newFilePath);
+
         $this->filesystem->write($newFileName, stream_get_contents(fopen($newFilePath, 'r')));
         unlink($tmpFile);
         unlink($newFilePath);
@@ -142,7 +147,6 @@ class ImageManager
      */
     public function generateCmdString($newFilePath, $tmpFile, $options)
     {
-        $refresh = $this->extractByKey($options, 'refresh');
         $strip = $this->extractByKey($options, 'strip');
         $thread = $this->extractByKey($options, 'thread');
         $resize = $this->extractByKey($options, 'resize');
@@ -175,8 +179,6 @@ class ImageManager
         $command = $this->checkMozJpeg($command, $newFilePath, $quality, $mozJPEG);
 
         $commandStr = implode(' ', $command);
-
-        $this->sendDebugHeader($refresh, $commandStr, $tmpFile);
 
         return $commandStr;
     }
@@ -284,7 +286,7 @@ class ImageManager
         if (!$refresh) {
             return;
         }
-        header('src-img-size: ' . implode(' x ', $this->getImgSize($tmpFile)));
+        header('img-identify: ' . $this->getImgSize($tmpFile));
         header('im-command: ' . $commandStr);
     }
 
@@ -292,11 +294,11 @@ class ImageManager
      * Get the image size
      *
      * @param $imgPath
-     * @return array
+     * @return string
      */
     public function getImgSize($imgPath)
     {
-        exec("/usr/bin/convert " . $imgPath . ' -ping -format "%w x %h" info:', $output);
-        return explode(' x ', $output[0]);
+        exec('/usr/bin/identify ' . $imgPath, $output);
+        return !empty($output[0]) ? $output[0] : "";
     }
 }
