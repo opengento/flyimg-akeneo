@@ -9,7 +9,7 @@ class DefaultController extends CoreController
 
     public function indexAction()
     {
-        return 'Hello from ' . $this->app->escape('Docker!');
+        return 'Flyimg: Hello from ' . $this->app->escape('Docker!');
     }
 
     /**
