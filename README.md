@@ -183,11 +183,13 @@ The basic options are: `NorthWest`, `North`, `NorthEast`, `West`, `Center`, `Eas
 ```
 
 ### background `color` (multiple formats) 
-**default: white** : Sets the background of the canvas for the cases where padding is added to the images. It suports hex, css color names, rgb. Only css color names are supported without quotation marks.
+**default: white** : Sets the background of the canvas for the cases where padding is added to the images. It supports hex, css color names, rgb. 
+Only css color names are supported without quotation marks.
+For the hex code, the hash `#` character should be replaced by `%23` 
 
 ```sh
   [...] -background red ...
-  [...] -background "#ff4455" ...
+  [...] -background "#ff4455" -> "%23ff4455"
   [...] -background "rgb(255,120,100)" ...
 ```
 
