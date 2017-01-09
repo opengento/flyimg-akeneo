@@ -15,10 +15,9 @@ $app = new Silex\Application();
 /**
  * Define Constants && Load parameters files
  */
-define('ROOT_DIR', __DIR__);
-define('UPLOAD_DIR', ROOT_DIR . '/var/upload/');
-define('TMP_DIR', ROOT_DIR . '/var/tmp/');
-define('LOG_DIR', ROOT_DIR . '/var/log/');
+define('UPLOAD_DIR', __DIR__ . '/var/upload/');
+define('TMP_DIR', __DIR__ . '/var/tmp/');
+define('LOG_DIR', __DIR__ . '/var/log/');
 
 if (!is_dir(UPLOAD_DIR)) {
     mkdir(UPLOAD_DIR, 0777, true);
@@ -30,7 +29,7 @@ if (!is_dir(LOG_DIR)) {
     mkdir(LOG_DIR, 0777, true);
 }
 
-$app['params'] = Yaml::parse(file_get_contents(ROOT_DIR . '/config/parameters.yml'));
+$app['params'] = Yaml::parse(file_get_contents(__DIR__ . '/config/parameters.yml'));
 
 /**
  * Routes
