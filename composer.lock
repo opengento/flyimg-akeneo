@@ -2688,16 +2688,17 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sadok-f/SliFly.git",
-                "reference": "6a46bc84897847dd2be8a6d66d44f213ed9861af"
+                "reference": "14465fce0cd1056b8693004230aedb71d70c3b52"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sadok-f/SliFly/zipball/6a46bc84897847dd2be8a6d66d44f213ed9861af",
-                "reference": "6a46bc84897847dd2be8a6d66d44f213ed9861af",
+                "url": "https://api.github.com/repos/sadok-f/SliFly/zipball/14465fce0cd1056b8693004230aedb71d70c3b52",
+                "reference": "14465fce0cd1056b8693004230aedb71d70c3b52",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.4",
+                "php": ">=5.5.9",
+                "pimple/pimple": "^3.0",
                 "silex/silex": "~2.0",
                 "wyrihaximus/pimple-flysystem-service": "^2.0"
             },
@@ -2737,7 +2738,7 @@
             "support": {
                 "source": "https://github.com/sadok-f/SliFly/tree/silex2"
             },
-            "time": "2017-01-09 13:11:50"
+            "time": "2017-01-09 14:32:07"
         }
     ],
     "packages-dev": [
