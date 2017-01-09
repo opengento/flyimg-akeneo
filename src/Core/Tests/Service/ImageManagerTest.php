@@ -21,7 +21,8 @@ class ImageManagerTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->app = $this->createApplication();
-        $this->imageManager = $this->app['image.manager'];
+        $this->imageManager = $this->createApplication()['image.manager'];
+        parent::setUp();
     }
 
 
@@ -30,9 +31,6 @@ class ImageManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function createApplication()
     {
-        if ($this->app instanceof Application) {
-            return $this->app;
-        }
         $app = require __DIR__ . '/../../../../app.php';
         $app['debug'] = true;
         unset($app['exception_handler']);
