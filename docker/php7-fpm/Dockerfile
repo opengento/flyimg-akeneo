@@ -1,1 +1,0 @@
-FROM sadokf/php7fpm_mozjpeg
