@@ -10,10 +10,6 @@ class ImageManagerTest extends \PHPUnit_Framework_TestCase
      * @var Application
      */
     protected $app = null;
-    /**
-     * @var ImageManager
-     */
-    protected $imageManager;
 
     /**
      *
@@ -21,10 +17,15 @@ class ImageManagerTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->app = $this->createApplication();
-        $this->imageManager = $this->createApplication()['image.manager'];
-        parent::setUp();
     }
 
+    /**
+     *
+     */
+    public function tearDown()
+    {
+        $this->app = null;
+    }
 
     /**
      * @return Application
@@ -49,7 +50,7 @@ class ImageManagerTest extends \PHPUnit_Framework_TestCase
             'key_4' => 4,
             'key_5' => 5,
         ];
-        $key2 = $this->imageManager->extractByKey($tmpArray, 'key_2');
+        $key2 = $this->app['image.manager']->extractByKey($tmpArray, 'key_2');
         $expectedArray = [
             'key_1' => 1,
             'key_3' => 3,
@@ -87,7 +88,7 @@ class ImageManagerTest extends \PHPUnit_Framework_TestCase
             'preserve-natural-size' => '1',
             'thread' => '1',
         ];
-        $parsedOptions = $this->imageManager->parseOptions($options);
+        $parsedOptions = $this->app['image.manager']->parseOptions($options);
 
         $this->assertEquals($parsedOptions, $expectedParseArray);
     }
