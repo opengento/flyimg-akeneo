@@ -250,8 +250,9 @@ whitelist_domains:
     - www.domain-2.org
 ```
 
-Demo:
------
+More Examples:
+--------------
+
 Our application is available here: [flyimg.io](http://flyimg.io)
 
 - Quality 90%

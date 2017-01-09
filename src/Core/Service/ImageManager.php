@@ -129,8 +129,10 @@ class ImageManager
         if ($code !== 0) {
             throw new \Exception("Command failed. The exit code: " . $output . "<br>The last line of output: " . $commandStr);
         }
-        //Add Debug Header in case refresh option is 1
-        $this->sendDebugHeader($refresh, $commandStr, $newFilePath);
+        //Add Debug Header in case refresh option = 1
+        if ($refresh) {
+            $this->sendDebugHeader($commandStr, $newFilePath);
+        }
 
         $this->filesystem->write($newFileName, stream_get_contents(fopen($newFilePath, 'r')));
         unlink($tmpFile);
@@ -277,16 +279,12 @@ class ImageManager
      * If there's a request to refresh,
      * We will assume it's for debugging purposes and we will send back a header with the parsed im command that we are executing.
      *
-     * @param $refresh
      * @param $commandStr
      * @param $tmpFile
      */
-    private function sendDebugHeader($refresh, $commandStr, $tmpFile)
+    private function sendDebugHeader($commandStr, $tmpFile)
     {
-        if (!$refresh) {
-            return;
-        }
-        header('img-identify: ' . $this->getImgSize($tmpFile));
+        header('im-identify: ' . $this->getImgSize($tmpFile));
         header('im-command: ' . $commandStr);
     }
 

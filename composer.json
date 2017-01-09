@@ -32,7 +32,7 @@
     "symfony/config": "^3.0",
     "symfony/yaml": "^3.0",
     "league/flysystem": "^1.0",
-    "wyrihaximus/sli-fly": "dev-silex2",
+    "wyrihaximus/sli-fly": "dev-master",
     "league/flysystem-cached-adapter": "^1.0",
     "monolog/monolog": "^1.19",
     "phpunit/phpunit": "5.3.*",
@@ -45,11 +45,5 @@
     "psr-4": {
       "Core\\": "src\\Core"
     }
-  },
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://github.com/sadok-f/SliFly"
-    }
-  ]
+  }
 }

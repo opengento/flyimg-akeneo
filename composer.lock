@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "cbb6a1227753a7a08d8262644132d27d",
+    "content-hash": "a00850be0d29505edb820689f8f35a24",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -2684,16 +2684,16 @@
         },
         {
             "name": "wyrihaximus/sli-fly",
-            "version": "dev-silex2",
+            "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/sadok-f/SliFly.git",
-                "reference": "14465fce0cd1056b8693004230aedb71d70c3b52"
+                "url": "https://github.com/WyriHaximus/SliFly.git",
+                "reference": "bc6be0a15f976d9f2bb8dd989c853ba6029db89f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sadok-f/SliFly/zipball/14465fce0cd1056b8693004230aedb71d70c3b52",
-                "reference": "14465fce0cd1056b8693004230aedb71d70c3b52",
+                "url": "https://api.github.com/repos/WyriHaximus/SliFly/zipball/bc6be0a15f976d9f2bb8dd989c853ba6029db89f",
+                "reference": "bc6be0a15f976d9f2bb8dd989c853ba6029db89f",
                 "shasum": ""
             },
             "require": {
@@ -2713,11 +2713,7 @@
                     "WyriHaximus\\SliFly\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "WyriHaximus\\SliFly\\Tests\\": "tests/"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -2730,15 +2726,12 @@
             ],
             "description": "Flysystem Service Provider for Silex",
             "keywords": [
+                "Flysystem",
                 "filesystem",
-                "flysystem",
                 "service-provider",
                 "silex"
             ],
-            "support": {
-                "source": "https://github.com/sadok-f/SliFly/tree/silex2"
-            },
-            "time": "2017-01-09 14:32:07"
+            "time": "2017-01-09 21:13:25"
         }
     ],
     "packages-dev": [

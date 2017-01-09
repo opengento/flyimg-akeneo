@@ -37,7 +37,7 @@ class ImageManagerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     *
+     * Test extractByKey Method
      */
     public function testExtractByKey()
     {
@@ -57,5 +57,37 @@ class ImageManagerTest extends \PHPUnit_Framework_TestCase
         ];
         $this->assertEquals($key2, 2);
         $this->assertEquals($expectedArray, $tmpArray);
+    }
+
+    /**
+     * Test parseOptions Method
+     */
+    public function testParseOptions()
+    {
+        $options = 'w_200,h_100,c_1,bg_#999999,rz_1,sc_50,r_-45,unsh_0.25x0.25+8+0.065,rf_1,ett_100x80';
+        $expectedParseArray = [
+            'mozjpeg' => 1,
+            'quality' => 90,
+            'unsharp' => '0.25x0.25+8+0.065',
+            'width' => 200,
+            'height' => 100,
+            'crop' => 1,
+            'background' => '#999999',
+            'strip' => 1,
+            'resize' => 1,
+            'gravity' => 'Center',
+            'filter' => 'Lanczos',
+            'rotate' => '-45',
+            'scale' => '50',
+            'sampling-factor' => '1x1',
+            'refresh' => true,
+            'extent' => '100x80',
+            'preserve-aspect-ratio' => '1',
+            'preserve-natural-size' => '1',
+            'thread' => '1',
+        ];
+        $parsedOptions = $this->imageManager->parseOptions($options);
+
+        $this->assertEquals($parsedOptions, $expectedParseArray);
     }
 }
