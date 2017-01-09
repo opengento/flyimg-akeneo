@@ -4,9 +4,11 @@ namespace Core\Provider;
 
 
 use Aws\S3\S3Client;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 use WyriHaximus\SliFly\FlysystemServiceProvider;
 use Silex\Application;
-use Silex\ServiceProviderInterface;
+//use Silex\ServiceProviderInterface;
 
 /**
  * Storage class to manage Storage provider from FlySystem
@@ -18,11 +20,12 @@ class StorageProvider implements ServiceProviderInterface
 {
     /**
      * Registers services on the given app.
-     *
      * This method should only be used to configure services and parameters.
      * It should not get services.
+     *
+     * @param Container $app Container
      */
-    public function register(Application $app)
+    public function register(Container $app)
     {
         switch ($app['params']['storage_system']) {
             case 's3':

@@ -56,13 +56,13 @@ $app->register(new Silex\Provider\MonologServiceProvider(), array(
     'monolog.logfile' => LOG_DIR . 'dev.log',
 ));
 
-$app['resolver'] = $app->share(function () use ($app) {
+$app['resolver'] = function ($app) {
     return new ControllerResolver($app, $app['logger']);
-});
+};
 
-$app['image.manager'] = $app->share(function ($app) {
+$app['image.manager'] = function ($app) {
     return new ImageManager($app['params'], $app['flysystems']['upload_dir']);
-});
+};
 
 /** debug conf */
 $app['debug'] = $app['params']['debug'];
