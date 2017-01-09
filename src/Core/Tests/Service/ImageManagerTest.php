@@ -1,11 +1,9 @@
 <?php
 namespace Core\Tests\Service;
 
-use Core\Service\ImageManager;
 use Silex\Application;
-use Silex\WebTestCase;
 
-class ImageManagerTest extends WebTestCase
+class ImageManagerTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var Application
@@ -18,6 +16,14 @@ class ImageManagerTest extends WebTestCase
     public function setUp()
     {
         $this->app = $this->createApplication();
+    }
+
+    /**
+     *
+     */
+    public function tearDown()
+    {
+        $this->app = null;
     }
 
     /**
