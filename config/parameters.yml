@@ -34,6 +34,8 @@ options_keys:
   moz: mozjpeg
   q: quality
   unsh: unsharp
+  fc: face-crop
+  fcp: face-crop-position
   w: width
   h: height
   c: crop
@@ -56,6 +58,8 @@ default_options:
   mozjpeg: 1
   quality: 90
   unsharp: null
+  face-crop: 0
+  face-crop-position: 0
   width: null
   height: null
   crop: null

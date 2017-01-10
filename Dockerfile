@@ -24,6 +24,17 @@ RUN \
     echo "zend_extension=/usr/lib/php/20151012/xdebug.so" > /usr/local/etc/php/conf.d/xdebug.ini
 
 
+#facedetect script
+WORKDIR /var
+
+RUN \
+    apt-get -y install python-numpy libopencv-dev python-opencv && \
+    git clone https://github.com/wavexx/facedetect.git && \
+    chmod +x /var/facedetect/facedetect && \
+    ln -s /var/facedetect/facedetect /usr/local/bin/facedetect
+
+RUN echo "\nln /dev/null /dev/raw1394" >> ~/.bashrc
+
 #install composer
 RUN \
     curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer

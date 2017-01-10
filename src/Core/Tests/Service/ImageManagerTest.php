@@ -72,6 +72,8 @@ class ImageManagerTest extends \PHPUnit_Framework_TestCase
             'unsharp' => '0.25x0.25+8+0.065',
             'width' => 200,
             'height' => 100,
+            'face-crop' => 0,
+            'face-crop-position' => 0,
             'crop' => 1,
             'background' => '#999999',
             'strip' => 1,
