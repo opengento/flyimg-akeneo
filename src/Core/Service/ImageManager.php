@@ -114,8 +114,11 @@ class ImageManager
     public function saveNewFile($sourceFile, $newFileName, $options)
     {
         $refresh = $this->extractByKey($options, 'refresh');
+        $faceCrop = $this->extractByKey($options, 'face-crop');
+        $faceCropPosition = $this->extractByKey($options, 'face-crop-position');
 
         $newFilePath = TMP_DIR . $newFileName;
+
         $tmpFile = $this->saveToTemporaryFile($sourceFile);
         $commandStr = $this->generateCmdString($newFilePath, $tmpFile, $options);
 
@@ -134,9 +137,35 @@ class ImageManager
             $this->sendDebugHeader($commandStr, $newFilePath);
         }
 
+        if ($faceCrop) {
+            $newFilePath = $this->generateFaceCrop($newFilePath, $faceCropPosition);
+        }
+
         $this->filesystem->write($newFileName, stream_get_contents(fopen($newFilePath, 'r')));
         unlink($tmpFile);
         unlink($newFilePath);
+    }
+
+    /**
+     * Face detection cropping
+     * 
+     * @param string $newFilePath
+     * @param int $faceCropPosition
+     * @return string
+     */
+    public function generateFaceCrop($newFilePath, $faceCropPosition = 0)
+    {
+        $commandStr = "facedetect '$newFilePath'";
+        exec($commandStr, $output, $code);
+        if (!empty($output[$faceCropPosition]) && $code == 0) {
+            $positions = explode(" ", $output[$faceCropPosition]);
+            if (count($positions) == 4) {
+                list($x, $y, $w, $h) = $positions;
+                $cropCmdStr = "/usr/bin/convert '$newFilePath' -crop ${w}x${h}+${x}+${y} $newFilePath";
+                exec($cropCmdStr, $output, $code);
+            }
+        }
+        return $newFilePath;
     }
 
     /**

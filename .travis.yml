@@ -9,6 +9,7 @@ before_script:
 
 env:
   - nocache=1
+
 script: vendor/bin/phpunit
 
 notifications:
