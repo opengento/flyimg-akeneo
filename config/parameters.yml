@@ -36,6 +36,7 @@ options_keys:
   unsh: unsharp
   fc: face-crop
   fcp: face-crop-position
+  fb: face-blur
   w: width
   h: height
   c: crop
@@ -60,6 +61,7 @@ default_options:
   unsharp: null
   face-crop: 0
   face-crop-position: 0
+  face-blur: 0
   width: null
   height: null
   crop: null

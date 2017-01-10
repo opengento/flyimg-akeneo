@@ -65,7 +65,7 @@ class ImageManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testParseOptions()
     {
-        $options = 'w_200,h_100,c_1,bg_#999999,rz_1,sc_50,r_-45,unsh_0.25x0.25+8+0.065,rf_1,ett_100x80';
+        $options = 'w_200,h_100,c_1,bg_#999999,rz_1,sc_50,r_-45,unsh_0.25x0.25+8+0.065,rf_1,ett_100x80,fb_1';
         $expectedParseArray = [
             'mozjpeg' => 1,
             'quality' => 90,
@@ -74,6 +74,7 @@ class ImageManagerTest extends \PHPUnit_Framework_TestCase
             'height' => 100,
             'face-crop' => 0,
             'face-crop-position' => 0,
+            'face-blur' => 1,
             'crop' => 1,
             'background' => '#999999',
             'strip' => 1,

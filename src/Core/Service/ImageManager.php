@@ -116,6 +116,7 @@ class ImageManager
         $refresh = $this->extractByKey($options, 'refresh');
         $faceCrop = $this->extractByKey($options, 'face-crop');
         $faceCropPosition = $this->extractByKey($options, 'face-crop-position');
+        $faceBlur = $this->extractByKey($options, 'face-blur');
 
         $newFilePath = TMP_DIR . $newFileName;
 
@@ -138,7 +139,11 @@ class ImageManager
         }
 
         if ($faceCrop) {
-            $newFilePath = $this->generateFaceCrop($newFilePath, $faceCropPosition);
+            $newFilePath = $this->processCroppingFaces($newFilePath, $faceCropPosition);
+        }
+
+        if ($faceBlur) {
+            $newFilePath = $this->processBlurringFaces($newFilePath);
         }
 
         $this->filesystem->write($newFileName, stream_get_contents(fopen($newFilePath, 'r')));
@@ -148,7 +153,7 @@ class ImageManager
 
     /**
      * Face detection cropping
-     * 
+     *
      * @param string $newFilePath
      * @param int $faceCropPosition
      * @return string
@@ -163,6 +168,29 @@ class ImageManager
                 list($x, $y, $w, $h) = $positions;
                 $cropCmdStr = "/usr/bin/convert '$newFilePath' -crop ${w}x${h}+${x}+${y} $newFilePath";
                 exec($cropCmdStr, $output, $code);
+            }
+        }
+        return $newFilePath;
+    }
+
+    /**
+     * Blurring Faces
+     *
+     * @param string $newFilePath
+     * @return string
+     */
+    public function processBlurringFaces($newFilePath)
+    {
+        $commandStr = "facedetect '$newFilePath'";
+        exec($commandStr, $output, $code);
+        if (!empty($output) && $code == 0) {
+            foreach ((array)$output as $outputLine) {
+                $positions = explode(" ", $outputLine);
+                if (count($positions) == 4) {
+                    list($x, $y, $w, $h) = $positions;
+                    $cropCmdStr = "/usr/bin/mogrify -gravity NorthWest -region ${w}x${h}+${x}+${y} -scale '10%' -scale '1000%' $newFilePath";
+                    exec($cropCmdStr, $output, $code);
+                }
             }
         }
         return $newFilePath;
