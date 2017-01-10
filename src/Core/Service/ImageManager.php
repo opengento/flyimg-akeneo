@@ -158,7 +158,7 @@ class ImageManager
      * @param int $faceCropPosition
      * @return string
      */
-    public function generateFaceCrop($newFilePath, $faceCropPosition = 0)
+    public function processCroppingFaces($newFilePath, $faceCropPosition = 0)
     {
         $commandStr = "facedetect '$newFilePath'";
         exec($commandStr, $output, $code);
