@@ -2,6 +2,7 @@
 
 namespace Core\Controller;
 
+use Core\Entity\Image;
 use Symfony\Component\HttpFoundation\Response;
 
 class DefaultController extends CoreController
@@ -21,11 +22,14 @@ class DefaultController extends CoreController
     {
         /** @var \Core\Service\ImageManager $manager */
         $manager = $this->app['image.manager'];
+        $image = new Image($options, $imageSrc, $this->app['params']);
         try {
-            $image = $manager->process($options, $imageSrc);
+           $imageContent = $manager->process($image);
         } catch (\Exception $e) {
+            $image->unlinkUsedFiles();
             return new Response($e->getMessage(), Response::HTTP_FORBIDDEN);
         }
-        return $this->generateImageResponse($image);
+
+        return $this->generateImageResponse($image, $imageContent);
     }
 }

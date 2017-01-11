@@ -2,6 +2,7 @@
 
 namespace Core\Service;
 
+use Core\Entity\Image;
 use League\Flysystem\Filesystem;
 
 /**
@@ -20,6 +21,9 @@ class ImageManager
      */
     protected $params;
 
+    /** @var  Image */
+    protected $image;
+
     /**
      * ImageManager constructor.
      *
@@ -35,95 +39,48 @@ class ImageManager
     /**
      * Process give source file with given options
      *
-     * @param array $options
-     * @param $sourceFile
+     * @param Image $image
      * @return string
      * @throws \Exception
      */
-    public function process($options, $sourceFile)
+    public function process(Image $image)
     {
         //check restricted_domains is enabled
         if ($this->params['restricted_domains'] &&
             is_array($this->params['whitelist_domains']) &&
-            !in_array(parse_url($sourceFile, PHP_URL_HOST), $this->params['whitelist_domains'])
+            !in_array(parse_url($image->getSourceFile(), PHP_URL_HOST), $this->params['whitelist_domains'])
         ) {
-            throw  new \Exception('Restricted domains enabled, the domain your fetching from is not allowed: ' . parse_url($sourceFile, PHP_URL_HOST));
+            throw  new \Exception('Restricted domains enabled, the domain your fetching from is not allowed: ' . parse_url($image->getSourceFile(), PHP_URL_HOST));
 
         }
 
-        $options = $this->parseOptions($options);
-        $newFileName = md5(implode('.', $options) . $sourceFile);
-
-        if ($this->filesystem->has($newFileName) && $options['refresh']) {
-            $this->filesystem->delete($newFileName);
+        if ($this->filesystem->has($image->getNewFileName()) && $image->getOptions()['refresh']) {
+            $this->filesystem->delete($image->getNewFileName());
         }
-        if (!$this->filesystem->has($newFileName)) {
-            $this->saveNewFile($sourceFile, $newFileName, $options);
+        if (!$this->filesystem->has($image->getNewFileName())) {
+            $this->saveNewFile($image);
         }
 
-        return $this->filesystem->read($newFileName);
-    }
-
-    /**
-     * Parse options: match options keys and merge default options with given ones
-     *
-     * @param $options
-     * @return array
-     */
-    public function parseOptions($options)
-    {
-        $defaultOptions = $this->params['default_options'];
-        $optionsKeys = $this->params['options_keys'];
-        $optionsSeparator = !empty($this->params['options_separator']) ? $this->params['options_separator'] : ',';
-        $optionsUrl = explode($optionsSeparator, $options);
-        $options = [];
-        foreach ($optionsUrl as $option) {
-            $optArray = explode('_', $option);
-            if (key_exists($optArray[0], $optionsKeys) && !empty($optionsKeys[$optArray[0]])) {
-                $options[$optionsKeys[$optArray[0]]] = $optArray[1];
-            }
-        }
-        return array_merge($defaultOptions, $options);
-    }
-
-    /**
-     * Extract a value from given array and unset it.
-     *
-     * @param $array
-     * @param $key
-     * @return null
-     */
-    public function extractByKey(&$array, $key)
-    {
-        $value = null;
-        if (isset($array[$key])) {
-            $value = $array[$key];
-            unset($array[$key]);
-        }
-        return $value;
+        return $this->filesystem->read($image->getNewFileName());
     }
 
     /**
      * Save new FileName based on source file and list of options
      *
-     * @param $sourceFile
-     * @param $newFileName
-     * @param $options
+     * @param Image $image
      * @throws \Exception
      */
-    public function saveNewFile($sourceFile, $newFileName, $options)
+    public function saveNewFile(Image $image)
     {
-        $refresh = $this->extractByKey($options, 'refresh');
-        $faceCrop = $this->extractByKey($options, 'face-crop');
-        $faceCropPosition = $this->extractByKey($options, 'face-crop-position');
-        $faceBlur = $this->extractByKey($options, 'face-blur');
+        $faceCrop = $image->extractByKey('face-crop');
+        $faceCropPosition = $image->extractByKey('face-crop-position');
+        $faceBlur = $image->extractByKey('face-blur');
 
-        $newFilePath = TMP_DIR . $newFileName;
+        $image->saveToTemporaryFile();
 
-        $tmpFile = $this->saveToTemporaryFile($sourceFile);
-        $commandStr = $this->generateCmdString($newFilePath, $tmpFile, $options);
+        $this->generateCmdString($image);
 
-        exec($commandStr, $output, $code);
+        exec($image->getFinalCommandStr(), $output, $code);
         if (count($output) === 0) {
             $output = $code;
         } else {
@@ -133,92 +90,78 @@ class ImageManager
         if ($code !== 0) {
             throw new \Exception("Command failed. The exit code: " . $output . "<br>The last line of output: " . $commandStr);
         }
-        //Add Debug Header in case refresh option = 1
-        if ($refresh) {
-            $this->sendDebugHeader($commandStr, $newFilePath);
-        }
 
         if ($faceCrop) {
-            $newFilePath = $this->processCroppingFaces($newFilePath, $faceCropPosition);
+            $this->processCroppingFaces($image, $faceCropPosition);
         }
 
         if ($faceBlur) {
-            $newFilePath = $this->processBlurringFaces($newFilePath);
+            $this->processBlurringFaces($image);
         }
 
-        $this->filesystem->write($newFileName, stream_get_contents(fopen($newFilePath, 'r')));
-        unlink($tmpFile);
-        unlink($newFilePath);
+        $this->filesystem->write($image->getNewFileName(), stream_get_contents(fopen($image->getNewFilePath(), 'r')));
     }
 
     /**
      * Face detection cropping
      *
-     * @param string $newFilePath
+     * @param Image $image
      * @param int $faceCropPosition
-     * @return string
      */
-    public function processCroppingFaces($newFilePath, $faceCropPosition = 0)
+    public function processCroppingFaces(Image $image, $faceCropPosition = 0)
     {
-        $commandStr = "facedetect '$newFilePath'";
+        $commandStr = "facedetect '{$image->getNewFilePath()}'";
         exec($commandStr, $output, $code);
-        if (!empty($output[$faceCropPosition]) && $code == 0) {
-            $positions = explode(" ", $output[$faceCropPosition]);
-            if (count($positions) == 4) {
-                list($x, $y, $w, $h) = $positions;
-                $cropCmdStr = "/usr/bin/convert '$newFilePath' -crop ${w}x${h}+${x}+${y} $newFilePath";
-                exec($cropCmdStr, $output, $code);
-            }
+        if (empty($output[$faceCropPosition]) || $code != 0) {
+            return;
         }
-        return $newFilePath;
+        $geometry = explode(" ", $output[$faceCropPosition]);
+        if (count($geometry) == 4) {
+            list($geometryX, $geometryY, $geometryW, $geometryH) = $geometry;
+            $cropCmdStr = "/usr/bin/convert '{$image->getNewFilePath()}' -crop ${geometryW}x${geometryH}+${geometryX}+${geometryY} {$image->getNewFilePath()}";
+            exec($cropCmdStr, $output, $code);
+        }
     }
 
     /**
      * Blurring Faces
      *
-     * @param string $newFilePath
-     * @return string
+     * @param Image $image
      */
-    public function processBlurringFaces($newFilePath)
+    public function processBlurringFaces(Image $image)
     {
-        $commandStr = "facedetect '$newFilePath'";
+        $commandStr = "facedetect '{$image->getNewFilePath()}'";
         exec($commandStr, $output, $code);
-        if (!empty($output) && $code == 0) {
-            foreach ((array)$output as $outputLine) {
-                $positions = explode(" ", $outputLine);
-                if (count($positions) == 4) {
-                    list($x, $y, $w, $h) = $positions;
-                    $cropCmdStr = "/usr/bin/mogrify -gravity NorthWest -region ${w}x${h}+${x}+${y} -scale '10%' -scale '1000%' $newFilePath";
-                    exec($cropCmdStr, $output, $code);
-                }
+        if (empty($output) || $code != 0) {
+            return;
+        }
+        foreach ((array)$output as $outputLine) {
+            $geometry = explode(" ", $outputLine);
+            if (count($geometry) == 4) {
+                list($geometryX, $geometryY, $geometryW, $geometryH) = $geometry;
+                $cropCmdStr = "/usr/bin/mogrify -gravity NorthWest -region ${geometryW}x${geometryH}+${geometryX}+${geometryY} -scale '10%' -scale '1000%' {$image->getNewFilePath()}";
+                exec($cropCmdStr, $output, $code);
             }
         }
-        return $newFilePath;
     }
 
     /**
      * Generate Command string bases on options
      *
-     * @param $options
-     * @param $tmpFile
-     * @param $newFilePath
-     * @return string
+     * @param Image $image
      */
-    public function generateCmdString($newFilePath, $tmpFile, $options)
+    public function generateCmdString(Image $image)
     {
-        $strip = $this->extractByKey($options, 'strip');
-        $thread = $this->extractByKey($options, 'thread');
-        $resize = $this->extractByKey($options, 'resize');
-        $quality = $this->extractByKey($options, 'quality');
-        $mozJPEG = $this->extractByKey($options, 'mozjpeg');
+        $strip = $image->extractByKey('strip');
+        $thread = $image->extractByKey('thread');
+        $resize = $image->extractByKey('resize');
 
-
-        list($size, $extent, $gravity) = $this->generateSize($options);
+        list($size, $extent, $gravity) = $this->generateSize($image);
 
         // we default to thumbnail
         $resizeOperator = $resize ? 'resize' : 'thumbnail';
         $command = [];
-        $command[] = "/usr/bin/convert " . $tmpFile . ' -' . $resizeOperator . ' ' . $size . $gravity . $extent . ' -colorspace sRGB';
+        $command[] = "/usr/bin/convert " . $image->getTemporaryFile() . ' -' . $resizeOperator . ' ' . $size . $gravity . $extent . ' -colorspace sRGB';
 
         if (!empty($thread)) {
             $command[] = "-limit thread " . escapeshellarg($thread);
@@ -229,30 +172,47 @@ class ImageManager
             $command[] = "-strip ";
         }
 
-        foreach ($options as $key => $value) {
-            if (!empty($value)) {
+        foreach ($image->getOptions() as $key => $value) {
+            if (!empty($value) && !in_array($key, ['quality', 'mozjpeg', 'refresh'])) {
                 $command[] = "-{$key} " . escapeshellarg($value);
             }
         }
 
-        $command = $this->checkMozJpeg($command, $newFilePath, $quality, $mozJPEG);
-
+        $command = $this->checkMozJpeg($image, $command);
         $commandStr = implode(' ', $command);
 
-        return $commandStr;
+        $image->setFinalCommandStr($commandStr);
+    }
+
+    /**
+     * Check MozJpeg configuration if it's enabled and append it to main convert command
+     *
+     * @param Image $image
+     * @param $command
+     * @return array
+     */
+    private function checkMozJpeg(Image $image, $command)
+    {
+        $quality = $image->extractByKey('quality');
+        if (is_executable($this->params['mozjpeg_path']) && $image->extractByKey('mozjpeg') == 1) {
+            $command[] = "TGA:- | " . escapeshellarg($this->params['mozjpeg_path']) . " -quality " . escapeshellarg($quality) . " -outfile " . escapeshellarg($image->getNewFilePath()) . " -targa";
+        } else {
+            $command[] = "-quality " . escapeshellarg($quality) . " " . escapeshellarg($image->getNewFilePath());
+        }
+        return $command;
     }
 
     /**
      * Size and Crop logic
      *
-     * @param $options
+     * @param Image $image
      * @return array
      */
-    private function generateSize(&$options)
+    private function generateSize(Image $image)
     {
-        $targetWidth = $this->extractByKey($options, 'width');
-        $targetHeight = $this->extractByKey($options, 'height');
-        $crop = $this->extractByKey($options, 'crop');
+        $targetWidth = $image->extractByKey('width');
+        $targetHeight = $image->extractByKey('height');
+        $crop = $image->extractByKey('crop');
 
         $size = '';
 
@@ -265,9 +225,9 @@ class ImageManager
 
         // When width and height a whole bunch of special cases must be taken into consideration.
         // resizing constraints (< > ^ !) can only be applied to geometry with both width AND height
-        $preserveNaturalSize = $this->extractByKey($options, 'preserve-natural-size');
-        $preserveAspectRatio = $this->extractByKey($options, 'preserve-aspect-ratio');
-        $gravityValue = $this->extractByKey($options, 'gravity');
+        $preserveNaturalSize = $image->extractByKey('preserve-natural-size');
+        $preserveAspectRatio = $image->extractByKey('preserve-aspect-ratio');
+        $gravityValue = $image->extractByKey('gravity');
         $extent = '';
         $gravity = '';
 
@@ -289,71 +249,5 @@ class ImageManager
         }
 
         return [$size, $extent, $gravity];
-    }
-
-
-    /**
-     * Check MozJpeg configuration if it's enabled and append it to main convert command
-     *
-     * @param $command
-     * @param $newFilePath
-     * @param $quality
-     * @param $mozJPEG
-     * @return array
-     */
-    private function checkMozJpeg($command, $newFilePath, $quality, $mozJPEG)
-    {
-        if (is_executable($this->params['mozjpeg_path']) && $mozJPEG == 1) {
-            $command[] = "TGA:- | " . escapeshellarg($this->params['mozjpeg_path']) . " -quality " . escapeshellarg($quality) . " -outfile " . escapeshellarg($newFilePath) . " -targa";
-        } else {
-            $command[] = "-quality " . escapeshellarg($quality) . " " . escapeshellarg($newFilePath);
-        }
-        return $command;
-    }
-
-    /**
-     * Save given image to temporary file and return the path
-     *
-     * @param $fileUrl
-     * @return string
-     * @throws \Exception
-     */
-    public function saveToTemporaryFile($fileUrl)
-    {
-        if (!$resource = @fopen($fileUrl, "r")) {
-            throw  new \Exception('Error occurred while trying to read the file Url : ' . $fileUrl);
-        }
-        $content = "";
-        while ($line = fread($resource, 1024)) {
-            $content .= $line;
-        }
-        $tmpFile = TMP_DIR . uniqid("", true);
-        file_put_contents($tmpFile, $content);
-        return $tmpFile;
-    }
-
-    /**
-     * If there's a request to refresh,
-     * We will assume it's for debugging purposes and we will send back a header with the parsed im command that we are executing.
-     *
-     * @param $commandStr
-     * @param $tmpFile
-     */
-    private function sendDebugHeader($commandStr, $tmpFile)
-    {
-        header('im-identify: ' . $this->getImgSize($tmpFile));
-        header('im-command: ' . $commandStr);
-    }
-
-    /**
-     * Get the image size
-     *
-     * @param $imgPath
-     * @return string
-     */
-    public function getImgSize($imgPath)
-    {
-        exec('/usr/bin/identify ' . $imgPath, $output);
-        return !empty($output[0]) ? $output[0] : "";
     }
 }
