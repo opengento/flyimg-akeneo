@@ -30,6 +30,7 @@ class CoreController
     {
         $response = new Response();
         $response->headers->set('Content-Type', 'image/jpeg');
+
         if ($image->getOptions()['refresh']) {
             $response->headers->set('im-identify', $image->getImageIdentity());
             $response->headers->set('im-command', $image->getFinalCommandStr());

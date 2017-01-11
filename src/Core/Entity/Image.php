@@ -203,7 +203,11 @@ class Image
      */
     public function unlinkUsedFiles()
     {
-        unlink($this->getTemporaryFile());
-        unlink($this->getNewFilePath());
+        if (file_exists($this->getTemporaryFile())) {
+            unlink($this->getTemporaryFile());
+        }
+        if (file_exists($this->getNewFilePath())) {
+            unlink($this->getNewFilePath());
+        }
     }
 }
