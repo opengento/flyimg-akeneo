@@ -8,7 +8,6 @@ use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use WyriHaximus\SliFly\FlysystemServiceProvider;
 use Silex\Application;
-//use Silex\ServiceProviderInterface;
 
 /**
  * Storage class to manage Storage provider from FlySystem
@@ -51,9 +50,9 @@ class StorageProvider implements ServiceProviderInterface
     }
 
     /**
-     * @param Application $app
+     * @param Container $app
      */
-    protected function registerStorageSystemLocal(Application $app)
+    protected function registerStorageSystemLocal(Container $app)
     {
         $app->register(new FlysystemServiceProvider(), [
             'flysystem.filesystems' => [
@@ -66,10 +65,10 @@ class StorageProvider implements ServiceProviderInterface
     }
 
     /**
-     * @param Application $app
+     * @param Container $app
      * @throws \Exception
      */
-    protected function registerStorageSystemS3(Application $app)
+    protected function registerStorageSystemS3(Container $app)
     {
         $s3Params = $app['params']['aws_s3'];
         if (in_array("", $s3Params)) {

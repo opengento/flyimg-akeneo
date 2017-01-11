@@ -1,6 +1,7 @@
 <?php
 namespace Core\Tests\Service;
 
+use Core\Entity\Image;
 use Silex\Application;
 
 class ImageManagerTest extends \PHPUnit_Framework_TestCase
@@ -19,14 +20,6 @@ class ImageManagerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     *
-     */
-    public function tearDown()
-    {
-        $this->app = null;
-    }
-
-    /**
      * @return Application
      */
     public function createApplication()
@@ -38,34 +31,13 @@ class ImageManagerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test extractByKey Method
-     */
-    public function testExtractByKey()
-    {
-        $tmpArray = [
-            'key_1' => 1,
-            'key_2' => 2,
-            'key_3' => 3,
-            'key_4' => 4,
-            'key_5' => 5,
-        ];
-        $key2 = $this->app['image.manager']->extractByKey($tmpArray, 'key_2');
-        $expectedArray = [
-            'key_1' => 1,
-            'key_3' => 3,
-            'key_4' => 4,
-            'key_5' => 5,
-        ];
-        $this->assertEquals($key2, 2);
-        $this->assertEquals($expectedArray, $tmpArray);
-    }
-
-    /**
      * Test parseOptions Method
      */
     public function testParseOptions()
     {
         $options = 'w_200,h_100,c_1,bg_#999999,rz_1,sc_50,r_-45,unsh_0.25x0.25+8+0.065,rf_1,ett_100x80,fb_1';
+        $image = new Image($options, 'http://fakeurl-to-img.jpeg', $this->app['params']);
+
         $expectedParseArray = [
             'mozjpeg' => 1,
             'quality' => 90,
@@ -90,7 +62,7 @@ class ImageManagerTest extends \PHPUnit_Framework_TestCase
             'preserve-natural-size' => '1',
             'thread' => '1',
         ];
-        $parsedOptions = $this->app['image.manager']->parseOptions($options);
+        $parsedOptions = $image->parseOptions($options);
 
         $this->assertEquals($parsedOptions, $expectedParseArray);
     }
