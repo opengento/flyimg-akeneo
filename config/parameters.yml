@@ -6,8 +6,8 @@ debug: false
 #path to mozjpeg bin
 mozjpeg_path: /opt/mozjpeg/bin/cjpeg
 
-#By default cahing is enabled and it use Redis for aching meta-data
-cache: true
+#Number of days for header cache expires `max_age`
+header_cache_days: 365
 
 #options separator
 options_separator: ,

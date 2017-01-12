@@ -34,15 +34,13 @@ class CoreController
         $expireDate = new \DateTime();
         $expireDate->add(new \DateInterval('P1Y'));
         $response->setExpires($expireDate);
-        $longCacheTime = 3600*24*365;
-        $cacheHeaders = [
-            'max_age'       => $longCacheTime,
-            's_maxage'      => $longCacheTime,
-            'public'        => true,
-        ];
+        $longCacheTime = 3600 * 24 * ((int)$this->app['params']['header_cache_days']);
+
+        $response->setMaxAge($longCacheTime);
+        $response->setSharedMaxAge($longCacheTime);
+        $response->setPublic();
 
         if ($image->getOptions()['refresh']) {
-            $cacheHeaders = [];
             $response->headers->set('Cache-Control', 'no-cache, private');
             $response->setExpires(null)->expire();
 
@@ -50,7 +48,6 @@ class CoreController
             $response->headers->set('im-command', $image->getFinalCommandStr());
         }
 
-        $response->setCache($cacheHeaders);
         $response->setContent($imageContent);
 
         $image->unlinkUsedFiles();

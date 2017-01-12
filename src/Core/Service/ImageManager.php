@@ -99,7 +99,9 @@ class ImageManager
             $this->processBlurringFaces($image);
         }
 
-        $this->filesystem->write($image->getNewFileName(), stream_get_contents(fopen($image->getNewFilePath(), 'r')));
+        if (file_exists($image->getNewFilePath())) {
+            $this->filesystem->write($image->getNewFileName(), stream_get_contents(fopen($image->getNewFilePath(), 'r')));
+        }
     }
 
     /**
