@@ -1,6 +1,8 @@
 FROM sadokf/php7fpm_mozjpeg
 
 MAINTAINER sadoknet@gmail.com
+ENV DEBIAN_FRONTEND=noninteractive
+
 
 RUN \
   apt-get -y update && \
@@ -38,6 +40,8 @@ RUN echo "\nln /dev/null /dev/raw1394" >> ~/.bashrc
 #install composer
 RUN \
     curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+RUN apt-get -y upgrade nginx
 
 #copy etc/
 COPY docker/resources/etc/ /etc/
