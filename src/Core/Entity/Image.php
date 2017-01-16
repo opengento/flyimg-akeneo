@@ -41,6 +41,9 @@ class Image
         $this->sourceFile = $sourceFile;
 
         $this->newFileName = md5(implode('.', $this->options) . $sourceFile);
+        if ($this->options['refresh']) {
+            $this->newFileName .= uniqid("-", true);
+        }
         $this->newFilePath = TMP_DIR . $this->newFileName;
     }
 
