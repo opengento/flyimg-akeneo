@@ -80,28 +80,22 @@ class ImageManager
 
         $this->generateCmdString($image);
 
-        exec($image->getFinalCommandStr(), $output, $code);
-        if (count($output) === 0) {
-            $output = $code;
-        } else {
-            $output = implode(PHP_EOL, $output);
-        }
 
-        if ($code !== 0) {
-            throw new \Exception("Command failed. The exit code: " . $output . "<br>The last line of output: " . $image->getFinalCommandStr());
+        if ($faceBlur) {
+            $this->processBlurringFaces($image);
         }
 
         if ($faceCrop) {
             $this->processCroppingFaces($image, $faceCropPosition);
         }
 
-        if ($faceBlur) {
-            $this->processBlurringFaces($image);
+        $this->execute($image->getFinalCommandStr());
+
+        if ($this->filesystem->has($image->getNewFileName())) {
+            $this->filesystem->delete($image->getNewFileName());
         }
 
-        if (file_exists($image->getNewFilePath())) {
-            $this->filesystem->write($image->getNewFileName(), stream_get_contents(fopen($image->getNewFilePath(), 'r')));
-        }
+        $this->filesystem->write($image->getNewFileName(), stream_get_contents(fopen($image->getNewFilePath(), 'r')));
     }
 
     /**
@@ -112,16 +106,16 @@ class ImageManager
      */
     public function processCroppingFaces(Image $image, $faceCropPosition = 0)
     {
-        $commandStr = "facedetect '{$image->getNewFilePath()}'";
-        exec($commandStr, $output, $code);
-        if (empty($output[$faceCropPosition]) || $code != 0) {
+        $commandStr = "facedetect '{$image->getTemporaryFile()}'";
+        $output = $this->execute($commandStr);
+        if (empty($output[$faceCropPosition])) {
             return;
         }
         $geometry = explode(" ", $output[$faceCropPosition]);
         if (count($geometry) == 4) {
             list($geometryX, $geometryY, $geometryW, $geometryH) = $geometry;
-            $cropCmdStr = "/usr/bin/convert '{$image->getNewFilePath()}' -crop ${geometryW}x${geometryH}+${geometryX}+${geometryY} {$image->getNewFilePath()}";
-            exec($cropCmdStr, $output, $code);
+            $cropCmdStr = "/usr/bin/convert '{$image->getTemporaryFile()}' -crop ${geometryW}x${geometryH}+${geometryX}+${geometryY} {$image->getTemporaryFile()}";
+            $this->execute($cropCmdStr);
         }
     }
 
@@ -132,17 +126,17 @@ class ImageManager
      */
     public function processBlurringFaces(Image $image)
     {
-        $commandStr = "facedetect '{$image->getNewFilePath()}'";
-        exec($commandStr, $output, $code);
-        if (empty($output) || $code != 0) {
+        $commandStr = "facedetect '{$image->getTemporaryFile()}'";
+        $output = $this->execute($commandStr);
+        if (empty($output)) {
             return;
         }
         foreach ((array)$output as $outputLine) {
             $geometry = explode(" ", $outputLine);
             if (count($geometry) == 4) {
                 list($geometryX, $geometryY, $geometryW, $geometryH) = $geometry;
-                $cropCmdStr = "/usr/bin/mogrify -gravity NorthWest -region ${geometryW}x${geometryH}+${geometryX}+${geometryY} -scale '10%' -scale '1000%' {$image->getNewFilePath()}";
-                exec($cropCmdStr, $output, $code);
+                $cropCmdStr = "/usr/bin/mogrify -gravity NorthWest -region ${geometryW}x${geometryH}+${geometryX}+${geometryY} -scale '10%' -scale '1000%' {$image->getTemporaryFile()}";
+                $this->execute($cropCmdStr);
             }
         }
     }
@@ -182,7 +176,6 @@ class ImageManager
 
         $command = $this->checkMozJpeg($image, $command);
         $commandStr = implode(' ', $command);
-
         $image->setFinalCommandStr($commandStr);
     }
 
@@ -251,5 +244,37 @@ class ImageManager
         }
 
         return [$size, $extent, $gravity];
+    }
+
+
+    /**
+     * Get the image Identity information
+     * @param Image $image
+     * @return string
+     */
+    public function getImageIdentity(Image $image)
+    {
+        $output = $this->execute('/usr/bin/identify ' . $image->getNewFilePath());
+        return !empty($output[0]) ? $output[0] : "";
+    }
+
+    /**
+     * @param $commandStr
+     * @return string
+     * @throws \Exception
+     */
+    private function execute($commandStr)
+    {
+        exec($commandStr, $output, $code);
+        if (count($output) === 0) {
+            $outputError = $code;
+        } else {
+            $outputError = implode(PHP_EOL, $output);
+        }
+
+        if ($code !== 0) {
+            throw new \Exception("Command failed. The exit code: " . $outputError . "<br>The last line of output: " . $commandStr);
+        }
+        return $output;
     }
 }

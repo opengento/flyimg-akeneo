@@ -40,11 +40,14 @@ class Image
         $this->options = $this->parseOptions($options);
         $this->sourceFile = $sourceFile;
 
-        $this->newFileName = md5(implode('.', $this->options) . $sourceFile);
-        if ($this->options['refresh']) {
-            $this->newFileName .= uniqid("-", true);
-        }
+        $hashedOptions = $this->options;
+        unset($hashedOptions['refresh']);
+        $this->newFileName = md5(implode('.', $hashedOptions) . $sourceFile);
         $this->newFilePath = TMP_DIR . $this->newFileName;
+
+        if ($this->options['refresh']) {
+            $this->newFilePath .= uniqid("-", true);
+        }
     }
 
     /**
@@ -187,18 +190,6 @@ class Image
             unset($this->options[$key]);
         }
         return $value;
-    }
-
-
-    /**
-     * Get the image Identity information
-     *
-     * @return string
-     */
-    public function getImageIdentity()
-    {
-        exec('/usr/bin/identify ' . $this->getNewFilePath(), $output);
-        return !empty($output[0]) ? $output[0] : "";
     }
 
     /**

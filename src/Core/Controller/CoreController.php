@@ -44,7 +44,7 @@ class CoreController
             $response->headers->set('Cache-Control', 'no-cache, private');
             $response->setExpires(null)->expire();
 
-            $response->headers->set('im-identify', $image->getImageIdentity());
+            $response->headers->set('im-identify', $this->app['image.manager']->getImageIdentity($image));
             $response->headers->set('im-command', $image->getFinalCommandStr());
         }
 

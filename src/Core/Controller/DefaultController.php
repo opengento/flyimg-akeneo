@@ -24,10 +24,12 @@ class DefaultController extends CoreController
         $manager = $this->app['image.manager'];
         $image = new Image($options, $imageSrc, $this->app['params']);
         try {
-           $imageContent = $manager->process($image);
+            $imageContent = $manager->process($image);
         } catch (\Exception $e) {
             $image->unlinkUsedFiles();
-            return new Response($e->getMessage(), Response::HTTP_FORBIDDEN);
+            $formattedMessage = '<pre>' . $e->getMessage() . "\n" . $e->getTraceAsString() . '</pre>';
+            $this->app['monolog']->error($formattedMessage);
+            return new Response($formattedMessage, Response::HTTP_FORBIDDEN);
         }
 
         return $this->generateImageResponse($image, $imageContent);
