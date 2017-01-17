@@ -11,6 +11,10 @@ use League\Flysystem\Filesystem;
  */
 class ImageManager
 {
+
+    const IM_CONVERT_COMMAND = '/usr/bin/convert ';
+    const IM_MOGRIFY_COMMAND = '/usr/bin/mogrify ';
+    const IM_IDENTITY_COMMAND = '/usr/bin/identify ';
     /**
      * @var Filesystem
      */
@@ -113,7 +117,7 @@ class ImageManager
         $geometry = explode(" ", $output[$faceCropPosition]);
         if (count($geometry) == 4) {
             list($geometryX, $geometryY, $geometryW, $geometryH) = $geometry;
-            $cropCmdStr = "/usr/bin/convert '{$image->getTemporaryFile()}' -crop {$geometryW}x{$geometryH}+${geometryX}+{$geometryY} {$image->getTemporaryFile()}";
+            $cropCmdStr = self::IM_CONVERT_COMMAND . "'{$image->getTemporaryFile()}' -crop {$geometryW}x{$geometryH}+{$geometryX}+{$geometryY} {$image->getTemporaryFile()}";
             $this->execute($cropCmdStr);
         }
     }
@@ -134,7 +138,7 @@ class ImageManager
             $geometry = explode(" ", $outputLine);
             if (count($geometry) == 4) {
                 list($geometryX, $geometryY, $geometryW, $geometryH) = $geometry;
-                $cropCmdStr = "/usr/bin/mogrify -gravity NorthWest -region {$geometryW}x{$geometryH}+{$geometryX}+{$geometryY} -scale '10%' -scale '1000%' {$image->getTemporaryFile()}";
+                $cropCmdStr = self::IM_MOGRIFY_COMMAND . "-gravity NorthWest -region {$geometryW}x{$geometryH}+{$geometryX}+{$geometryY} -scale '10%' -scale '1000%' {$image->getTemporaryFile()}";
                 $this->execute($cropCmdStr);
             }
         }
@@ -156,7 +160,7 @@ class ImageManager
         // we default to thumbnail
         $resizeOperator = $resize ? 'resize' : 'thumbnail';
         $command = [];
-        $command[] = "/usr/bin/convert " . $image->getTemporaryFile() . ' -' . $resizeOperator . ' ' . $size . $gravity . $extent . ' -colorspace sRGB';
+        $command[] = self::IM_CONVERT_COMMAND . $image->getTemporaryFile() . ' -' . $resizeOperator . ' ' . $size . $gravity . $extent . ' -colorspace sRGB';
 
         if (!empty($thread)) {
             $command[] = "-limit thread " . escapeshellarg($thread);
@@ -253,7 +257,7 @@ class ImageManager
      */
     public function getImageIdentity(Image $image)
     {
-        $output = $this->execute('/usr/bin/identify ' . $image->getNewFilePath());
+        $output = $this->execute(self::IM_IDENTITY_COMMAND . $image->getNewFilePath());
         return !empty($output[0]) ? $output[0] : "";
     }
 
