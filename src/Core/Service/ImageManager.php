@@ -80,7 +80,6 @@ class ImageManager
 
         $this->generateCmdString($image);
 
-
         if ($faceBlur) {
             $this->processBlurringFaces($image);
         }
@@ -114,7 +113,7 @@ class ImageManager
         $geometry = explode(" ", $output[$faceCropPosition]);
         if (count($geometry) == 4) {
             list($geometryX, $geometryY, $geometryW, $geometryH) = $geometry;
-            $cropCmdStr = "/usr/bin/convert '{$image->getTemporaryFile()}' -crop ${geometryW}x${geometryH}+${geometryX}+${geometryY} {$image->getTemporaryFile()}";
+            $cropCmdStr = "/usr/bin/convert '{$image->getTemporaryFile()}' -crop {$geometryW}x{$geometryH}+${geometryX}+{$geometryY} {$image->getTemporaryFile()}";
             $this->execute($cropCmdStr);
         }
     }
@@ -135,7 +134,7 @@ class ImageManager
             $geometry = explode(" ", $outputLine);
             if (count($geometry) == 4) {
                 list($geometryX, $geometryY, $geometryW, $geometryH) = $geometry;
-                $cropCmdStr = "/usr/bin/mogrify -gravity NorthWest -region ${geometryW}x${geometryH}+${geometryX}+${geometryY} -scale '10%' -scale '1000%' {$image->getTemporaryFile()}";
+                $cropCmdStr = "/usr/bin/mogrify -gravity NorthWest -region {$geometryW}x{$geometryH}+{$geometryX}+{$geometryY} -scale '10%' -scale '1000%' {$image->getTemporaryFile()}";
                 $this->execute($cropCmdStr);
             }
         }
