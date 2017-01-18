@@ -264,7 +264,7 @@ For the hex code, the hash `#` character should be replaced by `%23`
 
 `r_45` 
 
-[![moz_0](http://oi.flyimg.io/upload/r_45,w_400,h_400/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)](http://oi.flyimg.io/upload/r_45,w_400,h_400/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
+[![moz_0](http://oi.flyimg.io/upload/r_-45,w_400,h_400/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)](http://oi.flyimg.io/upload/r_-45,w_400,h_400/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
 
  
 ### refresh `int`
@@ -292,7 +292,7 @@ Also it will send headers with the command done on the image + info returned by 
 
  
 ### Face Blur `int`
-**default: false** :  Apply blur effect only on faces in a given image
+**default: false** : Apply blur effect on faces in a given image
 **example:`fb_1`** 
 
 `fb_1` 
@@ -316,6 +316,11 @@ whitelist_domains:
     - www.domain-1.org
     - www.domain-2.org
 ```
+
+Provision:
+----------
+- [DigitalOcean](https://github.com/flyimg/DigitalOcean-provision)
+- [AWS Elastic-Beanstalk](https://github.com/flyimg/Elastic-Beanstalk-provision)
 
 Demo running Application:
 -------------------------
