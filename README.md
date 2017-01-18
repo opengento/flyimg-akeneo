@@ -90,6 +90,9 @@ options_keys:
   moz: mozjpeg
   q: quality
   unsh: unsharp
+  fc: face-crop
+  fcp: face-crop-position
+  fb: face-blur
   w: width
   h: height
   c: crop
@@ -102,6 +105,9 @@ options_keys:
   sc: scale
   sf: sampling-factor
   rf: refresh
+  ett: extent
+  par: preserve-aspect-ratio
+  pns: preserve-natural-size
 ```
 
 Default options values:
@@ -112,6 +118,9 @@ default_options:
   mozjpeg: 1
   quality: 90
   unsharp: null
+  face-crop: 0
+  face-crop-position: 0
+  face-blur: 0
   width: null
   height: null
   crop: null
@@ -120,45 +129,63 @@ default_options:
   resize: null
   gravity: Center
   filter: Lanczos
-  rotate: Lanczos
+  rotate: null
   scale: null
   sampling-factor: 1x1
   refresh: false
+  extent: null
+  preserve-aspect-ratio: 1
+  preserve-natural-size: 1
+  # private options set here
+  thread: 1
 ```
 
 Most of these options are ImageMagick flags, many can get pretty advanced, use the [ImageMagick docs](http://www.imagemagick.org/script/command-line-options.php).
 
 ### mozjpeg `bool`
-**default: 1** : Use moz-jpeg compression library, if `false` it fallback to the default ImageMagick compression algorithm. 
+**default: 1** : Use moz-jpeg compression library, if `false` it fallback to the default ImageMagick compression algorithm.
+**example:`moz_0`** 
 
 `moz_0` 
-![moz_0](http://oi.flyimg.io/upload/moz_0/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
+
+[![moz_0](http://oi.flyimg.io/upload/moz_0/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)](http://oi.flyimg.io/upload/moz_0/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
  
 `moz_1` 
-![moz_0](http://oi.flyimg.io/upload/moz_1/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
+
+[![moz_0](http://oi.flyimg.io/upload/moz_1/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)](http://oi.flyimg.io/upload/moz_1/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
+
 
 ### quality `int` (0-100)
 **default: 90** : Sets the compression level for the output image.
+**example:`q_100`,`q_75`,...** 
 
 `q_30` 
-![moz_0](http://oi.flyimg.io/upload/q_30/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
+
+[![moz_0](http://oi.flyimg.io/upload/q_30/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)](http://oi.flyimg.io/upload/q_30/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
 
 `q_100` 
-![moz_0](http://oi.flyimg.io/upload/q_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
+
+[![moz_0](http://oi.flyimg.io/upload/q_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)](http://oi.flyimg.io/upload/q_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
+
 
 ### width `int`
 **default: null** : Sets the target width of the image. If not set, width will be calculated in order to keep aspect ratio.
+**example:`w_100`** 
 
 `w_100` 
-![moz_0](http://oi.flyimg.io/upload/w_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
+
+[![moz_0](http://oi.flyimg.io/upload/w_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)](http://oi.flyimg.io/upload/w_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
 
 ### height `int`
 **default: null** : Sets the target height of the image. If not set, height will be calculated in order to keep aspect ratio.
+**example:`h_100`** 
 
-`h_100` 
-![moz_0](http://oi.flyimg.io/upload/h_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
+`h_100`
+ 
+[![moz_0](http://oi.flyimg.io/upload/h_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)](http://oi.flyimg.io/upload/h_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
 
 ### Using width AND height
+**example:`h_300,w_300`** 
 By default setting width and height together, works like defining a rectangle that will define a **max-width** and **max-height** and the image will scale propotionally to fit that area without cropping.
 <!-- in the future put example images here-->
 
@@ -166,18 +193,22 @@ By default; width, height, or both will **not scale up** an image that is smalle
 <!-- in the future put example images here-->
 
 `h_300,w_300` 
-![moz_0](http://oi.flyimg.io/upload/h_300,w_300/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
+
+[![moz_0](http://oi.flyimg.io/upload/h_300,w_300/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)](http://oi.flyimg.io/upload/h_300,w_300/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
 
 ### crop `bool` 
 **default: false** : When both width and height are set, this allows the image to be cropped so it fills the **width x height** area.
+**example:`c_1`** 
 
 `c_1,h_400,w_400` 
-![moz_0](http://oi.flyimg.io/upload/c_1,h_400,w_400/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
+
+[![moz_0](http://oi.flyimg.io/upload/c_1,h_400,w_400/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)](http://oi.flyimg.io/upload/c_1,h_400,w_400/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
 
 
 ### gravity `string`
 **default: Center** : When crop is applied, changing the gravity will define which part of the image is kept inside the crop area.
 The basic options are: `NorthWest`, `North`, `NorthEast`, `West`, `Center`, `East`, `SouthWest`, `South`, `SouthEast`.
+**example:`g_West`** 
 
 ```sh
    [...] -gravity NorthWest ...
@@ -188,6 +219,7 @@ The basic options are: `NorthWest`, `North`, `NorthEast`, `West`, `Center`, `Eas
 **default: white** : Sets the background of the canvas for the cases where padding is added to the images. It supports hex, css color names, rgb. 
 Only css color names are supported without quotation marks.
 For the hex code, the hash `#` character should be replaced by `%23` 
+**example:`bg_red`,`bg_%23ff4455`,`bg_rgb(255,120,100)`,...** 
 
 ```sh
   [...] -background red ...
@@ -195,14 +227,19 @@ For the hex code, the hash `#` character should be replaced by `%23`
   [...] -background "rgb(255,120,100)" ...
 ```
 
+[![bg_red](http://oi.flyimg.io/upload/r_45,w_400,h_400,bg_red/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)](http://oi.flyimg.io/upload/r_45,w_400,h_400,bg_red/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
+
 ### strip `int`
 **default: 1** : removes exif data and additional color profile.
+**example:`st_1`** 
 
 ### resize `int`
 **default: null** : The alternative resizing method to -thumbnail.
+**example:`rz_1`** 
 
 ### unsharp `radiusxsigma{+gain}{+threshold}` 
 **default: null** : Sharpens an image with a convolved Gausian operator. A good example `0.25x0.25+8+0.065`.
+**example:`unsh_0.25x0.25+8+0.065`** 
 
 ```sh
    [...] -unsharp 0.25x0.25+8+0.065 ...
@@ -210,6 +247,7 @@ For the hex code, the hash `#` character should be replaced by `%23`
 
 ### filter `string`
 **default: Lanczos** : Resizing algorithm, Triangle is a smoother lighter option
+**example:`f_Triangle`** 
 
 ```sh
    [...] -filter Triangle
@@ -217,22 +255,49 @@ For the hex code, the hash `#` character should be replaced by `%23`
 
 ### scale `int`
 **default: null** : The "-scale" resize operator is a simplified, faster form of the resize command. Useful for fast exact scaling of pixels.
+**example:`sc_1`** 
 
 
 ### rotate `string`
 **default: null** : Apply image rotation (using shear operations) to the image. 
-**example: `r_90` or `r_-180`**
+**example: `r_90`, `r_-180`,...**
 
 `r_45` 
-![moz_0](http://oi.flyimg.io/upload/r_45,w_400,h_400/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
+
+[![moz_0](http://oi.flyimg.io/upload/r_45,w_400,h_400/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)](http://oi.flyimg.io/upload/r_45,w_400,h_400/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
 
  
 ### refresh `int`
 **default: false** : Refresh will delete the local cached copy of the file requested and will generate the image again. 
 Also it will send headers with the command done on the image + info returned by the command identity from IM.
+**example:`rf_1`** 
 
-`rf_1` 
-![moz_0](http://oi.flyimg.io/upload/rf_1,w_400,h_400,q_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
+ 
+### Face Crop `int`
+**default: false** : Using [facedetect](https://github.com/wavexx/facedetect) repository to detect faces and passe the coordinates to ImageMagick to crop.
+**example:`fc_1`** 
+
+`fc_1` 
+
+[![moz_0](http://oi.flyimg.io/upload/fc_1/http://facedetection.jaysalvat.com/img/faces.jpg)](http://oi.flyimg.io/upload/fc_1/http://facedetection.jaysalvat.com/img/faces.jpg)
+
+ 
+### Face Crop Position `int`
+**default: false** : When using the Face crop option and when the image contain more than one face, you can specify which one you want get cropped
+ **example:`fcp_1`,`fcp_0`,...** 
+
+`fcp_2` 
+
+[![moz_0](http://oi.flyimg.io/upload/fc_1,fcp_2/http://facedetection.jaysalvat.com/img/faces.jpg)](http://oi.flyimg.io/upload/fc_1,fcp_2/http://facedetection.jaysalvat.com/img/faces.jpg)
+
+ 
+### Face Blur `int`
+**default: false** :  Apply blur effect only on faces in a given image
+**example:`fb_1`** 
+
+`fb_1` 
+
+[![moz_0](http://oi.flyimg.io/upload/fb_1/http://facedetection.jaysalvat.com/img/faces.jpg)](http://oi.flyimg.io/upload/fb_1/http://facedetection.jaysalvat.com/img/faces.jpg)
 
 
 Enable Restricted Domains:
@@ -252,14 +317,10 @@ whitelist_domains:
     - www.domain-2.org
 ```
 
-More Examples:
---------------
+Demo running Application:
+-------------------------
 
-Our application is available here: [flyimg.io](http://flyimg.io)
+[oi.flyimg.io](http://oi.flyimg.io)
 
-- Quality 90%
-[http://oi.flyimg.io/upload/w_500,h_500,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg](http://oi.flyimg.io/upload/w_500,h_500,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg)
 
-- Quality 10%
-[http://oi.flyimg.io/upload/w_500,h_500,q_10/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg](http://oi.flyimg.io/upload/w_500,h_500,q_10/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg)
-
+Enjoy !
