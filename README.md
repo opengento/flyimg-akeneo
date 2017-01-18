@@ -317,10 +317,11 @@ whitelist_domains:
     - www.domain-2.org
 ```
 
-Provision:
-----------
+How to Provision the application on:
+-----------------------------------
 - [DigitalOcean](https://github.com/flyimg/DigitalOcean-provision)
 - [AWS Elastic-Beanstalk](https://github.com/flyimg/Elastic-Beanstalk-provision)
+
 
 Demo running Application:
 -------------------------
