@@ -39,15 +39,8 @@ class Image
         $this->defaultParams = $defaultParams;
         $this->options = $this->parseOptions($options);
         $this->sourceFile = $sourceFile;
-
-        $hashedOptions = $this->options;
-        unset($hashedOptions['refresh']);
-        $this->newFileName = md5(implode('.', $hashedOptions) . $sourceFile);
-        $this->newFilePath = TMP_DIR . $this->newFileName;
-
-        if ($this->options['refresh']) {
-            $this->newFilePath .= uniqid("-", true);
-        }
+        $this->saveToTemporaryFile();
+        $this->generateFilesName();
     }
 
     /**
@@ -202,6 +195,21 @@ class Image
         }
         if (file_exists($this->getNewFilePath())) {
             unlink($this->getNewFilePath());
+        }
+    }
+
+    /**
+     *
+     */
+    public function generateFilesName()
+    {
+        $hashedOptions = $this->options;
+        unset($hashedOptions['refresh']);
+        $this->newFileName = md5(implode('.', $hashedOptions) . $this->sourceFile);
+        $this->newFilePath = TMP_DIR . $this->newFileName;
+
+        if ($this->options['refresh']) {
+            $this->newFilePath .= uniqid("-", true);
         }
     }
 }

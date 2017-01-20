@@ -6,12 +6,11 @@ use Core\Entity\Image;
 use League\Flysystem\Filesystem;
 
 /**
- * Class ImageManager
+ * Class ImageProcessor
  * @package Core\Service
  */
-class ImageManager
+class ImageProcessor
 {
-
     const IM_CONVERT_COMMAND = '/usr/bin/convert ';
     const IM_MOGRIFY_COMMAND = '/usr/bin/mogrify ';
     const IM_IDENTITY_COMMAND = '/usr/bin/identify ';
@@ -29,7 +28,7 @@ class ImageManager
     protected $image;
 
     /**
-     * ImageManager constructor.
+     * ImageProcessor constructor.
      *
      * @param array $params
      * @param Filesystem $filesystem
@@ -79,8 +78,6 @@ class ImageManager
         $faceCrop = $image->extractByKey('face-crop');
         $faceCropPosition = $image->extractByKey('face-crop-position');
         $faceBlur = $image->extractByKey('face-blur');
-
-        $image->saveToTemporaryFile();
 
         $this->generateCmdString($image);
 
