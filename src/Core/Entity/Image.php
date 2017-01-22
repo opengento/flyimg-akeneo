@@ -39,9 +39,8 @@ class Image
         $this->defaultParams = $defaultParams;
         $this->options = $this->parseOptions($options);
         $this->sourceFile = $sourceFile;
-
-        $this->newFileName = md5(implode('.', $this->options) . $sourceFile);
-        $this->newFilePath = TMP_DIR . $this->newFileName;
+        $this->saveToTemporaryFile();
+        $this->generateFilesName();
     }
 
     /**
@@ -186,18 +185,6 @@ class Image
         return $value;
     }
 
-
-    /**
-     * Get the image Identity information
-     *
-     * @return string
-     */
-    public function getImageIdentity()
-    {
-        exec('/usr/bin/identify ' . $this->getNewFilePath(), $output);
-        return !empty($output[0]) ? $output[0] : "";
-    }
-
     /**
      * Remove the generated files
      */
@@ -208,6 +195,21 @@ class Image
         }
         if (file_exists($this->getNewFilePath())) {
             unlink($this->getNewFilePath());
+        }
+    }
+
+    /**
+     *
+     */
+    public function generateFilesName()
+    {
+        $hashedOptions = $this->options;
+        unset($hashedOptions['refresh']);
+        $this->newFileName = md5(implode('.', $hashedOptions) . $this->sourceFile);
+        $this->newFilePath = TMP_DIR . $this->newFileName;
+
+        if ($this->options['refresh']) {
+            $this->newFilePath .= uniqid("-", true);
         }
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
 use Core\Resolver\ControllerResolver;
-use Core\Service\ImageManager;
+use Core\Service\ImageProcessor;
 use Monolog\Logger;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Routing\Loader\YamlFileLoader;
@@ -59,8 +59,8 @@ $app['resolver'] = function ($app) {
     return new ControllerResolver($app, $app['logger']);
 };
 
-$app['image.manager'] = function ($app) {
-    return new ImageManager($app['params'], $app['flysystems']['upload_dir']);
+$app['image.processor'] = function ($app) {
+    return new ImageProcessor($app['params'], $app['flysystems']['upload_dir']);
 };
 
 /** debug conf */

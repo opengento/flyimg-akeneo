@@ -1,10 +1,10 @@
 <?php
-namespace Core\Tests\Service;
+namespace Core\Tests;
 
 use Core\Entity\Image;
 use Silex\Application;
 
-class ImageManagerTest extends \PHPUnit_Framework_TestCase
+class ImageTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var Application
@@ -24,7 +24,7 @@ class ImageManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function createApplication()
     {
-        $app = require __DIR__ . '/../../../../app.php';
+        $app = require __DIR__ . '/../../../app.php';
         $app['debug'] = true;
         unset($app['exception_handler']);
         return $app;
@@ -36,7 +36,7 @@ class ImageManagerTest extends \PHPUnit_Framework_TestCase
     public function testParseOptions()
     {
         $options = 'w_200,h_100,c_1,bg_#999999,rz_1,sc_50,r_-45,unsh_0.25x0.25+8+0.065,rf_1,ett_100x80,fb_1';
-        $image = new Image($options, 'http://fakeurl-to-img.jpeg', $this->app['params']);
+        $image = new Image($options, __DIR__ . '/../../../web/Rovinj-Croatia.jpg', $this->app['params']);
 
         $expectedParseArray = [
             'mozjpeg' => 1,
