@@ -3,6 +3,7 @@
 namespace Core\Service;
 
 use Core\Entity\Image;
+use Core\Exception\AppException;
 use League\Flysystem\Filesystem;
 
 /**
@@ -48,14 +49,7 @@ class ImageProcessor
      */
     public function process(Image $image)
     {
-        //check restricted_domains is enabled
-        if ($this->params['restricted_domains'] &&
-            is_array($this->params['whitelist_domains']) &&
-            !in_array(parse_url($image->getSourceFile(), PHP_URL_HOST), $this->params['whitelist_domains'])
-        ) {
-            throw  new \Exception('Restricted domains enabled, the domain your fetching from is not allowed: ' . parse_url($image->getSourceFile(), PHP_URL_HOST));
-
-        }
+        $this->checkRestrictedDomains($image);
 
         if ($this->filesystem->has($image->getNewFileName()) && $image->getOptions()['refresh']) {
             $this->filesystem->delete($image->getNewFileName());
@@ -73,7 +67,7 @@ class ImageProcessor
      * @param Image $image
      * @throws \Exception
      */
-    public function saveNewFile(Image $image)
+    protected function saveNewFile(Image $image)
     {
         $faceCrop = $image->extractByKey('face-crop');
         $faceCropPosition = $image->extractByKey('face-crop-position');
@@ -89,7 +83,7 @@ class ImageProcessor
             $this->processCroppingFaces($image, $faceCropPosition);
         }
 
-        $this->execute($image->getFinalCommandStr());
+        $this->execute($image->getCommandString());
 
         if ($this->filesystem->has($image->getNewFileName())) {
             $this->filesystem->delete($image->getNewFileName());
@@ -104,7 +98,7 @@ class ImageProcessor
      * @param Image $image
      * @param int $faceCropPosition
      */
-    public function processCroppingFaces(Image $image, $faceCropPosition = 0)
+    protected function processCroppingFaces(Image $image, $faceCropPosition = 0)
     {
         $commandStr = "facedetect '{$image->getTemporaryFile()}'";
         $output = $this->execute($commandStr);
@@ -124,7 +118,7 @@ class ImageProcessor
      *
      * @param Image $image
      */
-    public function processBlurringFaces(Image $image)
+    protected function processBlurringFaces(Image $image)
     {
         $commandStr = "facedetect '{$image->getTemporaryFile()}'";
         $output = $this->execute($commandStr);
@@ -176,7 +170,7 @@ class ImageProcessor
 
         $command = $this->checkMozJpeg($image, $command);
         $commandStr = implode(' ', $command);
-        $image->setFinalCommandStr($commandStr);
+        $image->setCommandString($commandStr);
     }
 
     /**
@@ -273,8 +267,25 @@ class ImageProcessor
         }
 
         if ($code !== 0) {
-            throw new \Exception("Command failed. The exit code: " . $outputError . "<br>The last line of output: " . $commandStr);
+            throw new AppException("Command failed. The exit code: " . $outputError . "<br>The last line of output: " . $commandStr);
         }
         return $output;
+    }
+
+    /**
+     * Check Restricted Domain enabled
+     * @param Image $image
+     * @throws AppException
+     */
+    private function checkRestrictedDomains(Image $image)
+    {
+        //check restricted_domains is enabled
+        if ($this->params['restricted_domains'] &&
+            is_array($this->params['whitelist_domains']) &&
+            !in_array(parse_url($image->getSourceFile(), PHP_URL_HOST), $this->params['whitelist_domains'])
+        ) {
+            throw  new AppException('Restricted domains enabled, the domain your fetching from is not allowed: ' . parse_url($image->getSourceFile(), PHP_URL_HOST));
+
+        }
     }
 }
