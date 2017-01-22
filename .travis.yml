@@ -6,13 +6,11 @@ php:
 
 before_script:
   - composer install
-  - docker build -t flyimg .
-  - docker run --rm -v $(pwd):/var/www/html --name flyimg flyimg
 
-services:
-  - docker
+env:
+  - nocache=1
 
-script: docker exec -it flyimg phpunit
+script: vendor/bin/phpunit
 
 notifications:
   email:

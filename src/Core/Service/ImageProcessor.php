@@ -12,9 +12,10 @@ use League\Flysystem\Filesystem;
  */
 class ImageProcessor
 {
-    const IM_CONVERT_COMMAND = '/usr/bin/convert ';
-    const IM_MOGRIFY_COMMAND = '/usr/bin/mogrify ';
-    const IM_IDENTITY_COMMAND = '/usr/bin/identify ';
+    const IM_CONVERT_COMMAND = '/usr/bin/convert';
+    const IM_MOGRIFY_COMMAND = '/usr/bin/mogrify';
+    const IM_IDENTITY_COMMAND = '/usr/bin/identify';
+    const FACEDETECT_COMMAND = '/usr/local/bin/facedetect';
     /**
      * @var Filesystem
      */
@@ -100,7 +101,10 @@ class ImageProcessor
      */
     protected function processCroppingFaces(Image $image, $faceCropPosition = 0)
     {
-        $commandStr = "facedetect '{$image->getTemporaryFile()}'";
+        if (!is_executable(self::FACEDETECT_COMMAND)) {
+            return;
+        }
+        $commandStr = self::FACEDETECT_COMMAND . " " . $image->getTemporaryFile();
         $output = $this->execute($commandStr);
         if (empty($output[$faceCropPosition])) {
             return;
@@ -108,7 +112,7 @@ class ImageProcessor
         $geometry = explode(" ", $output[$faceCropPosition]);
         if (count($geometry) == 4) {
             list($geometryX, $geometryY, $geometryW, $geometryH) = $geometry;
-            $cropCmdStr = self::IM_CONVERT_COMMAND . "'{$image->getTemporaryFile()}' -crop {$geometryW}x{$geometryH}+{$geometryX}+{$geometryY} {$image->getTemporaryFile()}";
+            $cropCmdStr = self::IM_CONVERT_COMMAND . " '{$image->getTemporaryFile()}' -crop {$geometryW}x{$geometryH}+{$geometryX}+{$geometryY} {$image->getTemporaryFile()}";
             $this->execute($cropCmdStr);
         }
     }
@@ -120,7 +124,10 @@ class ImageProcessor
      */
     protected function processBlurringFaces(Image $image)
     {
-        $commandStr = "facedetect '{$image->getTemporaryFile()}'";
+        if (!is_executable(self::FACEDETECT_COMMAND)) {
+            return;
+        }
+        $commandStr = self::FACEDETECT_COMMAND . " " . $image->getTemporaryFile();
         $output = $this->execute($commandStr);
         if (empty($output)) {
             return;
@@ -129,7 +136,7 @@ class ImageProcessor
             $geometry = explode(" ", $outputLine);
             if (count($geometry) == 4) {
                 list($geometryX, $geometryY, $geometryW, $geometryH) = $geometry;
-                $cropCmdStr = self::IM_MOGRIFY_COMMAND . "-gravity NorthWest -region {$geometryW}x{$geometryH}+{$geometryX}+{$geometryY} -scale '10%' -scale '1000%' {$image->getTemporaryFile()}";
+                $cropCmdStr = self::IM_MOGRIFY_COMMAND . " -gravity NorthWest -region {$geometryW}x{$geometryH}+{$geometryX}+{$geometryY} -scale '10%' -scale '1000%' {$image->getTemporaryFile()}";
                 $this->execute($cropCmdStr);
             }
         }
@@ -151,7 +158,7 @@ class ImageProcessor
         // we default to thumbnail
         $resizeOperator = $resize ? 'resize' : 'thumbnail';
         $command = [];
-        $command[] = self::IM_CONVERT_COMMAND . $image->getTemporaryFile() . ' -' . $resizeOperator . ' ' . $size . $gravity . $extent . ' -colorspace sRGB';
+        $command[] = self::IM_CONVERT_COMMAND . " ". $image->getTemporaryFile() . ' -' . $resizeOperator . ' ' . $size . $gravity . $extent . ' -colorspace sRGB';
 
         if (!empty($thread)) {
             $command[] = "-limit thread " . escapeshellarg($thread);
@@ -248,7 +255,7 @@ class ImageProcessor
      */
     public function getImageIdentity(Image $image)
     {
-        $output = $this->execute(self::IM_IDENTITY_COMMAND . $image->getNewFilePath());
+        $output = $this->execute(self::IM_IDENTITY_COMMAND . " ". $image->getNewFilePath());
         return !empty($output[0]) ? $output[0] : "";
     }
 

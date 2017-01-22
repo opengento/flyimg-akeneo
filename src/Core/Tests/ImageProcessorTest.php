@@ -12,11 +12,11 @@ class ImageProcessorTest extends BaseTest
      */
     public function testProcess()
     {
-        $image = new Image(parent::OPTION_URL, parent::IMG_TEST_PATH, $this->app['params']);
+        $this->image = new Image(parent::OPTION_URL, parent::IMG_TEST_PATH, $this->app['params']);
         /** @var ImageProcessor $processor */
         $processor = $this->app['image.processor'];
-        $processor->process($image);
+//        $processor->process($image);
 
-        $this->assertFileExists($image->getNewFilePath());
+        $this->assertFileExists($this->image->getTemporaryFile());
     }
 }
