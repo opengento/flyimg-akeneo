@@ -45,7 +45,7 @@ class CoreController
             $response->setExpires(null)->expire();
 
             $response->headers->set('im-identify', $this->app['image.processor']->getImageIdentity($image));
-            $response->headers->set('im-command', $image->getFinalCommandStr());
+            $response->headers->set('im-command', $image->getCommandString());
         }
 
         $response->setContent($imageContent);

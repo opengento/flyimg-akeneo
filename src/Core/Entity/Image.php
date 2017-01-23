@@ -1,6 +1,9 @@
 <?php
 
 namespace Core\Entity;
+
+use Core\Exception\ReadFileException;
+
 /**
  * Class Image
  * @package Core\Entity
@@ -23,7 +26,7 @@ class Image
     protected $temporaryFile;
 
     /** @var string */
-    protected $finalCommandStr;
+    protected $commandString;
 
     /** @var array */
     protected $defaultParams;
@@ -118,14 +121,14 @@ class Image
     /**
      * @param $commandStr
      */
-    public function setFinalCommandStr($commandStr)
+    public function setCommandString($commandStr)
     {
-        $this->finalCommandStr = $commandStr;
+        $this->commandString = $commandStr;
     }
 
-    public function getFinalCommandStr()
+    public function getCommandString()
     {
-        return $this->finalCommandStr;
+        return $this->commandString;
     }
 
     /**
@@ -134,7 +137,7 @@ class Image
      * @param $options
      * @return array
      */
-    public function parseOptions($options)
+    protected function parseOptions($options)
     {
         $defaultOptions = $this->defaultParams['default_options'];
         $optionsKeys = $this->defaultParams['options_keys'];
@@ -156,10 +159,10 @@ class Image
      *
      * @throws \Exception
      */
-    public function saveToTemporaryFile()
+    protected function saveToTemporaryFile()
     {
         if (!$resource = @fopen($this->getSourceFile(), "r")) {
-            throw  new \Exception('Error occurred while trying to read the file Url : ' . $this->getSourceFile());
+            throw  new ReadFileException('Error occurred while trying to read the file Url : ' . $this->getSourceFile());
         }
         $content = "";
         while ($line = fread($resource, 1024)) {
@@ -199,9 +202,9 @@ class Image
     }
 
     /**
-     *
+     * Generate files name + files path
      */
-    public function generateFilesName()
+    protected function generateFilesName()
     {
         $hashedOptions = $this->options;
         unset($hashedOptions['refresh']);
