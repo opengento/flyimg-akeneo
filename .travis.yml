@@ -1,15 +1,12 @@
 language: php
 
-php:
-  - 7.0
-
 services:
   - docker
 
 before_install:
-  - composer install
   - docker build -t flyimg .
   - docker run -t -d -i -v $(pwd):/var/www/html --name flyimg flyimg
+  - docker exec -it flyimg sh -c "composer install"
 
 script:
   - docker exec -it flyimg sh -c "vendor/bin/phpunit"
