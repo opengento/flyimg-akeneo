@@ -6,10 +6,10 @@ services:
 before_install:
   - docker build -t flyimg .
   - docker run -t -d -i -v $(pwd):/var/www/html --name flyimg flyimg
-  - docker exec -it flyimg sh -c "composer install"
+  - docker exec flyimg composer install
 
 script:
-  - docker exec -it flyimg sh -c "vendor/bin/phpunit"
+  - docker exec flyimg phpunit
 
 notifications:
   email:
