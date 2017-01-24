@@ -12,7 +12,7 @@ before_install:
   - docker run -t -d -i -v $(pwd):/var/www/html --name flyimg flyimg
 
 script:
-  - docker exec -it flyimg phpunit
+  - docker exec -it flyimg sh -c "vendor/bin/phpunit"
 
 notifications:
   email:
