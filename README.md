@@ -6,8 +6,6 @@
 [![Issue Count](https://codeclimate.com/github/flyimg/flyimg/badges/issue_count.svg)](https://codeclimate.com/github/flyimg/flyimg)
 [![Test Coverage](https://codeclimate.com/github/flyimg/flyimg/badges/coverage.svg)](https://codeclimate.com/github/flyimg/flyimg/coverage)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/89b18390-ac79-4c3e-bf6c-92cd9993e8d3/mini.png)](https://insight.sensiolabs.com/projects/89b18390-ac79-4c3e-bf6c-92cd9993e8d39)
-[![Packagist](https://img.shields.io/packagist/v/flyimg/flyimg.svg)](https://packagist.org/packages/flyimg/flyimg)
-[![License](https://img.shields.io/github/license/flyimg/flyimg.svg)](https://github.com/flyimg/flyimg/blob/master/LICENSE)
 
 Image resizing, cropping and compression on the fly with the impressive [MozJPEG](http://calendar.perfplanet.com/2014/mozjpeg-3-0) compression algorithm. A one Docker container to build your own Cloudinary-like service.
 

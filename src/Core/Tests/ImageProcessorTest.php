@@ -5,7 +5,6 @@ namespace Core\Tests;
 use Core\Entity\Image;
 use Core\Service\ImageProcessor;
 
-
 class ImageProcessorTest extends BaseTest
 {
     /**
@@ -15,8 +14,8 @@ class ImageProcessorTest extends BaseTest
         $this->image = new Image(parent::OPTION_URL, parent::IMG_TEST_PATH, $this->app['params']);
         /** @var ImageProcessor $processor */
         $processor = $this->app['image.processor'];
-//        $processor->process($image);
+        $processor->process($this->image);
 
-        $this->assertFileExists($this->image->getTemporaryFile());
+        $this->assertFileExists($this->image->getNewFilePath());
     }
 }

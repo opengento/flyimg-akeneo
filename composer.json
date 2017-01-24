@@ -38,9 +38,6 @@
     "phpunit/phpunit": "5.3.*",
     "league/flysystem-aws-s3-v3": "^1.0"
   },
-  "require-dev": {
-    "codeclimate/php-test-reporter": "dev-master"
-  },
   "autoload": {
     "psr-4": {
       "Core\\": "src\\Core"
