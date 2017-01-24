@@ -5,7 +5,6 @@ namespace Core\Tests;
 use Core\Entity\Image;
 use Core\Service\ImageProcessor;
 
-
 class ImageProcessorTest extends BaseTest
 {
     /**
