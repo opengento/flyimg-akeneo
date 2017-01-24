@@ -5,7 +5,7 @@ services:
 
 before_install:
   - docker build -t flyimg .
-  - docker run -t -d -i --name flyimg flyimg
+  - docker run -t -d -i -v $(pwd):/var/www/html --name flyimg flyimg
   - docker exec -it flyimg composer install
 
 script:
