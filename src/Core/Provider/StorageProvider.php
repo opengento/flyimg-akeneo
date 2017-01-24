@@ -2,13 +2,11 @@
 
 namespace Core\Provider;
 
-
 use Aws\S3\S3Client;
 use Core\Exception\MissingParamsException;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use WyriHaximus\SliFly\FlysystemServiceProvider;
-use Silex\Application;
 
 /**
  * Storage class to manage Storage provider from FlySystem
@@ -85,4 +83,3 @@ class StorageProvider implements ServiceProviderInterface
         ]);
     }
 }
-

@@ -112,7 +112,10 @@ class ImageProcessor
         $geometry = explode(" ", $output[$faceCropPosition]);
         if (count($geometry) == 4) {
             list($geometryX, $geometryY, $geometryW, $geometryH) = $geometry;
-            $cropCmdStr = self::IM_CONVERT_COMMAND . " '{$image->getTemporaryFile()}' -crop {$geometryW}x{$geometryH}+{$geometryX}+{$geometryY} {$image->getTemporaryFile()}";
+            $cropCmdStr =
+                self::IM_CONVERT_COMMAND .
+                " '{$image->getTemporaryFile()}' -crop {$geometryW}x{$geometryH}+{$geometryX}+{$geometryY} " .
+                $image->getTemporaryFile();
             $this->execute($cropCmdStr);
         }
     }
@@ -136,7 +139,10 @@ class ImageProcessor
             $geometry = explode(" ", $outputLine);
             if (count($geometry) == 4) {
                 list($geometryX, $geometryY, $geometryW, $geometryH) = $geometry;
-                $cropCmdStr = self::IM_MOGRIFY_COMMAND . " -gravity NorthWest -region {$geometryW}x{$geometryH}+{$geometryX}+{$geometryY} -scale '10%' -scale '1000%' {$image->getTemporaryFile()}";
+                $cropCmdStr = self::IM_MOGRIFY_COMMAND .
+                    " -gravity NorthWest -region {$geometryW}x{$geometryH}+{$geometryX}+{$geometryY} " .
+                    "-scale '10%' -scale '1000%' " .
+                    $image->getTemporaryFile();
                 $this->execute($cropCmdStr);
             }
         }
@@ -158,7 +164,10 @@ class ImageProcessor
         // we default to thumbnail
         $resizeOperator = $resize ? 'resize' : 'thumbnail';
         $command = [];
-        $command[] = self::IM_CONVERT_COMMAND . " ". $image->getTemporaryFile() . ' -' . $resizeOperator . ' ' . $size . $gravity . $extent . ' -colorspace sRGB';
+        $command[] = self::IM_CONVERT_COMMAND .
+            " " . $image->getTemporaryFile() .
+            ' -' . $resizeOperator . ' ' . $size . $gravity . $extent .
+            ' -colorspace sRGB';
 
         if (!empty($thread)) {
             $command[] = "-limit thread " . escapeshellarg($thread);
@@ -191,9 +200,13 @@ class ImageProcessor
     {
         $quality = $image->extractByKey('quality');
         if (is_executable($this->params['mozjpeg_path']) && $image->extractByKey('mozjpeg') == 1) {
-            $command[] = "TGA:- | " . escapeshellarg($this->params['mozjpeg_path']) . " -quality " . escapeshellarg($quality) . " -outfile " . escapeshellarg($image->getNewFilePath()) . " -targa";
+            $command[] = "TGA:- | " . escapeshellarg($this->params['mozjpeg_path'])
+                . " -quality " . escapeshellarg($quality)
+                . " -outfile " . escapeshellarg($image->getNewFilePath())
+                . " -targa";
         } else {
-            $command[] = "-quality " . escapeshellarg($quality) . " " . escapeshellarg($image->getNewFilePath());
+            $command[] = "-quality " . escapeshellarg($quality) .
+                " " . escapeshellarg($image->getNewFilePath());
         }
         return $command;
     }
@@ -234,7 +247,12 @@ class ImageProcessor
             $resizingConstraints .= $preserveNaturalSize ? '\>' : '';
             if ($crop) {
                 $resizingConstraints .= '^';
-                //$extent .= '+repage';// still need to solve the combination of ^ , -extent and +repage . Will need to do calculations with the original image dimentions vs. the target dimentions.
+                //$extent .= '+repage';//
+                /**
+                 * still need to solve the combination of ^
+                 * -extent and +repage . Will need to do calculations with the
+                 * original image dimentions vs. the target dimentions.
+                 */
             } else {
                 $extent .= '+repage ';
             }
@@ -255,7 +273,7 @@ class ImageProcessor
      */
     public function getImageIdentity(Image $image)
     {
-        $output = $this->execute(self::IM_IDENTITY_COMMAND . " ". $image->getNewFilePath());
+        $output = $this->execute(self::IM_IDENTITY_COMMAND . " " . $image->getNewFilePath());
         return !empty($output[0]) ? $output[0] : "";
     }
 
@@ -274,7 +292,11 @@ class ImageProcessor
         }
 
         if ($code !== 0) {
-            throw new AppException("Command failed. The exit code: " . $outputError . "<br>The last line of output: " . $commandStr);
+            throw new AppException(
+                "Command failed. The exit code: " .
+                $outputError . "<br>The last line of output: " .
+                $commandStr
+            );
         }
         return $output;
     }
@@ -291,8 +313,10 @@ class ImageProcessor
             is_array($this->params['whitelist_domains']) &&
             !in_array(parse_url($image->getSourceFile(), PHP_URL_HOST), $this->params['whitelist_domains'])
         ) {
-            throw  new AppException('Restricted domains enabled, the domain your fetching from is not allowed: ' . parse_url($image->getSourceFile(), PHP_URL_HOST));
-
+            throw  new AppException(
+                'Restricted domains enabled, the domain your fetching from is not allowed: ' .
+                parse_url($image->getSourceFile(), PHP_URL_HOST)
+            );
         }
     }
 }

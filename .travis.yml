@@ -9,8 +9,10 @@ before_install:
   - docker exec flyimg composer install
 
 script:
-  - docker exec flyimg phpunit
+  - docker exec flyimg vendor/bin/phpunit
+  - docker exec flyimg vendor/bin/phpcs --standard=PSR2 src/
 
 notifications:
   email:
     - sadoknet@gmail.com
+    - baamenabar@gmail.com
