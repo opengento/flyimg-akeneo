@@ -1,16 +1,15 @@
 language: php
 
-php:
-  - 5.6
-  - 7.0
+services:
+  - docker
 
-before_script:
-  - composer install
+before_install:
+  - docker build -t flyimg .
+  - docker run -t -d -i --name flyimg flyimg
+  - docker exec -it flyimg composer install
 
-env:
-  - nocache=1
-
-script: vendor/bin/phpunit
+script:
+  - docker exec -it flyimg phpunit
 
 notifications:
   email:
