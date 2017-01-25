@@ -37,7 +37,7 @@ This will download and build the main image, It will take a few minutes. If you 
 Then run the container:
 
 ```sh
-docker run -t -d -i -p 8080:80 -v /Users/s.ferjani/DockerProjects/flyimg:/var/www/html --name flyimg flyimg
+docker run -t -d -i -p 8080:80 -v $(pwd):/var/www/html --name flyimg flyimg
 ```
 
 Dockerfile run supervisord command which lunch 2 process nginx and php-fpm
