@@ -141,7 +141,8 @@ class Image
     {
         $defaultOptions = $this->defaultParams['default_options'];
         $optionsKeys = $this->defaultParams['options_keys'];
-        $optionsSeparator = !empty($this->defaultParams['options_separator']) ? $this->defaultParams['options_separator'] : ',';
+        $optionsSeparator = !empty($this->defaultParams['options_separator']) ?
+            $this->defaultParams['options_separator'] : ',';
         $optionsUrl = explode($optionsSeparator, $options);
         $options = [];
         foreach ($optionsUrl as $option) {
@@ -162,7 +163,8 @@ class Image
     protected function saveToTemporaryFile()
     {
         if (!$resource = @fopen($this->getSourceFile(), "r")) {
-            throw  new ReadFileException('Error occurred while trying to read the file Url : ' . $this->getSourceFile());
+            throw  new ReadFileException('Error occurred while trying to read the file Url : '
+                . $this->getSourceFile());
         }
         $content = "";
         while ($line = fread($resource, 1024)) {

@@ -6,8 +6,8 @@ use Silex\Application;
 
 class BaseTest extends \PHPUnit_Framework_TestCase
 {
-    CONST IMG_TEST_PATH = __DIR__ . '/../../../web/Rovinj-Croatia.jpg';
-    CONST OPTION_URL = 'w_200,h_100,c_1,bg_#999999,rz_1,sc_50,r_-45,unsh_0.25x0.25+8+0.065,ett_100x80,fb_1,rf_1';
+    const IMG_TEST_PATH = __DIR__ . '/../../../web/Rovinj-Croatia.jpg';
+    const OPTION_URL = 'w_200,h_100,c_1,bg_#999999,rz_1,sc_50,r_-45,unsh_0.25x0.25+8+0.065,ett_100x80,fb_1,rf_1';
 
     /**
      * @var Application
