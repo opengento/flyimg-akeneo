@@ -151,6 +151,7 @@ Most of these options are ImageMagick flags, many can get pretty advanced, use t
 
 ### mozjpeg `bool`
 **default: 1** : Use moz-jpeg compression library, if `false` it fallback to the default ImageMagick compression algorithm.
+
 **example:`moz_0`** 
 
 `moz_0` 
@@ -164,6 +165,7 @@ Most of these options are ImageMagick flags, many can get pretty advanced, use t
 
 ### quality `int` (0-100)
 **default: 90** : Sets the compression level for the output image.
+
 **example:`q_100`,`q_75`,...** 
 
 `q_30` 
@@ -177,6 +179,7 @@ Most of these options are ImageMagick flags, many can get pretty advanced, use t
 
 ### width `int`
 **default: null** : Sets the target width of the image. If not set, width will be calculated in order to keep aspect ratio.
+
 **example:`w_100`** 
 
 `w_100` 
@@ -185,6 +188,7 @@ Most of these options are ImageMagick flags, many can get pretty advanced, use t
 
 ### height `int`
 **default: null** : Sets the target height of the image. If not set, height will be calculated in order to keep aspect ratio.
+
 **example:`h_100`** 
 
 `h_100`
@@ -192,6 +196,7 @@ Most of these options are ImageMagick flags, many can get pretty advanced, use t
 [![moz_0](http://oi.flyimg.io/upload/h_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)](http://oi.flyimg.io/upload/h_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
 
 ### Using width AND height
+
 **example:`h_300,w_300`** 
 By default setting width and height together, works like defining a rectangle that will define a **max-width** and **max-height** and the image will scale propotionally to fit that area without cropping.
 <!-- in the future put example images here-->
@@ -205,6 +210,7 @@ By default; width, height, or both will **not scale up** an image that is smalle
 
 ### crop `bool` 
 **default: false** : When both width and height are set, this allows the image to be cropped so it fills the **width x height** area.
+
 **example:`c_1`** 
 
 `c_1,h_400,w_400` 
@@ -215,6 +221,7 @@ By default; width, height, or both will **not scale up** an image that is smalle
 ### gravity `string`
 **default: Center** : When crop is applied, changing the gravity will define which part of the image is kept inside the crop area.
 The basic options are: `NorthWest`, `North`, `NorthEast`, `West`, `Center`, `East`, `SouthWest`, `South`, `SouthEast`.
+
 **example:`g_West`** 
 
 ```sh
@@ -226,6 +233,7 @@ The basic options are: `NorthWest`, `North`, `NorthEast`, `West`, `Center`, `Eas
 **default: white** : Sets the background of the canvas for the cases where padding is added to the images. It supports hex, css color names, rgb. 
 Only css color names are supported without quotation marks.
 For the hex code, the hash `#` character should be replaced by `%23` 
+
 **example:`bg_red`,`bg_%23ff4455`,`bg_rgb(255,120,100)`,...** 
 
 ```sh
@@ -238,14 +246,17 @@ For the hex code, the hash `#` character should be replaced by `%23`
 
 ### strip `int`
 **default: 1** : removes exif data and additional color profile.
+
 **example:`st_1`** 
 
 ### resize `int`
 **default: null** : The alternative resizing method to -thumbnail.
+
 **example:`rz_1`** 
 
 ### unsharp `radiusxsigma{+gain}{+threshold}` 
 **default: null** : Sharpens an image with a convolved Gausian operator. A good example `0.25x0.25+8+0.065`.
+
 **example:`unsh_0.25x0.25+8+0.065`** 
 
 ```sh
@@ -254,6 +265,7 @@ For the hex code, the hash `#` character should be replaced by `%23`
 
 ### filter `string`
 **default: Lanczos** : Resizing algorithm, Triangle is a smoother lighter option
+
 **example:`f_Triangle`** 
 
 ```sh
@@ -262,11 +274,13 @@ For the hex code, the hash `#` character should be replaced by `%23`
 
 ### scale `int`
 **default: null** : The "-scale" resize operator is a simplified, faster form of the resize command. Useful for fast exact scaling of pixels.
+
 **example:`sc_1`** 
 
 
 ### rotate `string`
 **default: null** : Apply image rotation (using shear operations) to the image. 
+
 **example: `r_90`, `r_-180`,...**
 
 `r_45` 
@@ -277,11 +291,13 @@ For the hex code, the hash `#` character should be replaced by `%23`
 ### refresh `int`
 **default: false** : Refresh will delete the local cached copy of the file requested and will generate the image again. 
 Also it will send headers with the command done on the image + info returned by the command identity from IM.
+
 **example:`rf_1`** 
 
  
 ### Face Crop `int`
 **default: false** : Using [facedetect](https://github.com/wavexx/facedetect) repository to detect faces and passe the coordinates to ImageMagick to crop.
+
 **example:`fc_1`** 
 
 `fc_1` 
@@ -291,7 +307,8 @@ Also it will send headers with the command done on the image + info returned by 
  
 ### Face Crop Position `int`
 **default: false** : When using the Face crop option and when the image contain more than one face, you can specify which one you want get cropped
- **example:`fcp_1`,`fcp_0`,...** 
+
+**example:`fcp_1`,`fcp_0`,...** 
 
 `fcp_2` 
 
@@ -300,6 +317,7 @@ Also it will send headers with the command done on the image + info returned by 
  
 ### Face Blur `int`
 **default: false** : Apply blur effect on faces in a given image
+
 **example:`fb_1`** 
 
 `fb_1` 
