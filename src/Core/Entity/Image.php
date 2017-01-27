@@ -3,6 +3,7 @@
 namespace Core\Entity;
 
 use Core\Exception\ReadFileException;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class Image
@@ -10,6 +11,11 @@ use Core\Exception\ReadFileException;
  */
 class Image
 {
+
+    /** Content TYPE */
+    const WEBP_CONTENT_TYPE = 'image/webp';
+    const JPEG_CONTENT_TYPE = 'image/jpeg';
+
     /** @var array */
     protected $options = [];
 
@@ -31,6 +37,9 @@ class Image
     /** @var array */
     protected $defaultParams;
 
+    /** @var  Request */
+    protected $request;
+
     /**
      * Image constructor.
      * @param string $options
@@ -42,6 +51,8 @@ class Image
         $this->defaultParams = $defaultParams;
         $this->options = $this->parseOptions($options);
         $this->sourceFile = $sourceFile;
+
+        $this->request = Request::createFromGlobals();
         $this->saveToTemporaryFile();
         $this->generateFilesName();
     }
@@ -216,5 +227,24 @@ class Image
         if ($this->options['refresh']) {
             $this->newFilePath .= uniqid("-", true);
         }
+        if ($this->isWebPSupport()) {
+            $this->newFilePath .= '.webp';
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function isWebPSupport()
+    {
+        return in_array(self::WEBP_CONTENT_TYPE, $this->request->getAcceptableContentTypes());
+    }
+
+    /**
+     * @return string
+     */
+    public function getResponseContentType()
+    {
+        return $this->isWebPSupport() ? self::WEBP_CONTENT_TYPE : self::JPEG_CONTENT_TYPE;
     }
 }

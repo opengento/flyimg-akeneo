@@ -1,10 +1,10 @@
 application_name: Flyimg.io
 
 #debug
-debug: false
+debug: true
 
-#path to mozjpeg bin
-mozjpeg_path: /opt/mozjpeg/bin/cjpeg
+#WebP support Enabled
+webp_support: true
 
 #Number of days for header cache expires `max_age`
 header_cache_days: 365
