@@ -40,6 +40,12 @@ Then run the container:
 docker run -t -d -i -p 8080:80 -v $(pwd):/var/www/html --name flyimg flyimg
 ```
 
+For Fish shell users: 
+
+```sh
+docker run -t -d -i -p 8080:80 -v $PWD:/var/www/html --name flyimg flyimg
+```
+
 Dockerfile run supervisord command which lunch 2 process nginx and php-fpm
 
 If you cloned the project, for the first time you need to run composer install inside the main container:
@@ -314,6 +320,12 @@ After enabling, you need to put the white listed domains
 whitelist_domains:
     - www.domain-1.org
     - www.domain-2.org
+```
+
+Test:
+-----
+```sh
+docker exec -it flyimg ./vendor/bin/phpunit
 ```
 
 How to Provision the application on:
