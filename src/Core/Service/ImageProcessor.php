@@ -19,6 +19,9 @@ class ImageProcessor
     const IM_IDENTITY_COMMAND = '/usr/bin/identify';
     const FACEDETECT_COMMAND = '/usr/local/bin/facedetect';
 
+    /** Image options excluded from IM command */
+    const EXCLUDED_IM_OPTIONS = ['quality', 'mozjpeg', 'refresh', 'webp-support', 'webp-lossless'];
+
     /** @var Filesystem */
     protected $filesystem;
 
@@ -178,7 +181,7 @@ class ImageProcessor
         }
 
         foreach ($image->getOptions() as $key => $value) {
-            if (!empty($value) && !in_array($key, ['quality', 'mozjpeg', 'refresh'])) {
+            if (!empty($value) && !in_array($key, self::EXCLUDED_IM_OPTIONS)) {
                 $command[] = "-{$key} " . escapeshellarg($value);
             }
         }
@@ -201,8 +204,9 @@ class ImageProcessor
         $quality = $image->extractByKey('quality');
         /** WebP format */
         if ($this->params['webp_support'] && $image->isWebPSupport()) {
+            $lossLess = $image->extractByKey('webp-lossless') ? 'true' : 'false';
             $command[] = "-quality " . escapeshellarg($quality) .
-                " -define webp:lossless=true " . escapeshellarg($image->getNewFilePath());
+                " -define webp:lossless=" . $lossLess . " " . escapeshellarg($image->getNewFilePath());
         } /** MozJpeg compression */
         elseif (is_executable(self::MOZJPEG_COMMAND) && $image->extractByKey('mozjpeg') == 1) {
             $command[] = "TGA:- | " . escapeshellarg(self::MOZJPEG_COMMAND)

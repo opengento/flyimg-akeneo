@@ -189,14 +189,17 @@ class Image
      * Extract a value from given array and unset it.
      *
      * @param $key
+     * @param $remove
      * @return null
      */
-    public function extractByKey($key)
+    public function extractByKey($key, $remove = true)
     {
         $value = null;
         if (isset($this->options[$key])) {
             $value = $this->options[$key];
-            unset($this->options[$key]);
+            if ($remove) {
+                unset($this->options[$key]);
+            }
         }
         return $value;
     }
@@ -237,7 +240,8 @@ class Image
      */
     public function isWebPSupport()
     {
-        return in_array(self::WEBP_CONTENT_TYPE, $this->request->getAcceptableContentTypes());
+        return in_array(self::WEBP_CONTENT_TYPE, $this->request->getAcceptableContentTypes())
+            && $this->extractByKey('webp-support', false);
     }
 
     /**
