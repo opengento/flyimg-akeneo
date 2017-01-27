@@ -113,6 +113,8 @@ options_keys:
   ett: extent
   par: preserve-aspect-ratio
   pns: preserve-natural-size
+  webp: webp-support
+  webpl: webp-lossless
 ```
 
 Default options values:
@@ -141,8 +143,8 @@ default_options:
   extent: null
   preserve-aspect-ratio: 1
   preserve-natural-size: 1
-  # private options set here
-  thread: 1
+  webp-support: 1
+  webp-lossless: 1
 ```
 
 Most of these options are ImageMagick flags, many can get pretty advanced, use the [ImageMagick docs](http://www.imagemagick.org/script/command-line-options.php).

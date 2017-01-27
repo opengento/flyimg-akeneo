@@ -12,18 +12,20 @@ use League\Flysystem\Filesystem;
  */
 class ImageProcessor
 {
+    /** Bin path */
+    const MOZJPEG_COMMAND = '/opt/mozjpeg/bin/cjpeg';
     const IM_CONVERT_COMMAND = '/usr/bin/convert';
     const IM_MOGRIFY_COMMAND = '/usr/bin/mogrify';
     const IM_IDENTITY_COMMAND = '/usr/bin/identify';
     const FACEDETECT_COMMAND = '/usr/local/bin/facedetect';
-    /**
-     * @var Filesystem
-     */
+
+    /** Image options excluded from IM command */
+    const EXCLUDED_IM_OPTIONS = ['quality', 'mozjpeg', 'refresh', 'webp-support', 'webp-lossless'];
+
+    /** @var Filesystem */
     protected $filesystem;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $params;
 
     /** @var  Image */
@@ -179,32 +181,40 @@ class ImageProcessor
         }
 
         foreach ($image->getOptions() as $key => $value) {
-            if (!empty($value) && !in_array($key, ['quality', 'mozjpeg', 'refresh'])) {
+            if (!empty($value) && !in_array($key, self::EXCLUDED_IM_OPTIONS)) {
                 $command[] = "-{$key} " . escapeshellarg($value);
             }
         }
 
-        $command = $this->checkMozJpeg($image, $command);
+        $command = $this->applyQuality($image, $command);
+
         $commandStr = implode(' ', $command);
         $image->setCommandString($commandStr);
     }
 
     /**
-     * Check MozJpeg configuration if it's enabled and append it to main convert command
+     * Apply the Quality processor based on options
      *
      * @param Image $image
      * @param $command
      * @return array
      */
-    private function checkMozJpeg(Image $image, $command)
+    protected function applyQuality(Image $image, $command)
     {
         $quality = $image->extractByKey('quality');
-        if (is_executable($this->params['mozjpeg_path']) && $image->extractByKey('mozjpeg') == 1) {
-            $command[] = "TGA:- | " . escapeshellarg($this->params['mozjpeg_path'])
+        /** WebP format */
+        if ($this->params['webp_support'] && $image->isWebPSupport()) {
+            $lossLess = $image->extractByKey('webp-lossless') ? 'true' : 'false';
+            $command[] = "-quality " . escapeshellarg($quality) .
+                " -define webp:lossless=" . $lossLess . " " . escapeshellarg($image->getNewFilePath());
+        } /** MozJpeg compression */
+        elseif (is_executable(self::MOZJPEG_COMMAND) && $image->extractByKey('mozjpeg') == 1) {
+            $command[] = "TGA:- | " . escapeshellarg(self::MOZJPEG_COMMAND)
                 . " -quality " . escapeshellarg($quality)
                 . " -outfile " . escapeshellarg($image->getNewFilePath())
                 . " -targa";
-        } else {
+        } /** default ImageMagick compression */
+        else {
             $command[] = "-quality " . escapeshellarg($quality) .
                 " " . escapeshellarg($image->getNewFilePath());
         }
@@ -217,7 +227,7 @@ class ImageProcessor
      * @param Image $image
      * @return array
      */
-    private function generateSize(Image $image)
+    protected function generateSize(Image $image)
     {
         $targetWidth = $image->extractByKey('width');
         $targetHeight = $image->extractByKey('height');
@@ -282,7 +292,7 @@ class ImageProcessor
      * @return string
      * @throws \Exception
      */
-    private function execute($commandStr)
+    protected function execute($commandStr)
     {
         exec($commandStr, $output, $code);
         if (count($output) === 0) {
@@ -306,7 +316,7 @@ class ImageProcessor
      * @param Image $image
      * @throws AppException
      */
-    private function checkRestrictedDomains(Image $image)
+    protected function checkRestrictedDomains(Image $image)
     {
         //check restricted_domains is enabled
         if ($this->params['restricted_domains'] &&
