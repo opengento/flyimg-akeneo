@@ -12,7 +12,7 @@ class DefaultController extends CoreController
      */
     public function indexAction()
     {
-        return 'Flyimg: Hello from ' . $this->app->escape('Docker!');
+        return $this->render('Default/index.twig');
     }
 
     /**

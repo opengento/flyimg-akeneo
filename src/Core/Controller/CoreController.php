@@ -24,6 +24,17 @@ class CoreController
     }
 
     /**
+     * @param $templateName
+     * @param array $params
+     * @return Response
+     */
+    public function render($templateName, $params = [])
+    {
+        $body = $this->app['twig']->render('@Core/' . $templateName, $params);
+        return new Response($body);
+    }
+
+    /**
      * @param Image $image
      * @param mixed $imageContent
      * @return Response
