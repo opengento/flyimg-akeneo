@@ -3,6 +3,7 @@
 use Core\Resolver\ControllerResolver;
 use Core\Service\ImageProcessor;
 use Monolog\Logger;
+use Silex\Provider\RoutingServiceProvider;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Routing\Loader\YamlFileLoader;
 use Symfony\Component\Routing\RouteCollection;
@@ -41,27 +42,28 @@ $app['routes'] = $app->extend('routes', function (RouteCollection $routes) {
     return $routes;
 });
 
-/**
- * Register Storage provider
- */
+/** Register Storage provider */
 $app->register(new \Core\Provider\StorageProvider());
 
-/**
- * Monolog Service
- */
+/** Monolog Service*/
 $app->register(new Silex\Provider\MonologServiceProvider(), array(
     'monolog.name' => 'flyimg',
     'monolog.level' => Logger::ERROR,
     'monolog.logfile' => LOG_DIR . 'dev.log',
 ));
-
+/** Controller Resolver */
 $app['resolver'] = function ($app) {
     return new ControllerResolver($app, $app['logger']);
 };
 
+/** Image processor Service */
 $app['image.processor'] = function ($app) {
     return new ImageProcessor($app['params'], $app['flysystems']['upload_dir']);
 };
+
+/** Twig Service */
+$app->register(new Silex\Provider\TwigServiceProvider());
+$app['twig.loader.filesystem']->addPath(__DIR__ . '/src/Core/Views', 'Core');
 
 /** debug conf */
 $app['debug'] = $app['params']['debug'];
