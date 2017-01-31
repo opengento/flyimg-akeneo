@@ -3,7 +3,7 @@
 {% block body %}
 
     <p>
-        <img src="{{ url('upload',{'options':'w_300','imageSrc':'https://raw.githubusercontent.com/flyimg/graphic-assets/master/logo/raster/flyimg-logo-rgb.png'}) }}">
+        <img src="{{ path('upload',{'options':'w_300','imageSrc':'https://raw.githubusercontent.com/flyimg/graphic-assets/master/logo/raster/flyimg-logo-rgb.png'}) }}">
     </p>
     <h2 id="hello-from-flyimg">Hello from Flyimg</h2>
 
@@ -12,7 +12,7 @@
 
     <p>how? Calling the source in the <code>&lt;img&gt;</code> like this:</p>
 
-    <code>{{ url('upload',{'options':'w_300','imageSrc':'https://raw.githubusercontent.com/flyimg/graphic-assets/master/logo/raster/flyimg-logo-rgb.png'}) }}</code>
+    <code>{{ path('upload',{'options':'w_300','imageSrc':'https://raw.githubusercontent.com/flyimg/graphic-assets/master/logo/raster/flyimg-logo-rgb.png'}) }}</code>
 
     <p>It got transformed from the original file which was 6000px wide!</p>
     <p>Now, on the server, there is a cached version of this transformed image. There is no need to do the
