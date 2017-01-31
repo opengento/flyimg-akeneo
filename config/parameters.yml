@@ -4,7 +4,7 @@ application_name: Flyimg.io
 debug: true
 
 #WebP support Enabled
-webp_support: false
+webp_enabled: false
 
 #Number of days for header cache expires `max_age`
 header_cache_days: 365

@@ -241,7 +241,8 @@ class Image
     public function isWebPSupport()
     {
         return in_array(self::WEBP_CONTENT_TYPE, $this->request->getAcceptableContentTypes())
-            && $this->extractByKey('webp-support', false);
+            && $this->extractByKey('webp-support', false)
+            && $this->defaultParams['webp_enabled'];
     }
 
     /**

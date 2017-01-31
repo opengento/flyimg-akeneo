@@ -203,7 +203,7 @@ class ImageProcessor
     {
         $quality = $image->extractByKey('quality');
         /** WebP format */
-        if ($this->params['webp_support'] && $image->isWebPSupport()) {
+        if ($this->params['webp_enabled'] && $image->isWebPSupport()) {
             $lossLess = $image->extractByKey('webp-lossless') ? 'true' : 'false';
             $command[] = "-quality " . escapeshellarg($quality) .
                 " -define webp:lossless=" . $lossLess . " " . escapeshellarg($image->getNewFilePath());
