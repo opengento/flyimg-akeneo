@@ -208,7 +208,9 @@ class ImageProcessor
             $command[] = "-quality " . escapeshellarg($quality) .
                 " -define webp:lossless=" . $lossLess . " " . escapeshellarg($image->getNewFilePath());
         } /** MozJpeg compression */
-        elseif (is_executable(self::MOZJPEG_COMMAND) && $image->extractByKey('mozjpeg') == 1 && !$image->isPngSupport()) {
+        elseif (is_executable(self::MOZJPEG_COMMAND) &&
+            $image->extractByKey('mozjpeg') == 1 &&
+            !$image->isPngSupport()) {
             $command[] = "TGA:- | " . escapeshellarg(self::MOZJPEG_COMMAND)
                 . " -quality " . escapeshellarg($quality)
                 . " -outfile " . escapeshellarg($image->getNewFilePath())
