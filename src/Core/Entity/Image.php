@@ -298,7 +298,8 @@ class Image
      */
     public function isMozJpegSupport()
     {
-        return $this->extractByKey('mozjpeg') == 1 && !$this->isPngSupport();
+        return $this->extractByKey('mozjpeg') == 1 &&
+            (!$this->isPngSupport() || in_array($this->outputExtension, [self::EXT_JPEG, self::EXT_JPG]));
     }
 
     /**
