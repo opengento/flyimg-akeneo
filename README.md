@@ -98,6 +98,7 @@ Options keys:
 options_keys:
   moz: mozjpeg
   q: quality
+  o: output
   unsh: unsharp
   fc: face-crop
   fcp: face-crop-position
@@ -117,7 +118,6 @@ options_keys:
   ett: extent
   par: preserve-aspect-ratio
   pns: preserve-natural-size
-  webp: webp-support
   webpl: webp-lossless
 ```
 
@@ -128,6 +128,7 @@ Default options values:
 default_options:
   mozjpeg: 1
   quality: 90
+  output: auto
   unsharp: null
   face-crop: 0
   face-crop-position: 0
@@ -147,7 +148,6 @@ default_options:
   extent: null
   preserve-aspect-ratio: 1
   preserve-natural-size: 1
-  webp-support: 1
   webp-lossless: 0
 ```
 
@@ -155,10 +155,11 @@ default_options:
 Most of these options are ImageMagick flags, many can get pretty advanced, use the [ImageMagick docs](http://www.imagemagick.org/script/command-line-options.php). 
 We put a lot of defaults in place to prevent distortion, bad quality 
 
-### webp-support `bool`
-**default: 1** : Compress and deliver a webP file if the browser requesting the resource supports **webP**.
+### output `string`
+**default: auto** : Output format requested, for example you can force the output as jpeg file in case of source file is png.
 
-**example:`webp_0`** 
+**example:`o_auto`,`o_png`,`o_webp`,`o_jpeg`,`o_jpg`** 
+
 
 ### mozjpeg `bool`
 **default: 1** : Use moz-jpeg compression library, if `false` it fallback to the default ImageMagick compression algorithm.
@@ -168,10 +169,6 @@ We put a lot of defaults in place to prevent distortion, bad quality
 `moz_0` 
 
 [![moz_0](http://oi.flyimg.io/upload/moz_0/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)](http://oi.flyimg.io/upload/moz_0/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
- 
-`moz_1` 
-
-[![moz_0](http://oi.flyimg.io/upload/moz_1/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)](http://oi.flyimg.io/upload/moz_1/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
 
 
 ### quality `int` (0-100)

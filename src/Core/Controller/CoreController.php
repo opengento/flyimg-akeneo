@@ -36,13 +36,12 @@ class CoreController
 
     /**
      * @param Image $image
-     * @param mixed $imageContent
      * @return Response
      */
-    public function generateImageResponse(Image $image, $imageContent)
+    public function generateImageResponse(Image $image)
     {
         $response = new Response();
-        $response->setContent($imageContent);
+        $response->setContent($image->getContent());
         $response = $this->setHeadersContent($image, $response);
         $image->unlinkUsedFiles();
         return $response;

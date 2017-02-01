@@ -18,9 +18,10 @@ class ImageProcessor
     const IM_MOGRIFY_COMMAND = '/usr/bin/mogrify';
     const IM_IDENTITY_COMMAND = '/usr/bin/identify';
     const FACEDETECT_COMMAND = '/usr/local/bin/facedetect';
+    const CWEBP_COMMAND = '/usr/bin/cwebp';
 
     /** Image options excluded from IM command */
-    const EXCLUDED_IM_OPTIONS = ['quality', 'mozjpeg', 'refresh', 'webp-support', 'webp-lossless'];
+    const EXCLUDED_IM_OPTIONS = ['quality', 'mozjpeg', 'refresh', 'webp-lossless'];
 
     /** @var Filesystem */
     protected $filesystem;
@@ -47,7 +48,7 @@ class ImageProcessor
      * Process give source file with given options
      *
      * @param Image $image
-     * @return string
+     * @return Image
      * @throws \Exception
      */
     public function process(Image $image)
@@ -61,7 +62,9 @@ class ImageProcessor
             $this->saveNewFile($image);
         }
 
-        return $this->filesystem->read($image->getNewFileName());
+        $image->setContent($this->filesystem->read($image->getNewFileName()));
+
+        return $image;
     }
 
     /**
@@ -203,14 +206,12 @@ class ImageProcessor
     {
         $quality = $image->extractByKey('quality');
         /** WebP format */
-        if ($this->params['webp_enabled'] && $image->isWebPSupport()) {
+        if (is_executable(self::CWEBP_COMMAND) && $image->isWebPSupport()) {
             $lossLess = $image->extractByKey('webp-lossless') ? 'true' : 'false';
             $command[] = "-quality " . escapeshellarg($quality) .
                 " -define webp:lossless=" . $lossLess . " " . escapeshellarg($image->getNewFilePath());
         } /** MozJpeg compression */
-        elseif (is_executable(self::MOZJPEG_COMMAND) &&
-            $image->extractByKey('mozjpeg') == 1 &&
-            !$image->isPngSupport()) {
+        elseif (is_executable(self::MOZJPEG_COMMAND) && $image->isMozJpegSupport()) {
             $command[] = "TGA:- | " . escapeshellarg(self::MOZJPEG_COMMAND)
                 . " -quality " . escapeshellarg($quality)
                 . " -outfile " . escapeshellarg($image->getNewFilePath())

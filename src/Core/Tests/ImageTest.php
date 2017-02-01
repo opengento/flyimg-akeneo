@@ -36,7 +36,6 @@ class ImageTest extends BaseTest
             'extent' => '100x80',
             'preserve-aspect-ratio' => '1',
             'preserve-natural-size' => '1',
-            'webp-support' => '1',
             'webp-lossless' => '0',
             'thread' => '1',
         ];
