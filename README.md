@@ -65,15 +65,18 @@ docker run -t -d -i -p 8080:80 -v $PWD:/var/www/html --name flyimg flyimg
 
 The above command will make the Dockerfile run supervisord command which launches 2 processes: **nginx** and **php-fpm** and starts listening on port 8080.
 
-**IMPORTANT!** If you cloned the project, only for the first time, you need to run composer install **inside** the container:
+**IMPORTANT!** If you cloned the project, only for the first time, you need to run `composer install` **inside** the container:
 
 ```sh
 docker exec -it flyimg composer install
 ```
 
-Again, it will take a few minutes. Same as before, if you get some errors you should try running `composer install` again. After it's done, you can navigate to your machine's IP in port 8080 (ex: http://192.168.99.100:8080/ ) an you should get a message saying: **Hello from Flyimg!** and a small homepage of flyimg already working. If you get any at this stage errors it's most likely that composer has not finished installing or skipped something.
+Again, it will take a few minutes to download the dependencies. Same as before, if you get some errors you should try running `composer install` again. 
 
-You can test your image resizing service by navigating to: http://192.168.99.100:8080/upload/w_333,h_333,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg
+After composer is done, you can navigate to your machine's IP in port 8080 (ex: http://192.168.99.100:8080/ ) ; you should get a message saying: **Hello from Flyimg!** and a small homepage of flyimg already working. If you get any errors  at this stage it's most likely that composer has not finished installing or skipped something.
+
+You can test your image resizing service by navigating to: http://192.168.99.100:8080/upload/w_130,h_113,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg
+![ff-logo](http://oi.flyimg.io/upload/w_130,h_113,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg)
 
 ### It's working!
 
