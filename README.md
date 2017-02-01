@@ -396,8 +396,8 @@ aws_s3:
 
 # Demo Application running:
 
-[oi.flyimg.io](http://oi.flyimg.io)
-[oi.flyimg.io/upload/w_300,h_250,c_1/https://m0.cl/t/resize-test_1920.jpg]
+[http://oi.flyimg.io](http://oi.flyimg.io)
+[http://oi.flyimg.io/upload/w_300,h_250,c_1/https://m0.cl/t/resize-test_1920.jpg]
 
 Licence: MIT
 
