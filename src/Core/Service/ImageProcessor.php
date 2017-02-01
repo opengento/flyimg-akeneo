@@ -208,7 +208,7 @@ class ImageProcessor
             $command[] = "-quality " . escapeshellarg($quality) .
                 " -define webp:lossless=" . $lossLess . " " . escapeshellarg($image->getNewFilePath());
         } /** MozJpeg compression */
-        elseif (is_executable(self::MOZJPEG_COMMAND) && $image->extractByKey('mozjpeg') == 1) {
+        elseif (is_executable(self::MOZJPEG_COMMAND) && $image->extractByKey('mozjpeg') == 1 && !$image->isPngSupport()) {
             $command[] = "TGA:- | " . escapeshellarg(self::MOZJPEG_COMMAND)
                 . " -quality " . escapeshellarg($quality)
                 . " -outfile " . escapeshellarg($image->getNewFilePath())
@@ -270,6 +270,10 @@ class ImageProcessor
             $size .= $resizingConstraints;
         } else {
             $size .= $preserveNaturalSize ? '\>' : '';
+        }
+        //In cas on png format, remove extent option
+        if ($image->isPngSupport()) {
+            $extent = '';
         }
 
         return [$size, $extent, $gravity];

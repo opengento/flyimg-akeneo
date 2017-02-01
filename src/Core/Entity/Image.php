@@ -13,8 +13,9 @@ class Image
 {
 
     /** Content TYPE */
-    const WEBP_CONTENT_TYPE = 'image/webp';
-    const JPEG_CONTENT_TYPE = 'image/jpeg';
+    const WEBP_MIME_TYPE = 'image/webp';
+    const JPEG_MIME_TYPE = 'image/jpeg';
+    const PNG_MIME_TYPE = 'image/png';
 
     /** @var array */
     protected $options = [];
@@ -30,6 +31,9 @@ class Image
 
     /** @var string */
     protected $temporaryFile;
+
+    /** @var string */
+    protected $sourceMimeType;
 
     /** @var string */
     protected $commandString;
@@ -183,6 +187,7 @@ class Image
         }
         $this->temporaryFile = TMP_DIR . uniqid("", true);
         file_put_contents($this->temporaryFile, $content);
+        $this->sourceMimeType = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $this->temporaryFile);
     }
 
     /**
@@ -230,9 +235,15 @@ class Image
         if ($this->options['refresh']) {
             $this->newFilePath .= uniqid("-", true);
         }
-        if ($this->isWebPSupport()) {
-            $this->newFilePath .= '.webp';
+        // setting file extension, this should be moved to it's own method.
+        $fileExtension = '.jepg';
+        if ($this->isPngSupport()) {
+            $fileExtension = '.png';
         }
+        if ($this->isWebPSupport() || $this->getSourceMimeType() === self::WEBP_MIME_TYPE) {
+            $fileExtension = '.webp';
+        }
+        $this->newFilePath .= $fileExtension;
     }
 
     /**
@@ -240,9 +251,17 @@ class Image
      */
     public function isWebPSupport()
     {
-        return in_array(self::WEBP_CONTENT_TYPE, $this->request->getAcceptableContentTypes())
+        return in_array(self::WEBP_MIME_TYPE, $this->request->getAcceptableContentTypes())
             && $this->extractByKey('webp-support', false)
             && $this->defaultParams['webp_enabled'];
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPngSupport()
+    {
+        return $this->getSourceMimeType() == self::PNG_MIME_TYPE;
     }
 
     /**
@@ -250,6 +269,11 @@ class Image
      */
     public function getResponseContentType()
     {
-        return $this->isWebPSupport() ? self::WEBP_CONTENT_TYPE : self::JPEG_CONTENT_TYPE;
+        return $this->isWebPSupport() ? self::WEBP_MIME_TYPE : self::JPEG_MIME_TYPE;
+    }
+
+    private function getSourceMimeType()
+    {
+        return $this->sourceMimeType;
     }
 }
