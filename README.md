@@ -7,32 +7,49 @@
 [![Test Coverage](https://codeclimate.com/github/flyimg/flyimg/badges/coverage.svg)](https://codeclimate.com/github/flyimg/flyimg/coverage)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/89b18390-ac79-4c3e-bf6c-92cd9993e8d3/mini.png)](https://insight.sensiolabs.com/projects/89b18390-ac79-4c3e-bf6c-92cd9993e8d39)
 
-Image resizing, cropping and compression on the fly with the impressive [MozJPEG](http://calendar.perfplanet.com/2014/mozjpeg-3-0) compression algorithm. A one Docker container to build your own Cloudinary-like service.
+Image resizing, cropping and compression on the fly with the impressive [MozJPEG](http://calendar.perfplanet.com/2014/mozjpeg-3-0) compression algorithm. One Docker container to build your own Cloudinary-like service.
+
+### Fetch  an image from anywhere; resize, compress, cache and serve...<small> and serve, and serve, and serve...</small>
 
 You pass the image URL and a set of keys with options, like size or compression. Flyimg will fetch the image, convert it, store it, cache it and serve it. The next time the request comes, it will serve the cached version.
 
-The application is based on [Silex](http://silex.sensiolabs.org/) microframework.
+```
+<!-- https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg -->
+<img src="https://my.img.service.io/upload/w_333,h_333,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg">
+```
+## For example
+(http://oi.flyimg.io/upload/w_300,h_250,c_1/https://m0.cl/t/resize-test_1920.jpg)
+![lago_ranco](http://oi.flyimg.io/upload/w_300,h_250,c_1/https://m0.cl/t/resize-test_1920.jpg)
 
 # Installation and setup
 
+You can spin up your own working server in 10 minutes using the provision scripts for [AWS Elastic Beanstalk](https://github.com/flyimg/Elastic-Beanstalk-provision) or the [DigitalOcean Ubuntu Droplets](https://github.com/flyimg/DigitalOcean-provision) <small>(more environments to come)</small>. For other environments or if you want to tweak and play in your machine before rolling out, read along...
+
 ## Requirements
 
-You will need to have Docker on your machine. Optionally you can use Docker machine to create a virtual environment.
+You will need to have **Docker** on your machine. Optionally you can use Docker machine to create a virtual environment. We have tested on **Mac**, **Windows** and **Ubuntu**.
 
 ## Instalation
 
-Create the project with `composer create` or clone it into your server.
+You can use `git` or `composer` for the first step. 
+
+### with git
+```sh
+git clone https://github.com/flyimg/flyimg.git
+```
+### with composer
+Create the project with `composer create` .
 
 ```sh
 composer create-project flyimg/flyimg
 ```
 
-CD into the folder and to build the images run:
+**CD into the folder** and to build the docker image by runing:
 
 ```sh
 docker build -t flyimg .
 ```
-This will download and build the main image, It will take a few minutes. If you get some sort of error related to files not found by apt-get or simmilar, try this same command again.
+This will download and build the main image, It will take a few minutes. If you get some sort of error related to files not found by apt-get or similar, try this same command again.
 
 Then run the container:
 
@@ -46,46 +63,30 @@ For Fish shell users:
 docker run -t -d -i -p 8080:80 -v $PWD:/var/www/html --name flyimg flyimg
 ```
 
-Dockerfile run supervisord command which lunch 2 process nginx and php-fpm
+The above command will make the Dockerfile run supervisord command which launches 2 processes: **nginx** and **php-fpm** and starts listening on port 8080.
 
-If you cloned the project, for the first time you need to run composer install inside the main container:
+**IMPORTANT!** If you cloned the project, only for the first time, you need to run composer install **inside** the container:
 
 ```sh
 docker exec -it flyimg composer install
 ```
 
+Again, it will take a few minutes. Same as before, if you get some errors you should try running `composer install` again. After it's done, you can navigate to your machine's IP in port 8080 (ex: http://192.168.99.100:8080/ ) an you should get a message saying: **Hello from Flyimg!** and a small homepage of flyimg already working. If you get any at this stage errors it's most likely that composer has not finished installing or skipped something.
 
-Again, it will take a few minutes. Same as before, if you get some errors you should try running `composer install` again. After it's done, you can navigate to your machine's IP in port 8080 (ex: http://192.168.99.100:8080/ ) an you should get a message saying: **Hello from Docker!**. This means fpm is ready to work.
+You can test your image resizing service by navigating to: http://192.168.99.100:8080/upload/w_333,h_333,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg
 
-You can test your image resizing service by navigating to: http://127.0.0.1:8080/upload/w_333,h_333,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg
+### It's working!
 
 This is fetching an image from Mozilla, resizing it, saving it and serving it.
 
-More configuration details below.
+#How to transform images
+
+You go to your server URL`http://imgs.kitty.com` and append `/upload/`;  after that you can pass these options below, followed by an underscore and a value `w_250,q_50` Options are separated by coma (configurable to other separator) . 
+After the options put the source of your image, it can be relative to your server or absolute: `/https://my.storage.io/imgs/pretty-kitten.jpg`
+So to get a pretty kitten at 250 pixels wide, with 50% compression, you would write.
+`<img src="http://imgs.kitty.com/upload/w_250,q_50/https://my.storage.io/imgs/pretty-kitten.jpg">`
 
 ---
-
-Storage:
---------
-Storage files based on [Flysystem](http://flysystem.thephpleague.com/) which is `a filesystem abstraction allows you to easily swap out a local filesystem for a remote one. Technical debt is reduced as is the chance of vendor lock-in.`
-
-Default storage is Local, but you can use other Adapters like AWS S3, Azure, FTP, Dropbox, ... 
-
-Currently, only the local and S3 are implemented as Storage Provider in Flyimg application, but you can add your specific one easily in `src/Core/Provider/StorageProvider.php` 
-
-### Using AWS S3 as Storage Provider:
-
-in parameters.yml change the `storage_system` option from local to s3, and fill in the aws_s3 options :
-
-```yml
-storage_system: s3
-
-aws_s3:
-  access_id: "s3-access-id"
-  secret_key: "s3-secret-id"
-  region: "s3-region"
-  bucket_name: "s3-bucket-name"
-```
 
 Options keys:
 -------------
@@ -144,10 +145,17 @@ default_options:
   preserve-aspect-ratio: 1
   preserve-natural-size: 1
   webp-support: 1
-  webp-lossless: 1
+  webp-lossless: 0
 ```
 
-Most of these options are ImageMagick flags, many can get pretty advanced, use the [ImageMagick docs](http://www.imagemagick.org/script/command-line-options.php).
+# Option details
+Most of these options are ImageMagick flags, many can get pretty advanced, use the [ImageMagick docs](http://www.imagemagick.org/script/command-line-options.php). 
+We put a lot of defaults in place to prevent distortion, bad quality 
+
+### webp-support `bool`
+**default: 1** : Compress and deliver a webP file if the browser requesting the resource supports **webP**.
+
+**example:`webp_0`** 
 
 ### mozjpeg `bool`
 **default: 1** : Use moz-jpeg compression library, if `false` it fallback to the default ImageMagick compression algorithm.
@@ -164,7 +172,7 @@ Most of these options are ImageMagick flags, many can get pretty advanced, use t
 
 
 ### quality `int` (0-100)
-**default: 90** : Sets the compression level for the output image.
+**default: 90** : Sets the compression level for the output image. Your best results will be between **70** and **95**.
 
 **example:`q_100`,`q_75`,...** 
 
@@ -342,7 +350,7 @@ whitelist_domains:
     - www.domain-2.org
 ```
 
-Test:
+Run test:
 -----
 ```sh
 docker exec -it flyimg ./vendor/bin/phpunit
@@ -353,11 +361,42 @@ How to Provision the application on:
 - [DigitalOcean](https://github.com/flyimg/DigitalOcean-provision)
 - [AWS Elastic-Beanstalk](https://github.com/flyimg/Elastic-Beanstalk-provision)
 
+# Technology stack
 
-Demo running Application:
--------------------------
+* Server: nginx
+* Application:  [Silex](http://silex.sensiolabs.org/) , a PHP microframework.
+* Image manipulation: ImageMagik
+* Storage: [Flysystem](http://flysystem.thephpleague.com/)
+* Containerisation:  Docker
+
+## Abstract storage with Flysystem:
+
+Storage files based on [Flysystem](http://flysystem.thephpleague.com/) which is `a filesystem abstraction allows you to easily swap out a local filesystem for a remote one. Technical debt is reduced as is the chance of vendor lock-in.`
+
+Default storage is Local, but you can use other Adapters like AWS S3, Azure, FTP, Dropbox, ... 
+
+Currently, only the local and S3 are implemented as Storage Provider in Flyimg application, but you can add your specific one easily in `src/Core/Provider/StorageProvider.php` 
+
+### Using AWS S3 as Storage Provider:
+
+in parameters.yml change the `storage_system` option from local to s3, and fill in the aws_s3 options :
+
+```yml
+storage_system: s3
+
+aws_s3:
+  access_id: "s3-access-id"
+  secret_key: "s3-secret-id"
+  region: "s3-region"
+  bucket_name: "s3-bucket-name"
+```
+
+# Demo Application running:
 
 [oi.flyimg.io](http://oi.flyimg.io)
+[oi.flyimg.io/upload/w_300,h_250,c_1/https://m0.cl/t/resize-test_1920.jpg]
+
+Licence: MIT
 
 
-Enjoy !
+Enjoy your Flyimaging!
