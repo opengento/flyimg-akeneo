@@ -18,7 +18,8 @@ You pass the image URL and a set of keys with options, like size or compression.
 <img src="https://my.img.service.io/upload/w_333,h_333,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg">
 ```
 ## For example
-(http://oi.flyimg.io/upload/w_300,h_250,c_1/https://m0.cl/t/resize-test_1920.jpg)
+http://oi.flyimg.io/upload/w_300,h_250,c_1/https://m0.cl/t/resize-test_1920.jpg
+
 ![lago_ranco](http://oi.flyimg.io/upload/w_300,h_250,c_1/https://m0.cl/t/resize-test_1920.jpg)
 
 # Installation and setup
@@ -76,6 +77,7 @@ Again, it will take a few minutes to download the dependencies. Same as before, 
 After composer is done, you can navigate to your machine's IP in port 8080 (ex: http://192.168.99.100:8080/ ) ; you should get a message saying: **Hello from Flyimg!** and a small homepage of flyimg already working. If you get any errors  at this stage it's most likely that composer has not finished installing or skipped something.
 
 You can test your image resizing service by navigating to: http://192.168.99.100:8080/upload/w_130,h_113,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg
+
 ![ff-logo](http://oi.flyimg.io/upload/w_130,h_113,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg)
 
 ### It's working!
@@ -394,6 +396,7 @@ aws_s3:
 # Demo Application running:
 
 [http://oi.flyimg.io](http://oi.flyimg.io)
+
 [http://oi.flyimg.io/upload/w_300,h_250,c_1/https://m0.cl/t/resize-test_1920.jpg]
 
 Licence: MIT
