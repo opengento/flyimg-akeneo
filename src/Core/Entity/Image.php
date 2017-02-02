@@ -2,6 +2,7 @@
 
 namespace Core\Entity;
 
+use Core\Exception\InvalidArgumentException;
 use Core\Exception\ReadFileException;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -13,8 +14,15 @@ class Image
 {
 
     /** Content TYPE */
-    const WEBP_CONTENT_TYPE = 'image/webp';
-    const JPEG_CONTENT_TYPE = 'image/jpeg';
+    const WEBP_MIME_TYPE = 'image/webp';
+    const JPEG_MIME_TYPE = 'image/jpeg';
+    const PNG_MIME_TYPE = 'image/png';
+
+    /** Extension output */
+    const EXT_AUTO = 'auto';
+    const EXT_PNG = 'png';
+    const EXT_WEBP = 'webp';
+    const EXT_JPG = 'jpg';
 
     /** @var array */
     protected $options = [];
@@ -32,13 +40,22 @@ class Image
     protected $temporaryFile;
 
     /** @var string */
+    protected $sourceMimeType;
+
+    /** @var string */
+    protected $outputExtension;
+
+    /** @var string */
     protected $commandString;
 
     /** @var array */
     protected $defaultParams;
 
-    /** @var  Request */
+    /** @var Request */
     protected $request;
+
+    /** @var string */
+    protected $content;
 
     /**
      * Image constructor.
@@ -55,6 +72,7 @@ class Image
         $this->request = Request::createFromGlobals();
         $this->saveToTemporaryFile();
         $this->generateFilesName();
+        $this->generateFileExtension();
     }
 
     /**
@@ -183,6 +201,7 @@ class Image
         }
         $this->temporaryFile = TMP_DIR . uniqid("", true);
         file_put_contents($this->temporaryFile, $content);
+        $this->sourceMimeType = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $this->temporaryFile);
     }
 
     /**
@@ -230,9 +249,30 @@ class Image
         if ($this->options['refresh']) {
             $this->newFilePath .= uniqid("-", true);
         }
-        if ($this->isWebPSupport()) {
-            $this->newFilePath .= '.webp';
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     */
+    protected function generateFileExtension()
+    {
+        $outputExtension = $this->extractByKey('output');
+        if ($outputExtension == self::EXT_AUTO) {
+            $fileExtension = '.' . self::EXT_JPG;
+            if ($this->isPngSupport()) {
+                $fileExtension = '.' . self::EXT_PNG;
+            }
+            if ($this->isWebPSupport() || $this->getSourceMimeType() === self::WEBP_MIME_TYPE) {
+                $fileExtension = '.' . self::EXT_WEBP;
+            }
+        } else {
+            if (!in_array($outputExtension, [self::EXT_PNG, self::EXT_JPG, self::EXT_JPG, self::EXT_WEBP])) {
+                throw new InvalidArgumentException("Invalid file output requested");
+            }
+            $fileExtension = '.' . $outputExtension;
         }
+        $this->newFilePath .= $fileExtension;
+        $this->outputExtension = $outputExtension;
     }
 
     /**
@@ -240,9 +280,25 @@ class Image
      */
     public function isWebPSupport()
     {
-        return in_array(self::WEBP_CONTENT_TYPE, $this->request->getAcceptableContentTypes())
-            && $this->extractByKey('webp-support', false)
-            && $this->defaultParams['webp_enabled'];
+        return in_array(self::WEBP_MIME_TYPE, $this->request->getAcceptableContentTypes())
+            && ($this->defaultParams['webp_enabled'] || $this->outputExtension == self::EXT_WEBP);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPngSupport()
+    {
+        return $this->getSourceMimeType() == self::PNG_MIME_TYPE;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isMozJpegSupport()
+    {
+        return $this->extractByKey('mozjpeg') == 1 &&
+            (!$this->isPngSupport() || $this->outputExtension == self::EXT_JPG);
     }
 
     /**
@@ -250,6 +306,36 @@ class Image
      */
     public function getResponseContentType()
     {
-        return $this->isWebPSupport() ? self::WEBP_CONTENT_TYPE : self::JPEG_CONTENT_TYPE;
+        if ($this->isWebPSupport()) {
+            return self::WEBP_MIME_TYPE;
+        }
+        if ($this->isPngSupport()) {
+            return self::PNG_MIME_TYPE;
+        }
+        return self::JPEG_MIME_TYPE;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSourceMimeType()
+    {
+        return $this->sourceMimeType;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContent()
+    {
+        return $this->content;
+    }
+
+    /**
+     * @param string $content
+     */
+    public function setContent($content)
+    {
+        $this->content = $content;
     }
 }

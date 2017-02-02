@@ -15,7 +15,6 @@ class ImageProcessorTest extends BaseTest
         /** @var ImageProcessor $processor */
         $processor = $this->app['image.processor'];
         $processor->process($this->image);
-
         $this->assertFileExists($this->image->getNewFilePath());
     }
 }
