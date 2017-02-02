@@ -22,7 +22,6 @@ class Image
     const EXT_AUTO = 'auto';
     const EXT_PNG = 'png';
     const EXT_WEBP = 'webp';
-    const EXT_JPEG = 'jpeg';
     const EXT_JPG = 'jpg';
 
     /** @var array */
@@ -259,7 +258,7 @@ class Image
     {
         $outputExtension = $this->extractByKey('output');
         if ($outputExtension == self::EXT_AUTO) {
-            $fileExtension = '.' . self::EXT_JPEG;
+            $fileExtension = '.' . self::EXT_JPG;
             if ($this->isPngSupport()) {
                 $fileExtension = '.' . self::EXT_PNG;
             }
@@ -267,7 +266,7 @@ class Image
                 $fileExtension = '.' . self::EXT_WEBP;
             }
         } else {
-            if (!in_array($outputExtension, [self::EXT_PNG, self::EXT_JPEG, self::EXT_JPG, self::EXT_WEBP])) {
+            if (!in_array($outputExtension, [self::EXT_PNG, self::EXT_JPG, self::EXT_JPG, self::EXT_WEBP])) {
                 throw new InvalidArgumentException("Invalid file output requested");
             }
             $fileExtension = '.' . $outputExtension;
@@ -299,7 +298,7 @@ class Image
     public function isMozJpegSupport()
     {
         return $this->extractByKey('mozjpeg') == 1 &&
-            (!$this->isPngSupport() || in_array($this->outputExtension, [self::EXT_JPEG, self::EXT_JPG]));
+            (!$this->isPngSupport() || $this->outputExtension == self::EXT_JPG);
     }
 
     /**
@@ -307,7 +306,13 @@ class Image
      */
     public function getResponseContentType()
     {
-        return $this->isWebPSupport() ? self::WEBP_MIME_TYPE : self::JPEG_MIME_TYPE;
+        if ($this->isWebPSupport()) {
+            return self::WEBP_MIME_TYPE;
+        }
+        if ($this->isPngSupport()) {
+            return self::PNG_MIME_TYPE;
+        }
+        return self::JPEG_MIME_TYPE;
     }
 
     /**
