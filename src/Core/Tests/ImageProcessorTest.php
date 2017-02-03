@@ -61,5 +61,4 @@ class ImageProcessorTest extends BaseTest
     {
         return finfo_file(finfo_open(FILEINFO_MIME_TYPE), $filePath);
     }
-
 }
