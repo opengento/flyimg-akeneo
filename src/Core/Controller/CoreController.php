@@ -3,9 +3,7 @@
 namespace Core\Controller;
 
 use Core\Entity\Image;
-use Core\Service\ImageProcessor;
 use Silex\Application;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class CoreController

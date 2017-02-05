@@ -3,7 +3,6 @@
 use Core\Resolver\ControllerResolver;
 use Core\Service\ImageProcessor;
 use Monolog\Logger;
-use Silex\Provider\RoutingServiceProvider;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Routing\Loader\YamlFileLoader;
 use Symfony\Component\Routing\RouteCollection;

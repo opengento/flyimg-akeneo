@@ -1,6 +1,5 @@
 /vendor/
 /var/
-.DS_Store
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*

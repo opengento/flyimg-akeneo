@@ -28,7 +28,6 @@ class DefaultController extends CoreController
         try {
             $image =  $manager->process($image);
         } catch (\Exception $e) {
-            $imageContent = null;
             $image->unlinkUsedFiles();
             $formattedMessage = '<pre>' . $e->getMessage() . '</pre>';
             return new Response($formattedMessage, Response::HTTP_FORBIDDEN);

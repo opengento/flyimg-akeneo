@@ -260,7 +260,6 @@ class ImageProcessor
             $resizingConstraints .= $preserveNaturalSize ? '\>' : '';
             if ($crop) {
                 $resizingConstraints .= '^';
-                //$extent .= '+repage';//
                 /**
                  * still need to solve the combination of ^
                  * -extent and +repage . Will need to do calculations with the
