@@ -1,4 +1,5 @@
 <img alt="Flyimglogo" src="https://raw.githubusercontent.com/flyimg/graphic-assets/master/logo/raster/flyimg-logo-rgb.png" width="300">
+
 # Flyimg
 
 [![Build Status](https://travis-ci.org/flyimg/flyimg.svg?branch=master)](https://travis-ci.org/flyimg/flyimg)
@@ -368,6 +369,7 @@ How to Provision the application on:
 * Server: nginx
 * Application:  [Silex](http://silex.sensiolabs.org/) , a PHP microframework.
 * Image manipulation: ImageMagik
+* JPEG encoder: MozJpeg
 * Storage: [Flysystem](http://flysystem.thephpleague.com/)
 * Containerisation:  Docker
 

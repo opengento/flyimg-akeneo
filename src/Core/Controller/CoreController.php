@@ -47,6 +47,20 @@ class CoreController
 
     /**
      * @param Image $image
+     * @return Response
+     */
+    public function generatePathResponse(Image $image)
+    {
+        $response = new Response();
+        $imagePath = $image->getNewFileName();
+        $imagePath = sprintf($this->app['flysystems']['file_path_resolver'], $imagePath);
+        $response->setContent($imagePath);
+        $image->unlinkUsedFiles();
+        return $response;
+    }
+
+    /**
+     * @param Image $image
      * @param Response $response
      * @return Response
      */

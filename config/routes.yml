@@ -7,3 +7,8 @@ upload:
    defaults: { _controller: 'Core\Controller\DefaultController::uploadAction', imageSrc:'' }
    requirements:
       imageSrc: .+
+path:
+   path : /path/{options}/{imageSrc}
+   defaults: { _controller: 'Core\Controller\DefaultController::pathAction', imageSrc:'' }
+   requirements:
+      imageSrc: .+
