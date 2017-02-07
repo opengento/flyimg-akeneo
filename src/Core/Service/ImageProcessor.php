@@ -239,10 +239,10 @@ class ImageProcessor
         $size = '';
 
         if ($targetWidth) {
-            $size .= (string)$targetWidth;
+            $size .= (string)escapeshellarg($targetWidth);
         }
         if ($targetHeight) {
-            $size .= (string)'x' . $targetHeight;
+            $size .= (string)'x' . escapeshellarg($targetHeight);
         }
 
         // When width and height a whole bunch of special cases must be taken into consideration.
@@ -254,8 +254,8 @@ class ImageProcessor
         $gravity = '';
 
         if ($targetWidth && $targetHeight) {
-            $extent = ' -extent ' . $size;
-            $gravity = ' -gravity ' . $gravityValue;
+            $extent = ' -extent ' . escapeshellarg($size);
+            $gravity = ' -gravity ' . escapeshellarg($gravityValue);
             $resizingConstraints = '';
             $resizingConstraints .= $preserveNaturalSize ? '\>' : '';
             if ($crop) {
