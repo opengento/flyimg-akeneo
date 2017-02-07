@@ -254,7 +254,7 @@ class ImageProcessor
         $gravity = '';
 
         if ($targetWidth && $targetHeight) {
-            $extent = ' -extent ' . escapeshellarg($size);
+            $extent = ' -extent ' . $size;
             $gravity = ' -gravity ' . escapeshellarg($gravityValue);
             $resizingConstraints = '';
             $resizingConstraints .= $preserveNaturalSize ? '\>' : '';
