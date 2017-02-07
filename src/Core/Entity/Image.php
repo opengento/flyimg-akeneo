@@ -272,6 +272,7 @@ class Image
             $fileExtension = '.' . $outputExtension;
         }
         $this->newFilePath .= $fileExtension;
+        $this->newFileName .= $fileExtension;
         $this->outputExtension = $outputExtension;
     }
 

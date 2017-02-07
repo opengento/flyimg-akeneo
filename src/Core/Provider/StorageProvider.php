@@ -49,6 +49,14 @@ class StorageProvider implements ServiceProviderInterface
                 ],
             ],
         ]);
+
+        $app['flysystems']['file_path_resolver'] = function () use ($app) {
+            $schema = $app['request_context']->getScheme();
+            $host = $app['request_context']->getHost();
+            $port = $app['request_context']->getHttpPort();
+
+            return $schema . '://' . $host . ($port == '80' ? '' : ':' . $port) . '/' . UPLOAD_WEB_DIR . '%s';
+        };
     }
 
     /**
@@ -81,5 +89,9 @@ class StorageProvider implements ServiceProviderInterface
                 ]
             ]
         ]);
+
+        $app['flysystems']['file_path_resolver'] = function () use ($app, $s3Params) {
+            return sprintf('https://s3.%s.amazonaws.com/%s/', $s3Params['region'], $s3Params['bucket_name']) . '%s';
+        };
     }
 }
