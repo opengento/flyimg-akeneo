@@ -51,11 +51,15 @@ class StorageProvider implements ServiceProviderInterface
         ]);
 
         $app['flysystems']['file_path_resolver'] = function () use ($app) {
-            $schema = $app['request_context']->getScheme();
-            $host = $app['request_context']->getHost();
-            $port = $app['request_context']->getHttpPort();
+            $hostname = getenv('HOSTNAME');
+            if (empty($hostname)) {
+                $schema = $app['request_context']->getScheme();
+                $host = $app['request_context']->getHost();
+                $port = $app['request_context']->getHttpPort();
+                $hostname = $schema . '://' . $host . ($port == '80' ? '' : ':' . $port);
+            }
 
-            return $schema . '://' . $host . ($port == '80' ? '' : ':' . $port) . '/' . UPLOAD_WEB_DIR . '%s';
+            return $hostname . '/' . UPLOAD_WEB_DIR . '%s';
         };
     }
 
