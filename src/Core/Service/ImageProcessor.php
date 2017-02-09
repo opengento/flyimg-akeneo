@@ -344,8 +344,4 @@ class ImageProcessor
             );
         }
     }
-
-    public function unlinkUsedFiles()
-    {
-    }
 }
