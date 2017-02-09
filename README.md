@@ -401,6 +401,17 @@ aws_s3:
 
 [http://oi.flyimg.io/upload/w_300,h_250,c_1/https://m0.cl/t/resize-test_1920.jpg]
 
+
+# Roadmap:
+
+- [ ] Benchmark the application.
+- [ ] Decouple the core logic from Silex in order to make portable.
+- [ ] Test it with couple of frameworks, Phalcon Php is a good candidate.
+- [ ] Add overlays functionality (Text on top of the image)
+- [ ] Storage auto-mapping
+
+
+
 Licence: MIT
 
 
