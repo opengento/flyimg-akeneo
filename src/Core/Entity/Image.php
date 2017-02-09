@@ -51,9 +51,6 @@ class Image
     /** @var array */
     protected $defaultParams;
 
-    /** @var Request */
-    protected $request;
-
     /** @var string */
     protected $content;
 
@@ -69,7 +66,6 @@ class Image
         $this->options = $this->parseOptions($options);
         $this->sourceFile = $sourceFile;
 
-        $this->request = Request::createFromGlobals();
         $this->saveToTemporaryFile();
         $this->generateFilesName();
         $this->generateFileExtension();
@@ -282,7 +278,7 @@ class Image
      */
     public function isWebPSupport()
     {
-        return in_array(self::WEBP_MIME_TYPE, $this->request->getAcceptableContentTypes())
+        return in_array(self::WEBP_MIME_TYPE, Request::createFromGlobals()->getAcceptableContentTypes())
             && ($this->defaultParams['webp_enabled'] || $this->outputExtension == self::EXT_WEBP);
     }
 
