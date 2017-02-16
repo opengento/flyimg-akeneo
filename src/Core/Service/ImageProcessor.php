@@ -175,13 +175,20 @@ class ImageProcessor
         // we default to thumbnail
         $resizeOperator = $resize ? 'resize' : 'thumbnail';
         $command = [];
-        $command[] = self::IM_CONVERT_COMMAND.
-            " ".$image->getTemporaryFile().
-            ' -'.$resizeOperator.' '.$size.$gravity.$extent.
+        $command[] = self::IM_CONVERT_COMMAND." ".$image->getTemporaryFile();
+
+        if ($image->isGifSupport()) {
+            $command[] = '-coalesce';
+        }
+
+        $command[] = ' -'.$resizeOperator.' '.
+            $size.$gravity.$extent.
             ' -colorspace sRGB';
 
-        if (!empty($thread)) {
-            $command[] = "-limit thread ".escapeshellarg($thread);
+        foreach ($image->getOptions() as $key => $value) {
+            if (!empty($value) && !in_array($key, self::EXCLUDED_IM_OPTIONS)) {
+                $command[] = "-{$key} ".escapeshellarg($value);
+            }
         }
 
         // strip is added internally by ImageMagick when using -thumbnail
@@ -189,10 +196,8 @@ class ImageProcessor
             $command[] = "-strip ";
         }
 
-        foreach ($image->getOptions() as $key => $value) {
-            if (!empty($value) && !in_array($key, self::EXCLUDED_IM_OPTIONS)) {
-                $command[] = "-{$key} ".escapeshellarg($value);
-            }
+        if (!empty($thread)) {
+            $command[] = "-limit thread ".escapeshellarg($thread);
         }
 
         $command = $this->applyQuality($image, $command);
@@ -217,7 +222,7 @@ class ImageProcessor
             $command[] = "-quality ".escapeshellarg($quality).
                 " -define webp:lossless=".$lossLess." ".escapeshellarg($image->getNewFilePath());
         } /** MozJpeg compression */
-        elseif (is_executable(self::MOZJPEG_COMMAND) && $image->isMozJpegSupport()) {
+        elseif (is_executable(self::MOZJPEG_COMMAND) && $image->isMozJpegSupport() && !$image->isGifSupport()) {
             $command[] = "TGA:- | ".escapeshellarg(self::MOZJPEG_COMMAND)
                 ." -quality ".escapeshellarg($quality)
                 ." -outfile ".escapeshellarg($image->getNewFilePath())
