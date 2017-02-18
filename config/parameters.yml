@@ -55,6 +55,7 @@ options_keys:
   par: preserve-aspect-ratio
   pns: preserve-natural-size
   webpl: webp-lossless
+  gf: gif-frame
 
 
 #Default options values
@@ -82,5 +83,6 @@ default_options:
   preserve-aspect-ratio: 1
   preserve-natural-size: 1
   webp-lossless: 0
+  gif-frame: 0
   # private options set here
   thread: 1

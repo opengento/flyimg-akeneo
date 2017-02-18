@@ -8,7 +8,9 @@ class BaseTest extends \PHPUnit_Framework_TestCase
 {
     const JPG_TEST_IMAGE = __DIR__.'/TestImages/square.jpg';
     const PNG_TEST_IMAGE = __DIR__.'/TestImages/square.png';
+    const GIF_TEST_IMAGE = __DIR__.'/TestImages/animated.gif';
     const OPTION_URL = 'w_200,h_100,c_1,bg_#999999,rz_1,sc_50,r_-45,unsh_0.25x0.25+8+0.065,ett_100x80,fb_1,rf_1';
+    const GIF_OPTION_URL = 'w_200,h_100,rf_1';
 
     /**
      * @var Application

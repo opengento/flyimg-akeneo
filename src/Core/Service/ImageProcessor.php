@@ -169,18 +169,25 @@ class ImageProcessor
         $strip = $image->extractByKey('strip');
         $thread = $image->extractByKey('thread');
         $resize = $image->extractByKey('resize');
+        $frame = $image->extractByKey('gif-frame');
 
         list($size, $extent, $gravity) = $this->generateSize($image);
 
         // we default to thumbnail
         $resizeOperator = $resize ? 'resize' : 'thumbnail';
         $command = [];
-        $command[] = self::IM_CONVERT_COMMAND." ".$image->getTemporaryFile();
+        $command[] = self::IM_CONVERT_COMMAND;
+        $tmpFileName = $image->getTemporaryFile();
 
+        //Check the image is gif
         if ($image->isGifSupport()) {
             $command[] = '-coalesce';
+            if ($image->getOutputExtension() != Image::EXT_GIF) {
+                $tmpFileName .= '['.escapeshellarg($frame).']';
+            }
         }
 
+        $command[] = " ".$tmpFileName;
         $command[] = ' -'.$resizeOperator.' '.
             $size.$gravity.$extent.
             ' -colorspace sRGB';
@@ -222,7 +229,7 @@ class ImageProcessor
             $command[] = "-quality ".escapeshellarg($quality).
                 " -define webp:lossless=".$lossLess." ".escapeshellarg($image->getNewFilePath());
         } /** MozJpeg compression */
-        elseif (is_executable(self::MOZJPEG_COMMAND) && $image->isMozJpegSupport() && !$image->isGifSupport()) {
+        elseif (is_executable(self::MOZJPEG_COMMAND) && $image->isMozJpegSupport()) {
             $command[] = "TGA:- | ".escapeshellarg(self::MOZJPEG_COMMAND)
                 ." -quality ".escapeshellarg($quality)
                 ." -outfile ".escapeshellarg($image->getNewFilePath())
