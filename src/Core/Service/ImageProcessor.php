@@ -169,19 +169,33 @@ class ImageProcessor
         $strip = $image->extractByKey('strip');
         $thread = $image->extractByKey('thread');
         $resize = $image->extractByKey('resize');
+        $frame = $image->extractByKey('gif-frame');
 
         list($size, $extent, $gravity) = $this->generateSize($image);
 
         // we default to thumbnail
         $resizeOperator = $resize ? 'resize' : 'thumbnail';
         $command = [];
-        $command[] = self::IM_CONVERT_COMMAND.
-            " ".$image->getTemporaryFile().
-            ' -'.$resizeOperator.' '.$size.$gravity.$extent.
+        $command[] = self::IM_CONVERT_COMMAND;
+        $tmpFileName = $image->getTemporaryFile();
+
+        //Check the image is gif
+        if ($image->isGifSupport()) {
+            $command[] = '-coalesce';
+            if ($image->getOutputExtension() != Image::EXT_GIF) {
+                $tmpFileName .= '['.escapeshellarg($frame).']';
+            }
+        }
+
+        $command[] = " ".$tmpFileName;
+        $command[] = ' -'.$resizeOperator.' '.
+            $size.$gravity.$extent.
             ' -colorspace sRGB';
 
-        if (!empty($thread)) {
-            $command[] = "-limit thread ".escapeshellarg($thread);
+        foreach ($image->getOptions() as $key => $value) {
+            if (!empty($value) && !in_array($key, self::EXCLUDED_IM_OPTIONS)) {
+                $command[] = "-{$key} ".escapeshellarg($value);
+            }
         }
 
         // strip is added internally by ImageMagick when using -thumbnail
@@ -189,10 +203,8 @@ class ImageProcessor
             $command[] = "-strip ";
         }
 
-        foreach ($image->getOptions() as $key => $value) {
-            if (!empty($value) && !in_array($key, self::EXCLUDED_IM_OPTIONS)) {
-                $command[] = "-{$key} ".escapeshellarg($value);
-            }
+        if (!empty($thread)) {
+            $command[] = "-limit thread ".escapeshellarg($thread);
         }
 
         $command = $this->applyQuality($image, $command);

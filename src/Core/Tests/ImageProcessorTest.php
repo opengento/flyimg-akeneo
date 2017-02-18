@@ -16,18 +16,18 @@ class ImageProcessorTest extends BaseTest
         $processor = $this->app['image.processor'];
         $this->image = $processor->process(parent::OPTION_URL.',o_png', parent::PNG_TEST_IMAGE);
         $this->assertFileExists($this->image->getNewFilePath());
-        $this->assertEquals('image/png', $this->getFileMemeType($this->image->getNewFilePath()));
+        $this->assertEquals(Image::PNG_MIME_TYPE, $this->getFileMemeType($this->image->getNewFilePath()));
     }
 
     /**
      */
-    public function testProcessWebP()
+    public function testProcessWebpFromPng()
     {
         /** @var ImageProcessor $processor */
         $processor = $this->app['image.processor'];
         $this->image = $processor->process(parent::OPTION_URL.',o_webp', parent::PNG_TEST_IMAGE);
         $this->assertFileExists($this->image->getNewFilePath());
-        $this->assertEquals('image/webp', $this->getFileMemeType($this->image->getNewFilePath()));
+        $this->assertEquals(Image::WEBP_MIME_TYPE, $this->getFileMemeType($this->image->getNewFilePath()));
     }
 
     /**
@@ -38,7 +38,18 @@ class ImageProcessorTest extends BaseTest
         $processor = $this->app['image.processor'];
         $this->image = $processor->process(parent::OPTION_URL.',o_jpg', parent::PNG_TEST_IMAGE);
         $this->assertFileExists($this->image->getNewFilePath());
-        $this->assertEquals('image/jpeg', $this->getFileMemeType($this->image->getNewFilePath()));
+        $this->assertEquals(Image::JPEG_MIME_TYPE, $this->getFileMemeType($this->image->getNewFilePath()));
+    }
+
+    /**
+     */
+    public function testProcessGifFromPng()
+    {
+        /** @var ImageProcessor $processor */
+        $processor = $this->app['image.processor'];
+        $this->image = $processor->process(parent::OPTION_URL.',o_gif', parent::PNG_TEST_IMAGE);
+        $this->assertFileExists($this->image->getNewFilePath());
+        $this->assertEquals(Image::GIF_MIME_TYPE, $this->getFileMemeType($this->image->getNewFilePath()));
     }
 
     /**
@@ -49,6 +60,50 @@ class ImageProcessorTest extends BaseTest
         $processor = $this->app['image.processor'];
         $this->image = $processor->process(parent::OPTION_URL, parent::JPG_TEST_IMAGE);
         $this->assertFileExists($this->image->getNewFilePath());
+    }
+
+    /**
+     */
+    public function testProcessGif()
+    {
+        /** @var ImageProcessor $processor */
+        $processor = $this->app['image.processor'];
+        $this->image = $processor->process(parent::GIF_OPTION_URL, parent::GIF_TEST_IMAGE);
+        $this->assertFileExists($this->image->getNewFilePath());
+        $this->assertEquals(Image::GIF_MIME_TYPE, $this->getFileMemeType($this->image->getNewFilePath()));
+    }
+
+    /**
+     */
+    public function testProcessPngFromGif()
+    {
+        /** @var ImageProcessor $processor */
+        $processor = $this->app['image.processor'];
+        $this->image = $processor->process(parent::GIF_OPTION_URL.',o_png', parent::GIF_TEST_IMAGE);
+        $this->assertFileExists($this->image->getNewFilePath());
+        $this->assertEquals(Image::PNG_MIME_TYPE, $this->getFileMemeType($this->image->getNewFilePath()));
+    }
+
+    /**
+     */
+    public function testProcessJpgFromGif()
+    {
+        /** @var ImageProcessor $processor */
+        $processor = $this->app['image.processor'];
+        $this->image = $processor->process(parent::GIF_OPTION_URL.',o_jpg', parent::GIF_TEST_IMAGE);
+        $this->assertFileExists($this->image->getNewFilePath());
+        $this->assertEquals(Image::JPEG_MIME_TYPE, $this->getFileMemeType($this->image->getNewFilePath()));
+    }
+
+    /**
+     */
+    public function testProcessWebpFromGif()
+    {
+        /** @var ImageProcessor $processor */
+        $processor = $this->app['image.processor'];
+        $this->image = $processor->process(parent::GIF_OPTION_URL.',o_webp', parent::GIF_TEST_IMAGE);
+        $this->assertFileExists($this->image->getNewFilePath());
+        $this->assertEquals(Image::WEBP_MIME_TYPE, $this->getFileMemeType($this->image->getNewFilePath()));
     }
 
     /**

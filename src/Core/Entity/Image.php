@@ -17,12 +17,14 @@ class Image
     const WEBP_MIME_TYPE = 'image/webp';
     const JPEG_MIME_TYPE = 'image/jpeg';
     const PNG_MIME_TYPE = 'image/png';
+    const GIF_MIME_TYPE = 'image/gif';
 
     /** Extension output */
     const EXT_AUTO = 'auto';
     const EXT_PNG = 'png';
     const EXT_WEBP = 'webp';
     const EXT_JPG = 'jpg';
+    const EXT_GIF = 'gif';
 
     /** @var array */
     protected $options = [];
@@ -255,22 +257,29 @@ class Image
     {
         $outputExtension = $this->extractByKey('output');
         if ($outputExtension == self::EXT_AUTO) {
-            $fileExtension = '.'.self::EXT_JPG;
+            $this->outputExtension = self::EXT_JPG;
             if ($this->isPngSupport()) {
-                $fileExtension = '.'.self::EXT_PNG;
+                $this->outputExtension = self::EXT_PNG;
             }
             if ($this->isWebPSupport() || $this->getSourceMimeType() === self::WEBP_MIME_TYPE) {
-                $fileExtension = '.'.self::EXT_WEBP;
+                $this->outputExtension = self::EXT_WEBP;
+            }
+            if ($this->isGifSupport()) {
+                $this->outputExtension = self::EXT_GIF;
             }
         } else {
-            if (!in_array($outputExtension, [self::EXT_PNG, self::EXT_JPG, self::EXT_JPG, self::EXT_WEBP])) {
+            if (!in_array(
+                $outputExtension,
+                [self::EXT_PNG, self::EXT_JPG, self::EXT_GIF, self::EXT_JPG, self::EXT_WEBP]
+            )
+            ) {
                 throw new InvalidArgumentException("Invalid file output requested");
             }
-            $fileExtension = '.'.$outputExtension;
+            $this->outputExtension = $outputExtension;
         }
+        $fileExtension = '.'.$this->outputExtension;
         $this->newFilePath .= $fileExtension;
         $this->newFileName .= $fileExtension;
-        $this->outputExtension = $outputExtension;
     }
 
     /**
@@ -280,6 +289,15 @@ class Image
     {
         return in_array(self::WEBP_MIME_TYPE, Request::createFromGlobals()->getAcceptableContentTypes())
             && ($this->defaultParams['webp_enabled'] || $this->outputExtension == self::EXT_WEBP);
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isGifSupport()
+    {
+        return $this->getSourceMimeType() == self::GIF_MIME_TYPE;
     }
 
     /**
@@ -296,7 +314,9 @@ class Image
     public function isMozJpegSupport()
     {
         return $this->extractByKey('mozjpeg') == 1 &&
-            (!$this->isPngSupport() || $this->outputExtension == self::EXT_JPG);
+            (!$this->isPngSupport() || $this->outputExtension == self::EXT_JPG) &&
+            (!$this->isGifSupport()) &&
+            ($this->getOutputExtension() != self::EXT_GIF);
     }
 
     /**
@@ -304,11 +324,14 @@ class Image
      */
     public function getResponseContentType()
     {
-        if ($this->isWebPSupport()) {
+        if ($this->getOutputExtension() == self::EXT_WEBP) {
             return self::WEBP_MIME_TYPE;
         }
-        if ($this->isPngSupport()) {
+        if ($this->getOutputExtension() == self::EXT_PNG) {
             return self::PNG_MIME_TYPE;
+        }
+        if ($this->getOutputExtension() == self::EXT_GIF) {
+            return self::GIF_MIME_TYPE;
         }
 
         return self::JPEG_MIME_TYPE;
@@ -336,5 +359,13 @@ class Image
     public function setContent($content)
     {
         $this->content = $content;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOutputExtension()
+    {
+        return $this->outputExtension;
     }
 }
