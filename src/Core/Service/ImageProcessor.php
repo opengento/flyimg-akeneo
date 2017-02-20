@@ -87,11 +87,11 @@ class ImageProcessor
 
         $this->generateCmdString($image);
 
-        if ($faceBlur) {
+        if ($faceBlur && !$image->isGifSupport()) {
             $this->processBlurringFaces($image);
         }
 
-        if ($faceCrop) {
+        if ($faceCrop && !$image->isGifSupport()) {
             $this->processCroppingFaces($image, $faceCropPosition);
         }
 

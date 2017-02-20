@@ -25,7 +25,7 @@ class DefaultController extends CoreController
         try {
             $image = $this->getImageProcessor()->process($options, $imageSrc);
         } catch (\Exception $e) {
-            return new Response($e->getMessage(), Response::HTTP_FORBIDDEN);
+            return new Response($e->getMessage().' '.$e->getFile().' '.$e->getLine(), Response::HTTP_FORBIDDEN);
         }
 
         return $this->generateImageResponse($image);
