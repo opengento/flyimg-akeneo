@@ -2,7 +2,6 @@
 
 namespace Core\Controller;
 
-use Core\Entity\Image;
 use Symfony\Component\HttpFoundation\Response;
 
 class DefaultController extends CoreController
