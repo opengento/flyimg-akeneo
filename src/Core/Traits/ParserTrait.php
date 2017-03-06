@@ -2,7 +2,6 @@
 
 namespace Core\Traits;
 
-
 trait ParserTrait
 {
     /**
