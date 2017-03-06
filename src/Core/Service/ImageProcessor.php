@@ -4,6 +4,7 @@ namespace Core\Service;
 
 use Core\Entity\Image;
 use Core\Exception\AppException;
+use Core\Traits\ParserTrait;
 use League\Flysystem\Filesystem;
 
 /**
@@ -81,9 +82,9 @@ class ImageProcessor
      */
     protected function saveNewFile(Image $image)
     {
-        $faceCrop = $image->extractByKey('face-crop');
-        $faceCropPosition = $image->extractByKey('face-crop-position');
-        $faceBlur = $image->extractByKey('face-blur');
+        $faceCrop = $image->extract('face-crop');
+        $faceCropPosition = $image->extract('face-crop-position');
+        $faceBlur = $image->extract('face-blur');
 
         $this->generateCmdString($image);
 
@@ -166,10 +167,10 @@ class ImageProcessor
      */
     public function generateCmdString(Image $image)
     {
-        $strip = $image->extractByKey('strip');
-        $thread = $image->extractByKey('thread');
-        $resize = $image->extractByKey('resize');
-        $frame = $image->extractByKey('gif-frame');
+        $strip = $image->extract('strip');
+        $thread = $image->extract('thread');
+        $resize = $image->extract('resize');
+        $frame = $image->extract('gif-frame');
 
         list($size, $extent, $gravity) = $this->generateSize($image);
 
@@ -222,10 +223,10 @@ class ImageProcessor
      */
     protected function applyQuality(Image $image, $command)
     {
-        $quality = $image->extractByKey('quality');
+        $quality = $image->extract('quality');
         /** WebP format */
         if (is_executable(self::CWEBP_COMMAND) && $image->isWebPSupport()) {
-            $lossLess = $image->extractByKey('webp-lossless') ? 'true' : 'false';
+            $lossLess = $image->extract('webp-lossless') ? 'true' : 'false';
             $command[] = "-quality ".escapeshellarg($quality).
                 " -define webp:lossless=".$lossLess." ".escapeshellarg($image->getNewFilePath());
         } /** MozJpeg compression */
@@ -251,9 +252,9 @@ class ImageProcessor
      */
     protected function generateSize(Image $image)
     {
-        $targetWidth = $image->extractByKey('width');
-        $targetHeight = $image->extractByKey('height');
-        $crop = $image->extractByKey('crop');
+        $targetWidth = $image->extract('width');
+        $targetHeight = $image->extract('height');
+        $crop = $image->extract('crop');
 
         $size = '';
 
@@ -266,9 +267,9 @@ class ImageProcessor
 
         // When width and height a whole bunch of special cases must be taken into consideration.
         // resizing constraints (< > ^ !) can only be applied to geometry with both width AND height
-        $preserveNaturalSize = $image->extractByKey('preserve-natural-size');
-        $preserveAspectRatio = $image->extractByKey('preserve-aspect-ratio');
-        $gravityValue = $image->extractByKey('gravity');
+        $preserveNaturalSize = $image->extract('preserve-natural-size');
+        $preserveAspectRatio = $image->extract('preserve-aspect-ratio');
+        $gravityValue = $image->extract('gravity');
         $extent = '';
         $gravity = '';
 

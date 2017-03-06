@@ -4,6 +4,7 @@ namespace Core\Entity;
 
 use Core\Exception\InvalidArgumentException;
 use Core\Exception\ReadFileException;
+use Core\Traits\ParserTrait;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -12,6 +13,8 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class Image
 {
+
+    use ParserTrait;
 
     /** Content TYPE */
     const WEBP_MIME_TYPE = 'image/webp';
@@ -65,7 +68,7 @@ class Image
     public function __construct($options, $sourceFile, $defaultParams)
     {
         $this->defaultParams = $defaultParams;
-        $this->options = $this->parseOptions($options);
+        $this->options = $this->parseOptions($options, $defaultParams);
         $this->sourceFile = $sourceFile;
 
         $this->saveToTemporaryFile();
@@ -159,31 +162,6 @@ class Image
     }
 
     /**
-     * Parse options: match options keys and merge default options with given ones
-     *
-     * @param $options
-     * @return array
-     */
-    protected function parseOptions($options)
-    {
-        $defaultOptions = $this->defaultParams['default_options'];
-        $optionsKeys = $this->defaultParams['options_keys'];
-        $optionsSeparator = !empty($this->defaultParams['options_separator']) ?
-            $this->defaultParams['options_separator'] : ',';
-        $optionsUrl = explode($optionsSeparator, $options);
-        $options = [];
-        foreach ($optionsUrl as $option) {
-            $optArray = explode('_', $option);
-            if (key_exists($optArray[0], $optionsKeys) && !empty($optionsKeys[$optArray[0]])) {
-                $options[$optionsKeys[$optArray[0]]] = $optArray[1];
-            }
-        }
-
-        return array_merge($defaultOptions, $options);
-    }
-
-
-    /**
      * Save given image to temporary file and return the path
      *
      * @throws \Exception
@@ -203,23 +181,6 @@ class Image
         $this->temporaryFile = TMP_DIR.uniqid("", true);
         file_put_contents($this->temporaryFile, $content);
         $this->sourceMimeType = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $this->temporaryFile);
-    }
-
-    /**
-     * Extract a value from given array and unset it.
-     *
-     * @param $key
-     * @return null
-     */
-    public function extractByKey($key)
-    {
-        $value = null;
-        if (isset($this->options[$key])) {
-            $value = $this->options[$key];
-            unset($this->options[$key]);
-        }
-
-        return $value;
     }
 
     /**
@@ -255,7 +216,7 @@ class Image
      */
     protected function generateFileExtension()
     {
-        $outputExtension = $this->extractByKey('output');
+        $outputExtension = $this->extract('output');
         if ($outputExtension == self::EXT_AUTO) {
             $this->outputExtension = self::EXT_JPG;
             if ($this->isPngSupport()) {
@@ -313,7 +274,7 @@ class Image
      */
     public function isMozJpegSupport()
     {
-        return $this->extractByKey('mozjpeg') == 1 &&
+        return $this->extract('mozjpeg') == 1 &&
             (!$this->isPngSupport() || $this->outputExtension == self::EXT_JPG) &&
             (!$this->isGifSupport()) &&
             ($this->getOutputExtension() != self::EXT_GIF);
@@ -367,5 +328,14 @@ class Image
     public function getOutputExtension()
     {
         return $this->outputExtension;
+    }
+
+    /**
+     * @param string $key
+     * @return null
+     */
+    public function extract($key)
+    {
+        return $this->extractByKey($key, $this->options);
     }
 }

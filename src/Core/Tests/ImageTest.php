@@ -76,7 +76,7 @@ class ImageTest extends BaseTest
      */
     public function testExtractByKey()
     {
-        $this->image->extractByKey('width');
+        $this->image->extract('width');
         $this->assertFalse(array_key_exists('width', $this->image->getOptions()));
     }
 }
