@@ -36,28 +36,21 @@ class ImageProcessor
     /**
      * ImageProcessor constructor.
      *
-     * @param array      $params
      * @param Filesystem $filesystem
      */
-    public function __construct($params, Filesystem $filesystem)
+    public function __construct(Filesystem $filesystem)
     {
-        $this->params = $params;
         $this->filesystem = $filesystem;
     }
 
     /**
-     * @param      $options
-     * @param null $imageSrc
+     * @param Image $image
      * @return Image
      * @throws \Exception
      */
-    public function process($options, $imageSrc = null)
+    public function process(Image $image)
     {
-        $image = new Image($options, $imageSrc, $this->params);
-
         try {
-            $this->checkRestrictedDomains($image);
-
             if ($this->filesystem->has($image->getNewFileName()) && $image->getOptions()['refresh']) {
                 $this->filesystem->delete($image->getNewFileName());
             }
@@ -337,24 +330,5 @@ class ImageProcessor
         }
 
         return $output;
-    }
-
-    /**
-     * Check Restricted Domain enabled
-     * @param Image $image
-     * @throws AppException
-     */
-    protected function checkRestrictedDomains(Image $image)
-    {
-        //check restricted_domains is enabled
-        if ($this->params['restricted_domains'] &&
-            is_array($this->params['whitelist_domains']) &&
-            !in_array(parse_url($image->getSourceFile(), PHP_URL_HOST), $this->params['whitelist_domains'])
-        ) {
-            throw  new AppException(
-                'Restricted domains enabled, the domain your fetching from is not allowed: '.
-                parse_url($image->getSourceFile(), PHP_URL_HOST)
-            );
-        }
     }
 }

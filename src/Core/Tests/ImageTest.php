@@ -58,7 +58,7 @@ class ImageTest extends BaseTest
     public function testSaveToTemporaryFileException()
     {
         $this->expectException(ReadFileException::class);
-        $this->image = new Image('', parent::JPG_TEST_IMAGE.'--fail', $this->app['params']);
+        $this->image = new Image([], parent::JPG_TEST_IMAGE.'--fail');
     }
 
     /**
@@ -66,7 +66,7 @@ class ImageTest extends BaseTest
      */
     public function testGenerateFilesName()
     {
-        $image = new Image(parent::OPTION_URL, parent::JPG_TEST_IMAGE, $this->app['params']);
+        $image = new Image($this->coreManager->parse(parent::OPTION_URL), parent::JPG_TEST_IMAGE);
         $this->assertEquals($this->image->getNewFileName(), $image->getNewFileName());
         $this->assertNotEquals($this->image->getNewFilePath(), $image->getNewFilePath());
     }

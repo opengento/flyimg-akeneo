@@ -13,7 +13,6 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class Image
 {
-
     use ParserTrait;
 
     /** Content TYPE */
@@ -61,14 +60,12 @@ class Image
 
     /**
      * Image constructor.
-     * @param string $options
-     * @param        $sourceFile
-     * @param        $defaultParams
+     * @param array $options
+     * @param string $sourceFile
      */
-    public function __construct($options, $sourceFile, $defaultParams)
+    public function __construct(array $options, $sourceFile)
     {
-        $this->defaultParams = $defaultParams;
-        $this->options = $this->parseOptions($options, $defaultParams);
+        $this->options = $options;
         $this->sourceFile = $sourceFile;
 
         $this->saveToTemporaryFile();
