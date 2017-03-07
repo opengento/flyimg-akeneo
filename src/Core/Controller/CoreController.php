@@ -3,6 +3,7 @@
 namespace Core\Controller;
 
 use Core\Entity\Image;
+use Core\Service\CoreManager;
 use Core\Service\ImageProcessor;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,11 +24,11 @@ class CoreController
     }
 
     /**
-     * @return ImageProcessor
+     * @return CoreManager
      */
-    public function getImageProcessor()
+    public function getCoreManager()
     {
-        return $this->app['image.processor'];
+        return $this->app['core.manager'];
     }
 
     /**
