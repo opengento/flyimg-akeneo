@@ -247,10 +247,8 @@ class ImageProcessor
     {
         $targetWidth = $image->extract('width');
         $targetHeight = $image->extract('height');
-        $crop = $image->extract('crop');
 
         $size = '';
-
         if ($targetWidth) {
             $size .= (string)escapeshellarg($targetWidth);
         }
@@ -262,21 +260,17 @@ class ImageProcessor
         // resizing constraints (< > ^ !) can only be applied to geometry with both width AND height
         $preserveNaturalSize = $image->extract('preserve-natural-size');
         $preserveAspectRatio = $image->extract('preserve-aspect-ratio');
-        $gravityValue = $image->extract('gravity');
-        $extent = '';
-        $gravity = '';
 
         if ($targetWidth && $targetHeight) {
             $extent = ' -extent '.$size;
-            $gravity = ' -gravity '.escapeshellarg($gravityValue);
-            $resizingConstraints = '';
-            $resizingConstraints .= $preserveNaturalSize ? '\>' : '';
-            if ($crop) {
+            $gravity = ' -gravity '.escapeshellarg($image->extract('gravity'));
+            $resizingConstraints ='';
+            if ($image->extract('crop')) {
                 $resizingConstraints .= '^';
                 /**
                  * still need to solve the combination of ^
                  * -extent and +repage . Will need to do calculations with the
-                 * original image dimentions vs. the target dimentions.
+                 * original image dimensions vs. the target dimensions.
                  */
             } else {
                 $extent .= '+repage ';
@@ -285,6 +279,7 @@ class ImageProcessor
             $size .= $resizingConstraints;
         } else {
             $size .= $preserveNaturalSize ? '\>' : '';
+            $gravity = '';
         }
         //In cas on png format, remove extent option
         if ($image->isPngSupport()) {
