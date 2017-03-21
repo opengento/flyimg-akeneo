@@ -11,7 +11,7 @@ class DefaultController extends CoreController
      */
     public function indexAction()
     {
-        return $this->render('Default/index.twig');
+        return $this->render('Default/index');
     }
 
     /**

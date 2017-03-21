@@ -4,7 +4,6 @@ namespace Core\Service;
 
 use Core\Entity\Image;
 use Core\Exception\AppException;
-use Core\Traits\ParserTrait;
 use League\Flysystem\Filesystem;
 
 /**

@@ -20,6 +20,7 @@ define('UPLOAD_WEB_DIR', 'uploads/');
 define('UPLOAD_DIR', __DIR__.'/web/'.UPLOAD_WEB_DIR);
 define('TMP_DIR', __DIR__.'/var/tmp/');
 define('LOG_DIR', __DIR__.'/var/log/');
+define('ROOT_DIR', __DIR__);
 
 if (!is_dir(UPLOAD_DIR)) {
     mkdir(UPLOAD_DIR, 0777, true);
@@ -73,10 +74,6 @@ $app['image.processor'] = function ($app) {
 $app['core.manager'] = function ($app) {
     return new CoreManager($app['image.processor'], $app['params']);
 };
-
-/** Twig Service */
-$app->register(new Silex\Provider\TwigServiceProvider());
-$app['twig.loader.filesystem']->addPath(__DIR__.'/src/Core/Views', 'Core');
 
 /** debug conf */
 $app['debug'] = $app['params']['debug'];
