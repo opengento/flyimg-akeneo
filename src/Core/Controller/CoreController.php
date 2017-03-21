@@ -38,7 +38,10 @@ class CoreController
      */
     public function render($templateName, $params = [])
     {
-        $body = $this->app['twig']->render('@Core/'.$templateName, $params);
+        ob_start();
+        include(ROOT_DIR.'/src/Core/Views/'.$templateName.'.php');
+        $body = ob_get_contents();
+        ob_end_clean();
 
         return new Response($body);
     }
