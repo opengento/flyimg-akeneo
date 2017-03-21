@@ -60,6 +60,7 @@ $app->register(
         'monolog.logfile' => LOG_DIR.'dev.log',
     )
 );
+
 /** Controller Resolver */
 $app['resolver'] = function ($app) {
     return new ControllerResolver($app, $app['logger']);

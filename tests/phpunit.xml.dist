@@ -11,13 +11,13 @@
 >
     <testsuites>
         <testsuite name="Fly-image Test Suite">
-            <directory>./src/Core/Tests</directory>
+            <directory>./Tests</directory>
         </testsuite>
     </testsuites>
 
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix="Test.php">./src/Core/Tests</directory>
+            <directory suffix="Test.php">./Tests</directory>
         </whitelist>
     </filter>
 </phpunit>

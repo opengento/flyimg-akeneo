@@ -1,8 +1,9 @@
 <?php
-namespace Core\Tests;
+namespace Tests\Core\Entity;
 
 use Core\Entity\Image;
 use Core\Exception\ReadFileException;
+use Tests\Core\BaseTest;
 
 /**
  * @backupGlobals disabled

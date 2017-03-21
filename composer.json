@@ -46,5 +46,10 @@
     "psr-4": {
       "Core\\": "src\\Core"
     }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
   }
 }

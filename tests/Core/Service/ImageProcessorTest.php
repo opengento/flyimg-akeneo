@@ -1,9 +1,9 @@
 <?php
 
-namespace Core\Tests;
+namespace Tests\Core\Service;
 
 use Core\Entity\Image;
-use Core\Service\ImageProcessor;
+use Tests\Core\BaseTest;
 
 class ImageProcessorTest extends BaseTest
 {
