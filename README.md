@@ -355,7 +355,7 @@ whitelist_domains:
 Run test:
 -----
 ```sh
-docker exec -it flyimg ./vendor/bin/phpunit
+docker exec -it flyimg vendor/bin/phpunit tests/
 ```
 
 How to Provision the application on:
