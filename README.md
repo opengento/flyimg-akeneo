@@ -75,9 +75,9 @@ docker exec -it flyimg composer install
 
 Again, it will take a few minutes to download the dependencies. Same as before, if you get some errors you should try running `composer install` again. 
 
-After composer is done, you can navigate to your machine's IP in port 8080 (ex: http://192.168.99.100:8080/ ) ; you should get a message saying: **Hello from Flyimg!** and a small homepage of flyimg already working. If you get any errors  at this stage it's most likely that composer has not finished installing or skipped something.
+After composer is done, you can navigate to your machine's IP in port 8080 (ex: http://127.0.0.1:8080/ ) ; you should get a message saying: **Hello from Flyimg!** and a small homepage of flyimg already working. If you get any errors  at this stage it's most likely that composer has not finished installing or skipped something.
 
-You can test your image resizing service by navigating to: http://192.168.99.100:8080/upload/w_130,h_113,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg
+You can test your image resizing service by navigating to: http://127.0.0.1:8080/upload/w_130,h_113,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg
 
 ![ff-logo](http://oi.flyimg.io/upload/w_130,h_113,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg)
 
@@ -169,21 +169,18 @@ We put a lot of defaults in place to prevent distortion, bad quality
 
 **example:`moz_0`** 
 
-`moz_0` 
-
-[![moz_0](http://oi.flyimg.io/upload/moz_0/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)](http://oi.flyimg.io/upload/moz_0/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
-
 
 ### quality `int` (0-100)
 **default: 90** : Sets the compression level for the output image. Your best results will be between **70** and **95**.
 
 **example:`q_100`,`q_75`,...** 
 
-`q_30` 
+`q_30`  :  `http://oi.flyimg.io/upload/q_30/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg` 
 
 [![moz_0](http://oi.flyimg.io/upload/q_30/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)](http://oi.flyimg.io/upload/q_30/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
 
-`q_100` 
+
+`q_100`  :  `http://oi.flyimg.io/upload/q_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg`
 
 [![moz_0](http://oi.flyimg.io/upload/q_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)](http://oi.flyimg.io/upload/q_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
 
@@ -193,7 +190,7 @@ We put a lot of defaults in place to prevent distortion, bad quality
 
 **example:`w_100`** 
 
-`w_100` 
+`w_100` :   `http://oi.flyimg.io/upload/w_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg`
 
 [![moz_0](http://oi.flyimg.io/upload/w_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)](http://oi.flyimg.io/upload/w_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
 
@@ -202,7 +199,7 @@ We put a lot of defaults in place to prevent distortion, bad quality
 
 **example:`h_100`** 
 
-`h_100`
+`h_100`  : `http://oi.flyimg.io/upload/h_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg`
  
 [![moz_0](http://oi.flyimg.io/upload/h_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)](http://oi.flyimg.io/upload/h_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
 
@@ -215,7 +212,7 @@ By default setting width and height together, works like defining a rectangle th
 By default; width, height, or both will **not scale up** an image that is smaller than the defined dimensions.
 <!-- in the future put example images here-->
 
-`h_300,w_300` 
+`h_300,w_300` : `http://oi.flyimg.io/upload/h_300,w_300/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg`
 
 [![moz_0](http://oi.flyimg.io/upload/h_300,w_300/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)](http://oi.flyimg.io/upload/h_300,w_300/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
 
@@ -224,7 +221,7 @@ By default; width, height, or both will **not scale up** an image that is smalle
 
 **example:`c_1`** 
 
-`c_1,h_400,w_400` 
+`c_1,h_400,w_400` : `http://oi.flyimg.io/upload/c_1,h_400,w_400/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg`
 
 [![moz_0](http://oi.flyimg.io/upload/c_1,h_400,w_400/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)](http://oi.flyimg.io/upload/c_1,h_400,w_400/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
 
@@ -252,6 +249,8 @@ For the hex code, the hash `#` character should be replaced by `%23`
   [...] -background "#ff4455" -> "%23ff4455"
   [...] -background "rgb(255,120,100)" ...
 ```
+
+`http://oi.flyimg.io/upload/r_45,w_400,h_400,bg_red/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg`
 
 [![bg_red](http://oi.flyimg.io/upload/r_45,w_400,h_400,bg_red/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)](http://oi.flyimg.io/upload/r_45,w_400,h_400,bg_red/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
 
@@ -294,7 +293,7 @@ For the hex code, the hash `#` character should be replaced by `%23`
 
 **example: `r_90`, `r_-180`,...**
 
-`r_45` 
+`r_45` :  `http://oi.flyimg.io/upload/r_-45,w_400,h_400/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg`
 
 [![moz_0](http://oi.flyimg.io/upload/r_-45,w_400,h_400/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)](http://oi.flyimg.io/upload/r_-45,w_400,h_400/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
 
@@ -311,7 +310,7 @@ Also it will send headers with the command done on the image + info returned by 
 
 **example:`fc_1`** 
 
-`fc_1` 
+`fc_1` :  `http://oi.flyimg.io/upload/fc_1/http://facedetection.jaysalvat.com/img/faces.jpg`
 
 [![moz_0](http://oi.flyimg.io/upload/fc_1/http://facedetection.jaysalvat.com/img/faces.jpg)](http://oi.flyimg.io/upload/fc_1/http://facedetection.jaysalvat.com/img/faces.jpg)
 
@@ -321,7 +320,7 @@ Also it will send headers with the command done on the image + info returned by 
 
 **example:`fcp_1`,`fcp_0`,...** 
 
-`fcp_2` 
+`fcp_2` : `http://oi.flyimg.io/upload/fc_1,fcp_2/http://facedetection.jaysalvat.com/img/faces.jpg`
 
 [![moz_0](http://oi.flyimg.io/upload/fc_1,fcp_2/http://facedetection.jaysalvat.com/img/faces.jpg)](http://oi.flyimg.io/upload/fc_1,fcp_2/http://facedetection.jaysalvat.com/img/faces.jpg)
 
@@ -331,7 +330,7 @@ Also it will send headers with the command done on the image + info returned by 
 
 **example:`fb_1`** 
 
-`fb_1` 
+`fb_1`  : `http://oi.flyimg.io/upload/fb_1/http://facedetection.jaysalvat.com/img/faces.jpg`
 
 [![moz_0](http://oi.flyimg.io/upload/fb_1/http://facedetection.jaysalvat.com/img/faces.jpg)](http://oi.flyimg.io/upload/fb_1/http://facedetection.jaysalvat.com/img/faces.jpg)
 
