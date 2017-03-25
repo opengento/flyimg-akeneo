@@ -17,8 +17,8 @@ restricted_domains: false
 
 #if restricted_domains is enabled, put whitelist domains here
 whitelist_domains:
-    - www.domain-1.com
-    - www.domain-2.com
+    - domain-1.com
+    - domain-2.com
 
 #Default storage system is local, to use use AWS S3, change this param to s3
 storage_system: local

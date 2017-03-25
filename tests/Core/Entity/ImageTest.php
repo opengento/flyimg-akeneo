@@ -1,8 +1,9 @@
 <?php
-namespace Core\Tests;
+namespace Tests\Core\Entity;
 
 use Core\Entity\Image;
 use Core\Exception\ReadFileException;
+use Tests\Core\BaseTest;
 
 /**
  * @backupGlobals disabled
@@ -58,7 +59,7 @@ class ImageTest extends BaseTest
     public function testSaveToTemporaryFileException()
     {
         $this->expectException(ReadFileException::class);
-        $this->image = new Image('', parent::JPG_TEST_IMAGE.'--fail', $this->app['params']);
+        $this->image = new Image([], parent::JPG_TEST_IMAGE.'--fail');
     }
 
     /**
@@ -66,7 +67,7 @@ class ImageTest extends BaseTest
      */
     public function testGenerateFilesName()
     {
-        $image = new Image(parent::OPTION_URL, parent::JPG_TEST_IMAGE, $this->app['params']);
+        $image = new Image($this->coreManager->parse(parent::OPTION_URL), parent::JPG_TEST_IMAGE);
         $this->assertEquals($this->image->getNewFileName(), $image->getNewFileName());
         $this->assertNotEquals($this->image->getNewFilePath(), $image->getNewFilePath());
     }
@@ -76,7 +77,7 @@ class ImageTest extends BaseTest
      */
     public function testExtractByKey()
     {
-        $this->image->extractByKey('width');
+        $this->image->extract('width');
         $this->assertFalse(array_key_exists('width', $this->image->getOptions()));
     }
 }

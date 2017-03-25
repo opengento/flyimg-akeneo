@@ -35,28 +35,21 @@ class ImageProcessor
     /**
      * ImageProcessor constructor.
      *
-     * @param array      $params
      * @param Filesystem $filesystem
      */
-    public function __construct($params, Filesystem $filesystem)
+    public function __construct(Filesystem $filesystem)
     {
-        $this->params = $params;
         $this->filesystem = $filesystem;
     }
 
     /**
-     * @param      $options
-     * @param null $imageSrc
+     * @param Image $image
      * @return Image
      * @throws \Exception
      */
-    public function process($options, $imageSrc = null)
+    public function process(Image $image)
     {
-        $image = new Image($options, $imageSrc, $this->params);
-
         try {
-            $this->checkRestrictedDomains($image);
-
             if ($this->filesystem->has($image->getNewFileName()) && $image->getOptions()['refresh']) {
                 $this->filesystem->delete($image->getNewFileName());
             }
@@ -81,9 +74,9 @@ class ImageProcessor
      */
     protected function saveNewFile(Image $image)
     {
-        $faceCrop = $image->extractByKey('face-crop');
-        $faceCropPosition = $image->extractByKey('face-crop-position');
-        $faceBlur = $image->extractByKey('face-blur');
+        $faceCrop = $image->extract('face-crop');
+        $faceCropPosition = $image->extract('face-crop-position');
+        $faceBlur = $image->extract('face-blur');
 
         $this->generateCmdString($image);
 
@@ -166,10 +159,10 @@ class ImageProcessor
      */
     public function generateCmdString(Image $image)
     {
-        $strip = $image->extractByKey('strip');
-        $thread = $image->extractByKey('thread');
-        $resize = $image->extractByKey('resize');
-        $frame = $image->extractByKey('gif-frame');
+        $strip = $image->extract('strip');
+        $thread = $image->extract('thread');
+        $resize = $image->extract('resize');
+        $frame = $image->extract('gif-frame');
 
         list($size, $extent, $gravity) = $this->generateSize($image);
 
@@ -222,10 +215,10 @@ class ImageProcessor
      */
     protected function applyQuality(Image $image, $command)
     {
-        $quality = $image->extractByKey('quality');
+        $quality = $image->extract('quality');
         /** WebP format */
         if (is_executable(self::CWEBP_COMMAND) && $image->isWebPSupport()) {
-            $lossLess = $image->extractByKey('webp-lossless') ? 'true' : 'false';
+            $lossLess = $image->extract('webp-lossless') ? 'true' : 'false';
             $command[] = "-quality ".escapeshellarg($quality).
                 " -define webp:lossless=".$lossLess." ".escapeshellarg($image->getNewFilePath());
         } /** MozJpeg compression */
@@ -251,12 +244,10 @@ class ImageProcessor
      */
     protected function generateSize(Image $image)
     {
-        $targetWidth = $image->extractByKey('width');
-        $targetHeight = $image->extractByKey('height');
-        $crop = $image->extractByKey('crop');
+        $targetWidth = $image->extract('width');
+        $targetHeight = $image->extract('height');
 
         $size = '';
-
         if ($targetWidth) {
             $size .= (string)escapeshellarg($targetWidth);
         }
@@ -266,23 +257,19 @@ class ImageProcessor
 
         // When width and height a whole bunch of special cases must be taken into consideration.
         // resizing constraints (< > ^ !) can only be applied to geometry with both width AND height
-        $preserveNaturalSize = $image->extractByKey('preserve-natural-size');
-        $preserveAspectRatio = $image->extractByKey('preserve-aspect-ratio');
-        $gravityValue = $image->extractByKey('gravity');
-        $extent = '';
-        $gravity = '';
+        $preserveNaturalSize = $image->extract('preserve-natural-size');
+        $preserveAspectRatio = $image->extract('preserve-aspect-ratio');
 
         if ($targetWidth && $targetHeight) {
             $extent = ' -extent '.$size;
-            $gravity = ' -gravity '.escapeshellarg($gravityValue);
-            $resizingConstraints = '';
-            $resizingConstraints .= $preserveNaturalSize ? '\>' : '';
-            if ($crop) {
+            $gravity = ' -gravity '.escapeshellarg($image->extract('gravity'));
+            $resizingConstraints ='';
+            if ($image->extract('crop')) {
                 $resizingConstraints .= '^';
                 /**
                  * still need to solve the combination of ^
                  * -extent and +repage . Will need to do calculations with the
-                 * original image dimentions vs. the target dimentions.
+                 * original image dimensions vs. the target dimensions.
                  */
             } else {
                 $extent .= '+repage ';
@@ -291,6 +278,7 @@ class ImageProcessor
             $size .= $resizingConstraints;
         } else {
             $size .= $preserveNaturalSize ? '\>' : '';
+            $gravity = '';
         }
         //In cas on png format, remove extent option
         if ($image->isPngSupport()) {
@@ -336,24 +324,5 @@ class ImageProcessor
         }
 
         return $output;
-    }
-
-    /**
-     * Check Restricted Domain enabled
-     * @param Image $image
-     * @throws AppException
-     */
-    protected function checkRestrictedDomains(Image $image)
-    {
-        //check restricted_domains is enabled
-        if ($this->params['restricted_domains'] &&
-            is_array($this->params['whitelist_domains']) &&
-            !in_array(parse_url($image->getSourceFile(), PHP_URL_HOST), $this->params['whitelist_domains'])
-        ) {
-            throw  new AppException(
-                'Restricted domains enabled, the domain your fetching from is not allowed: '.
-                parse_url($image->getSourceFile(), PHP_URL_HOST)
-            );
-        }
     }
 }

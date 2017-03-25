@@ -2,7 +2,6 @@
 
 namespace Core\Controller;
 
-use Core\Entity\Image;
 use Symfony\Component\HttpFoundation\Response;
 
 class DefaultController extends CoreController
@@ -12,18 +11,18 @@ class DefaultController extends CoreController
      */
     public function indexAction()
     {
-        return $this->render('Default/index.twig');
+        return $this->render('Default/index');
     }
 
     /**
-     * @param      $options
-     * @param null $imageSrc
+     * @param string $options
+     * @param null   $imageSrc
      * @return Response
      */
     public function uploadAction($options, $imageSrc = null)
     {
         try {
-            $image = $this->getImageProcessor()->process($options, $imageSrc);
+            $image = $this->getCoreManager()->processImage($options, $imageSrc);
         } catch (\Exception $e) {
             return new Response($e->getMessage().' '.$e->getFile().' '.$e->getLine(), Response::HTTP_FORBIDDEN);
         }
@@ -32,16 +31,16 @@ class DefaultController extends CoreController
     }
 
     /**
-     * @param      $options
-     * @param null $imageSrc
+     * @param string $options
+     * @param null   $imageSrc
      * @return Response
      */
     public function pathAction($options, $imageSrc = null)
     {
         try {
-            $image = $this->getImageProcessor()->process($options, $imageSrc);
+            $image = $this->getCoreManager()->processImage($options, $imageSrc);
         } catch (\Exception $e) {
-            return new Response($e->getMessage(), Response::HTTP_FORBIDDEN);
+            return new Response($e->getMessage().' '.$e->getFile().' '.$e->getLine(), Response::HTTP_FORBIDDEN);
         }
 
         return $this->generatePathResponse($image);

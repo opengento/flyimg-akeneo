@@ -3,6 +3,7 @@
 namespace Core\Controller;
 
 use Core\Entity\Image;
+use Core\Service\CoreManager;
 use Core\Service\ImageProcessor;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,11 +24,11 @@ class CoreController
     }
 
     /**
-     * @return ImageProcessor
+     * @return CoreManager
      */
-    public function getImageProcessor()
+    public function getCoreManager()
     {
-        return $this->app['image.processor'];
+        return $this->app['core.manager'];
     }
 
     /**
@@ -37,7 +38,10 @@ class CoreController
      */
     public function render($templateName, $params = [])
     {
-        $body = $this->app['twig']->render('@Core/'.$templateName, $params);
+        ob_start();
+        include(ROOT_DIR.'/src/Core/Views/'.$templateName.'.php');
+        $body = ob_get_contents();
+        ob_end_clean();
 
         return new Response($body);
     }
