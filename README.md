@@ -85,7 +85,7 @@ You can test your image resizing service by navigating to: http://127.0.0.1:8080
 
 This is fetching an image from Mozilla, resizing it, saving it and serving it.
 
-#How to transform images
+# How to transform images
 
 You go to your server URL`http://imgs.kitty.com` and append `/upload/`;  after that you can pass these options below, followed by an underscore and a value `w_250,q_50` Options are separated by coma (configurable to other separator) . 
 After the options put the source of your image, it can be relative to your server or absolute: `/https://my.storage.io/imgs/pretty-kitten.jpg`
