@@ -10,7 +10,7 @@
 
 Image resizing, cropping and compression on the fly with the impressive [MozJPEG](http://calendar.perfplanet.com/2014/mozjpeg-3-0) compression algorithm. One Docker container to build your own Cloudinary-like service.
 
-### Fetch  an image from anywhere; resize, compress, cache and serve...<small> and serve, and serve, and serve...</small>
+### Fetch an image from anywhere; resize, compress, cache and serve...<small> and serve, and serve, and serve...</small>
 
 You pass the image URL and a set of keys with options, like size or compression. Flyimg will fetch the image, convert it, store it, cache it and serve it. The next time the request comes, it will serve the cached version.
 
@@ -18,10 +18,51 @@ You pass the image URL and a set of keys with options, like size or compression.
 <!-- https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg -->
 <img src="https://my.img.service.io/upload/w_333,h_333,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg">
 ```
-## For example
+# Basic Usage Examples
+## Get an image to fill exact dimensions
+Image: `https://m0.cl/t/resize-test_1920.jpg` 
+Width: 300
+Height: 250
+Crop if necesary: `c_1`
+
 http://oi.flyimg.io/upload/w_300,h_250,c_1/https://m0.cl/t/resize-test_1920.jpg
 
 ![lago_ranco](http://oi.flyimg.io/upload/w_300,h_250,c_1/https://m0.cl/t/resize-test_1920.jpg)
+
+This will serve the image.
+
+## Get the path to the generated image instead of serving it
+Change the first part of the path from `upload` to `path`, like so:
+
+http://oi.flyimg.io/path/w_300,h_250,c_1/https://m0.cl/t/resize-test_1920.jpg will output in the body of the response:
+
+
+```
+http://localhost:8080/uploads/752d2124eef87b3112779618c96468da.jpg
+```
+
+## Get an image to fit maximum dimensions
+Image: `https://m0.cl/t/resize-test_1920.jpg` 
+Width: 300
+Height: 250
+Note that we ommit the crop parameter
+
+http://oi.flyimg.io/upload/w_300,h_250/https://m0.cl/t/resize-test_1920.jpg
+
+![lago_ranco](http://oi.flyimg.io/upload/w_300,h_250/https://m0.cl/t/resize-test_1920.jpg)
+
+## Crop to a square and rotate 90 degrees clockwise
+Image: `https://m0.cl/t/resize-test_1920.jpg` 
+Width: 200
+Height: 200
+Crop: `c_1`
+Rotate: 90
+
+http://oi.flyimg.io/upload/w_200,h_200,c_1,r_90/https://m0.cl/t/resize-test_1920.jpg
+
+![lago_ranco](http://oi.flyimg.io/upload/w_200,h_200,c_1,r_90/https://m0.cl/t/resize-test_1920.jpg)
+
+
 
 # Installation and setup
 
@@ -156,7 +197,7 @@ default_options:
 
 # Option details
 Most of these options are ImageMagick flags, many can get pretty advanced, use the [ImageMagick docs](http://www.imagemagick.org/script/command-line-options.php). 
-We put a lot of defaults in place to prevent distortion, bad quality 
+We put a lot of defaults in place to prevent distortion, bad quality, weird cropping and unwanted paddings.
 
 ### output `string`
 **default: auto** : Output format requested, for example you can force the output as jpeg file in case of source file is png.
@@ -255,7 +296,7 @@ For the hex code, the hash `#` character should be replaced by `%23`
 [![bg_red](http://oi.flyimg.io/upload/r_45,w_400,h_400,bg_red/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)](http://oi.flyimg.io/upload/r_45,w_400,h_400,bg_red/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
 
 ### strip `int`
-**default: 1** : removes exif data and additional color profile.
+**default: 1** : removes exif data and additional color profile. Leaving your image with the default sRGB color profile.
 
 **example:`st_1`** 
 
@@ -335,8 +376,7 @@ Also it will send headers with the command done on the image + info returned by 
 [![fb_1](http://oi.flyimg.io/upload/fb_1/http://facedetection.jaysalvat.com/img/faces.jpg)](http://oi.flyimg.io/upload/fb_1/http://facedetection.jaysalvat.com/img/faces.jpg)
 
 
-Enable Restricted Domains:
---------------------------
+## Enable Restricted Domains:
 
 Restricted domains disabled by default. This means that you can fetch a resource from any URL. To enable the domain restriction, change in config/parameters.yml 
 
@@ -352,14 +392,12 @@ whitelist_domains:
     - www.domain-2.org
 ```
 
-Run test:
------
+## Run test:
 ```sh
 docker exec -it flyimg vendor/bin/phpunit tests/
 ```
 
-How to Provision the application on:
------------------------------------
+## How to Provision the application on:
 - [DigitalOcean](https://github.com/flyimg/DigitalOcean-provision)
 - [AWS Elastic-Beanstalk](https://github.com/flyimg/Elastic-Beanstalk-provision)
 
@@ -378,27 +416,13 @@ Storage files based on [Flysystem](http://flysystem.thephpleague.com/) which is 
 
 Default storage is Local, but you can use other Adapters like AWS S3, Azure, FTP, Dropbox, ... 
 
-Currently, only the local and S3 are implemented as Storage Provider in Flyimg application, but you can add your specific one easily in `src/Core/Provider/StorageProvider.php` 
-
-### Using AWS S3 as Storage Provider:
-
-in parameters.yml change the `storage_system` option from local to s3, and fill in the aws_s3 options :
-
-```yml
-storage_system: s3
-
-aws_s3:
-  access_id: "s3-access-id"
-  secret_key: "s3-secret-id"
-  region: "s3-region"
-  bucket_name: "s3-bucket-name"
-```
+Currently, only the **local** and **S3** are implemented as Storage Provider in Flyimg application, but you can add your specific one easily in `src/Core/Provider/StorageProvider.php`. Check an [example for AWS S3 here](https://github.com/flyimg/flyimg/blob/master/docs/application-options.md#using-aws-s3-as-storage-provider).
 
 # Demo Application running:
 
 [http://oi.flyimg.io](http://oi.flyimg.io)
 
-[http://oi.flyimg.io/upload/w_300,h_250,c_1/https://m0.cl/t/resize-test_1920.jpg]
+![resize-test](http://oi.flyimg.io/upload/w_300,h_250,c_1/https://m0.cl/t/resize-test_1920.jpg)
 
 
 # Roadmap:
@@ -408,7 +432,7 @@ aws_s3:
 - [ ] Test it with couple of frameworks, Phalcon Php is a good candidate.
 - [ ] Add overlays functionality (Text on top of the image)
 - [ ] Storage auto-mapping
-
+- [ ] Add support for FLIFF, BPG and JPEG2000
 
 
 Licence: MIT
