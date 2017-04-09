@@ -20,10 +20,10 @@ You pass the image URL and a set of keys with options, like size or compression.
 ```
 # Basic Usage Examples
 ## Get an image to fill exact dimensions
-Image: `https://m0.cl/t/resize-test_1920.jpg` 
-Width: 300
-Height: 250
-Crop if necesary: `c_1`
+* Image: `https://m0.cl/t/resize-test_1920.jpg` 
+* Width: 300
+* Height: 250
+* Crop if necesary: `c_1`
 
 http://oi.flyimg.io/upload/w_300,h_250,c_1/https://m0.cl/t/resize-test_1920.jpg
 
@@ -42,26 +42,25 @@ http://localhost:8080/uploads/752d2124eef87b3112779618c96468da.jpg
 ```
 
 ## Get an image to fit maximum dimensions
-Image: `https://m0.cl/t/resize-test_1920.jpg` 
-Width: 300
-Height: 250
-Note that we ommit the crop parameter
+* Image: `https://m0.cl/t/resize-test_1920.jpg` 
+* Width: 300
+* Height: 250
+* Note that we ommit the crop parameter
 
 http://oi.flyimg.io/upload/w_300,h_250/https://m0.cl/t/resize-test_1920.jpg
 
 ![lago_ranco](http://oi.flyimg.io/upload/w_300,h_250/https://m0.cl/t/resize-test_1920.jpg)
 
 ## Crop to a square and rotate 90 degrees clockwise
-Image: `https://m0.cl/t/resize-test_1920.jpg` 
-Width: 200
-Height: 200
-Crop: `c_1`
-Rotate: 90
+* Image: `https://m0.cl/t/resize-test_1920.jpg` 
+* Width: 200
+* Height: 200
+* Crop: `c_1`
+* Rotate: 90
 
 http://oi.flyimg.io/upload/w_200,h_200,c_1,r_90/https://m0.cl/t/resize-test_1920.jpg
 
 ![lago_ranco](http://oi.flyimg.io/upload/w_200,h_200,c_1,r_90/https://m0.cl/t/resize-test_1920.jpg)
-
 
 
 # Installation and setup
