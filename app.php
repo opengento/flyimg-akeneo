@@ -57,7 +57,7 @@ $app->register(
     array(
         'monolog.name' => 'flyimg',
         'monolog.level' => Logger::ERROR,
-        'monolog.logfile' => LOG_DIR.'dev.log',
+        'monolog.logfile' => 'php://stderr',
     )
 );
 
