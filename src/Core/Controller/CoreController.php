@@ -4,7 +4,6 @@ namespace Core\Controller;
 
 use Core\Entity\Image;
 use Core\Service\CoreManager;
-use Core\Service\ImageProcessor;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Response;
 

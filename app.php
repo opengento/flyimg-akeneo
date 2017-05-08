@@ -19,7 +19,6 @@ $app = new Silex\Application();
 define('UPLOAD_WEB_DIR', 'uploads/');
 define('UPLOAD_DIR', __DIR__.'/web/'.UPLOAD_WEB_DIR);
 define('TMP_DIR', __DIR__.'/var/tmp/');
-define('LOG_DIR', __DIR__.'/var/log/');
 define('ROOT_DIR', __DIR__);
 
 if (!is_dir(UPLOAD_DIR)) {
@@ -27,9 +26,6 @@ if (!is_dir(UPLOAD_DIR)) {
 }
 if (!is_dir(TMP_DIR)) {
     mkdir(TMP_DIR, 0777, true);
-}
-if (!is_dir(LOG_DIR)) {
-    mkdir(LOG_DIR, 0777, true);
 }
 
 $app['params'] = Yaml::parse(file_get_contents(__DIR__.'/config/parameters.yml'));
