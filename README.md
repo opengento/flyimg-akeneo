@@ -2,6 +2,7 @@
 
 # Flyimg
 
+[![Backers on Open Collective](https://opencollective.com/flyimg/backers/badge.svg)](#backers) [![Sponsors on Open Collective](https://opencollective.com/flyimg/sponsors/badge.svg)](#sponsors)
 [![Build Status](https://travis-ci.org/flyimg/flyimg.svg?branch=master)](https://travis-ci.org/flyimg/flyimg)
 [![Code Climate](https://codeclimate.com/github/flyimg/flyimg/badges/gpa.svg)](https://codeclimate.com/github/flyimg/flyimg)
 [![Issue Count](https://codeclimate.com/github/flyimg/flyimg/badges/issue_count.svg)](https://codeclimate.com/github/flyimg/flyimg)
@@ -408,6 +409,35 @@ aws_s3:
 - [ ] Test it with couple of frameworks, Phalcon Php is a good candidate.
 - [ ] Add overlays functionality (Text on top of the image)
 - [ ] Storage auto-mapping
+
+
+# Contributors
+
+This project exists thanks to all the people who contribute. [[Contribute]](blob/master/CONTRIBUTING.md).
+<a href="graphs/contributors"><img src="https://opencollective.com/flyimg/contributors.svg?width=890" /></a>
+
+
+# Backers
+
+Thank you to all our backers! [[Become a backer](https://opencollective.com/flyimg#backer)]
+
+<a href="https://opencollective.com/flyimg#backers" target="_blank"><img src="https://opencollective.com/flyimg/backers.svg?width=890"></a>
+
+
+# Sponsors
+
+Thank you to all our sponsors! (please ask your company to also support this open source project by [becoming a sponsor](https://opencollective.com/flyimg#sponsor))
+
+<a href="https://opencollective.com/flyimg/sponsor/0/website" target="_blank"><img src="https://opencollective.com/flyimg/sponsor/0/avatar.svg"></a>
+<a href="https://opencollective.com/flyimg/sponsor/1/website" target="_blank"><img src="https://opencollective.com/flyimg/sponsor/1/avatar.svg"></a>
+<a href="https://opencollective.com/flyimg/sponsor/2/website" target="_blank"><img src="https://opencollective.com/flyimg/sponsor/2/avatar.svg"></a>
+<a href="https://opencollective.com/flyimg/sponsor/3/website" target="_blank"><img src="https://opencollective.com/flyimg/sponsor/3/avatar.svg"></a>
+<a href="https://opencollective.com/flyimg/sponsor/4/website" target="_blank"><img src="https://opencollective.com/flyimg/sponsor/4/avatar.svg"></a>
+<a href="https://opencollective.com/flyimg/sponsor/5/website" target="_blank"><img src="https://opencollective.com/flyimg/sponsor/5/avatar.svg"></a>
+<a href="https://opencollective.com/flyimg/sponsor/6/website" target="_blank"><img src="https://opencollective.com/flyimg/sponsor/6/avatar.svg"></a>
+<a href="https://opencollective.com/flyimg/sponsor/7/website" target="_blank"><img src="https://opencollective.com/flyimg/sponsor/7/avatar.svg"></a>
+<a href="https://opencollective.com/flyimg/sponsor/8/website" target="_blank"><img src="https://opencollective.com/flyimg/sponsor/8/avatar.svg"></a>
+<a href="https://opencollective.com/flyimg/sponsor/9/website" target="_blank"><img src="https://opencollective.com/flyimg/sponsor/9/avatar.svg"></a>
 
 
 
