@@ -24,7 +24,22 @@ http://oi.flyimg.io/upload/w_300,h_250,c_1/https://m0.cl/t/resize-test_1920.jpg
 
 ![lago_ranco](http://oi.flyimg.io/upload/w_300,h_250,c_1/https://m0.cl/t/resize-test_1920.jpg)
 
-# Installation and setup
+# Installation [Deployment mode]
+
+Pull the image
+
+```bash
+docker pull flyimg/flyimg-build
+```
+
+Start the container
+
+```bash
+docker run -itd -p 8080:80 flyimg/flyimg-build
+```
+Check [how to provision the application](#how-to-provision-the-application-on)
+
+# Installation [Development Mode]
 
 You can spin up your own working server in 10 minutes using the provision scripts for [AWS Elastic Beanstalk](https://github.com/flyimg/Elastic-Beanstalk-provision) or the [DigitalOcean Ubuntu Droplets](https://github.com/flyimg/DigitalOcean-provision) <small>(more environments to come)</small>. For other environments or if you want to tweak and play in your machine before rolling out, read along...
 
@@ -32,11 +47,12 @@ You can spin up your own working server in 10 minutes using the provision script
 
 You will need to have **Docker** on your machine. Optionally you can use Docker machine to create a virtual environment. We have tested on **Mac**, **Windows** and **Ubuntu**.
 
-## Instalation
+## Installation
 
 You can use `git` or `composer` for the first step. 
 
 ### with git
+
 ```sh
 git clone https://github.com/flyimg/flyimg.git
 ```
@@ -57,13 +73,13 @@ This will download and build the main image, It will take a few minutes. If you 
 Then run the container:
 
 ```sh
-docker run -t -d -i -p 8080:80 -v $(pwd):/var/www/html --name flyimg flyimg
+docker run -itd -p 8080:80 -v $(pwd):/var/www/html --name flyimg flyimg
 ```
 
 For Fish shell users: 
 
 ```sh
-docker run -t -d -i -p 8080:80 -v $PWD:/var/www/html --name flyimg flyimg
+docker run -itd -p 8080:80 -v $PWD:/var/www/html --name flyimg flyimg
 ```
 
 The above command will make the Dockerfile run supervisord command which launches 2 processes: **nginx** and **php-fpm** and starts listening on port 8080.
@@ -405,7 +421,7 @@ aws_s3:
 # Roadmap:
 
 - [ ] Benchmark the application.
-- [ ] Decouple the core logic from Silex in order to make portable.
+- [ ] Decouple the core logic from Silex in order to make it portable.
 - [ ] Test it with couple of frameworks, Phalcon Php is a good candidate.
 - [ ] Add overlays functionality (Text on top of the image)
 - [ ] Storage auto-mapping
@@ -413,7 +429,7 @@ aws_s3:
 
 # Contributors
 
-This project exists thanks to all the people who contribute. [[Contribute]](blob/master/CONTRIBUTING.md).
+This project exists thanks to all the people who contribute.
 <a href="graphs/contributors"><img src="https://opencollective.com/flyimg/contributors.svg?width=890" /></a>
 
 
