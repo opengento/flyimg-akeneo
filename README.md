@@ -90,9 +90,12 @@ The above command will make the Dockerfile run supervisord command which launche
 docker exec -it flyimg composer install
 ```
 
-Again, it will take a few minutes to download the dependencies. Same as before, if you get some errors you should try running `composer install` again. 
+Again, it will take a few minutes to download the dependencies. Same as before, if you get some errors you should try running `composer install` again.
+ 
 
-After composer is done, you can navigate to your machine's IP in port 8080 (ex: http://127.0.0.1:8080/ ) ; you should get a message saying: **Hello from Flyimg!** and a small homepage of flyimg already working. If you get any errors  at this stage it's most likely that composer has not finished installing or skipped something.
+# Testing Flyimg service
+
+You can navigate to your machine's IP in port 8080 (ex: http://127.0.0.1:8080/ ) ; you should get a message saying: **Hello from Flyimg!** and a small homepage of flyimg already working. If you get any errors  at this stage it's most likely that composer has not finished installing or skipped something.
 
 You can test your image resizing service by navigating to: http://127.0.0.1:8080/upload/w_130,h_113,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg
 
@@ -102,7 +105,8 @@ You can test your image resizing service by navigating to: http://127.0.0.1:8080
 
 This is fetching an image from Mozilla, resizing it, saving it and serving it.
 
-#How to transform images
+
+# How to transform images
 
 You go to your server URL`http://imgs.kitty.com` and append `/upload/`;  after that you can pass these options below, followed by an underscore and a value `w_250,q_50` Options are separated by coma (configurable to other separator) . 
 After the options put the source of your image, it can be relative to your server or absolute: `/https://my.storage.io/imgs/pretty-kitten.jpg`
