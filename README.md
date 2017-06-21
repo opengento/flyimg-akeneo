@@ -27,51 +27,54 @@ http://oi.flyimg.io/upload/w_300,h_250,c_1/https://m0.cl/t/resize-test_1920.jpg
 Table of Contents
 =================
 
+   * [Requirements](#requirements)
    * [Installation [Deployment mode]](#installation-deployment-mode)
    * [Installation [Development Mode]](#installation-development-mode)
-      * [Requirements](#requirements)
       * [Installation](#installation)
          * [with git](#with-git)
          * [with composer](#with-composer)
    * [Testing Flyimg service](#testing-flyimg-service)
-         * [It's working!](#its-working)
    * [How to transform images](#how-to-transform-images)
-      * [Options keys:](#options-keys)
-      * [Default options values:](#default-options-values)
+      * [Options keys](#options-keys)
+      * [Default options values](#default-options-values)
    * [Option details](#option-details)
-         * [output string](#output-string)
-         * [mozjpeg bool](#mozjpeg-bool)
-         * [quality int (0-100)](#quality-int-0-100)
-         * [width int](#width-int)
-         * [height int](#height-int)
-         * [Using width AND height](#using-width-and-height)
-         * [crop bool](#crop-bool)
-         * [gravity string](#gravity-string)
-         * [background color (multiple formats)](#background-color-multiple-formats)
-         * [strip int](#strip-int)
-         * [resize int](#resize-int)
-         * [unsharp radiusxsigma{ gain}{ threshold}](#unsharp-radiusxsigmagainthreshold)
-         * [filter string](#filter-string)
-         * [scale int](#scale-int)
-         * [rotate string](#rotate-string)
-         * [refresh int](#refresh-int)
-         * [Face Crop int](#face-crop-int)
-         * [Face Crop Position int](#face-crop-position-int)
-         * [Face Blur int](#face-blur-int)
-      * [Enable Restricted Domains:](#enable-restricted-domains)
-      * [Run test:](#run-test)
-      * [How to Provision the application on:](#how-to-provision-the-application-on)
+      * [output string](#output-string)
+      * [mozjpeg bool](#mozjpeg-bool)
+      * [quality int (0-100)](#quality-int-0-100)
+      * [width int](#width-int)
+      * [height int](#height-int)
+      * [Using width AND height](#using-width-and-height)
+      * [crop bool](#crop-bool)
+      * [gravity string](#gravity-string)
+      * [background color (multiple formats)](#background-color-multiple-formats)
+      * [strip int](#strip-int)
+      * [resize int](#resize-int)
+      * [unsharp radiusxsigma{ gain}{ threshold}](#unsharp-radiusxsigmagainthreshold)
+      * [filter string](#filter-string)
+      * [scale int](#scale-int)
+      * [rotate string](#rotate-string)
+      * [refresh int](#refresh-int)
+      * [Face Crop int](#face-crop-int)
+      * [Face Crop Position int](#face-crop-position-int)
+      * [Face Blur int](#face-blur-int)
+      * [Enable Restricted Domains](#enable-restricted-domains)
+      * [Run test](#run-test)
+      * [How to Provision the application on](#how-to-provision-the-application-on)
    * [Technology stack](#technology-stack)
-      * [Abstract storage with Flysystem:](#abstract-storage-with-flysystem)
-         * [Using AWS S3 as Storage Provider:](#using-aws-s3-as-storage-provider)
-   * [Benchmark:](#benchmark)
-   * [Demo Application running:](#demo-application-running)
-   * [Roadmap:](#roadmap)
+      * [Abstract storage with Flysystem](#abstract-storage-with-flysystem)
+         * [Using AWS S3 as Storage Provider](#using-aws-s3-as-storage-provider)
+   * [Benchmark](#benchmark)
+   * [Demo Application running](#demo-application-running)
+   * [Roadmap](#roadmap)
    * [Contributors](#contributors)
    * [Backers](#backers)
    * [Sponsors](#sponsors)
    
    
+# Requirements
+
+You will need to have **Docker** on your machine. Optionally you can use Docker machine to create a virtual environment. We have tested on **Mac**, **Windows** and **Ubuntu**.
+
 # Installation [Deployment mode]
 
 Pull the image
@@ -90,10 +93,6 @@ Check [how to provision the application](#how-to-provision-the-application-on)
 # Installation [Development Mode]
 
 You can spin up your own working server in 10 minutes using the provision scripts for [AWS Elastic Beanstalk](https://github.com/flyimg/Elastic-Beanstalk-provision) or the [DigitalOcean Ubuntu Droplets](https://github.com/flyimg/DigitalOcean-provision) <small>(more environments to come)</small>. For other environments or if you want to tweak and play in your machine before rolling out, read along...
-
-## Requirements
-
-You will need to have **Docker** on your machine. Optionally you can use Docker machine to create a virtual environment. We have tested on **Mac**, **Windows** and **Ubuntu**.
 
 ## Installation
 
@@ -149,7 +148,7 @@ You can test your image resizing service by navigating to: http://127.0.0.1:8080
 
 ![ff-logo](http://oi.flyimg.io/upload/w_130,h_113,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg)
 
-### It's working!
+**It's working!**
 
 This is fetching an image from Mozilla, resizing it, saving it and serving it.
 
@@ -163,7 +162,7 @@ So to get a pretty kitten at 250 pixels wide, with 50% compression, you would wr
 
 ---
 
-Options keys:
+Options keys
 -------------
 
 ```yml
@@ -193,7 +192,7 @@ options_keys:
   webpl: webp-lossless
 ```
 
-Default options values:
+Default options values
 -----------------------
 
 ```yml
@@ -404,7 +403,7 @@ Also it will send headers with the command done on the image + info returned by 
 [![fb_1](http://oi.flyimg.io/upload/fb_1/http://facedetection.jaysalvat.com/img/faces.jpg)](http://oi.flyimg.io/upload/fb_1/http://facedetection.jaysalvat.com/img/faces.jpg)
 
 
-Enable Restricted Domains:
+Enable Restricted Domains
 --------------------------
 
 Restricted domains disabled by default. This means that you can fetch a resource from any URL. To enable the domain restriction, change in config/parameters.yml 
@@ -427,7 +426,7 @@ Run test:
 docker exec -it flyimg vendor/bin/phpunit tests/
 ```
 
-How to Provision the application on:
+How to Provision the application on
 -----------------------------------
 - [DigitalOcean](https://github.com/flyimg/DigitalOcean-provision)
 - [AWS Elastic-Beanstalk](https://github.com/flyimg/Elastic-Beanstalk-provision)
@@ -441,7 +440,7 @@ How to Provision the application on:
 * Storage: [Flysystem](http://flysystem.thephpleague.com/)
 * Containerisation:  Docker
 
-## Abstract storage with Flysystem:
+## Abstract storage with Flysystem
 
 Storage files based on [Flysystem](http://flysystem.thephpleague.com/) which is `a filesystem abstraction allows you to easily swap out a local filesystem for a remote one. Technical debt is reduced as is the chance of vendor lock-in.`
 
@@ -449,7 +448,7 @@ Default storage is Local, but you can use other Adapters like AWS S3, Azure, FTP
 
 Currently, only the local and S3 are implemented as Storage Provider in Flyimg application, but you can add your specific one easily in `src/Core/Provider/StorageProvider.php` 
 
-### Using AWS S3 as Storage Provider:
+### Using AWS S3 as Storage Provider
 
 in parameters.yml change the `storage_system` option from local to s3, and fill in the aws_s3 options :
 
@@ -463,7 +462,7 @@ aws_s3:
   bucket_name: "s3-bucket-name"
 ```
 
-# Benchmark:
+# Benchmark
 
 See [benchmark.sh](https://github.com/flyimg/flyimg/blob/master/benchmark.sh) for more details
 Requires: Vegeta [http://github.com/tsenart/vegeta](http://github.com/tsenart/vegeta)
@@ -497,14 +496,14 @@ Success       [ratio]                  100.00%
 Status Codes  [code:count]             200:500
 ```
 
-# Demo Application running:
+# Demo Application running
 
 [http://oi.flyimg.io](http://oi.flyimg.io)
 
 [http://oi.flyimg.io/upload/w_300,h_250,c_1/https://m0.cl/t/resize-test_1920.jpg]
 
 
-# Roadmap:
+# Roadmap
 
 - [x] Benchmark the application.
 - [ ] Decouple the core logic from Silex in order to make it portable.
