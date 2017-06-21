@@ -24,6 +24,54 @@ http://oi.flyimg.io/upload/w_300,h_250,c_1/https://m0.cl/t/resize-test_1920.jpg
 
 ![lago_ranco](http://oi.flyimg.io/upload/w_300,h_250,c_1/https://m0.cl/t/resize-test_1920.jpg)
 
+Table of Contents
+=================
+
+   * [Installation [Deployment mode]](#installation-deployment-mode)
+   * [Installation [Development Mode]](#installation-development-mode)
+      * [Requirements](#requirements)
+      * [Installation](#installation)
+         * [with git](#with-git)
+         * [with composer](#with-composer)
+   * [Testing Flyimg service](#testing-flyimg-service)
+         * [It's working!](#its-working)
+   * [How to transform images](#how-to-transform-images)
+      * [Options keys:](#options-keys)
+      * [Default options values:](#default-options-values)
+   * [Option details](#option-details)
+         * [output string](#output-string)
+         * [mozjpeg bool](#mozjpeg-bool)
+         * [quality int (0-100)](#quality-int-0-100)
+         * [width int](#width-int)
+         * [height int](#height-int)
+         * [Using width AND height](#using-width-and-height)
+         * [crop bool](#crop-bool)
+         * [gravity string](#gravity-string)
+         * [background color (multiple formats)](#background-color-multiple-formats)
+         * [strip int](#strip-int)
+         * [resize int](#resize-int)
+         * [unsharp radiusxsigma{ gain}{ threshold}](#unsharp-radiusxsigmagainthreshold)
+         * [filter string](#filter-string)
+         * [scale int](#scale-int)
+         * [rotate string](#rotate-string)
+         * [refresh int](#refresh-int)
+         * [Face Crop int](#face-crop-int)
+         * [Face Crop Position int](#face-crop-position-int)
+         * [Face Blur int](#face-blur-int)
+      * [Enable Restricted Domains:](#enable-restricted-domains)
+      * [Run test:](#run-test)
+      * [How to Provision the application on:](#how-to-provision-the-application-on)
+   * [Technology stack](#technology-stack)
+      * [Abstract storage with Flysystem:](#abstract-storage-with-flysystem)
+         * [Using AWS S3 as Storage Provider:](#using-aws-s3-as-storage-provider)
+   * [Benchmark:](#benchmark)
+   * [Demo Application running:](#demo-application-running)
+   * [Roadmap:](#roadmap)
+   * [Contributors](#contributors)
+   * [Backers](#backers)
+   * [Sponsors](#sponsors)
+   
+   
 # Installation [Deployment mode]
 
 Pull the image
@@ -415,6 +463,40 @@ aws_s3:
   bucket_name: "s3-bucket-name"
 ```
 
+# Benchmark:
+
+See [benchmark.sh](https://github.com/flyimg/flyimg/blob/master/benchmark.sh) for more details
+Requires: Vegeta [http://github.com/tsenart/vegeta](http://github.com/tsenart/vegeta)
+
+```
+Crop http://localhost:8080/upload/w_200,h_200,c_1,/Rovinj-Croatia.jpg
+Requests      [total, rate]            500, 50.10
+Duration      [total, attack, wait]    9.987040447s, 9.979999952s, 7.040495ms
+Latencies     [mean, 50, 95, 99, max]  30.374428ms, 7.118491ms, 198.48037ms, 403.203168ms, 667.636703ms
+Bytes In      [total, mean]            86208, 172.42
+Bytes Out     [total, mean]            0, 0.00
+Success       [ratio]                  100.00%
+Status Codes  [code:count]             200:500
+
+Resize http://localhost:8080/upload/w_200,h_200,rz_1/Rovinj-Croatia.jpg
+Requests      [total, rate]            500, 50.10
+Duration      [total, attack, wait]    9.986398956s, 9.979999972s, 6.398984ms
+Latencies     [mean, 50, 95, 99, max]  14.058886ms, 7.27949ms, 26.480589ms, 218.968846ms, 289.695028ms
+Bytes In      [total, mean]            101675, 203.35
+Bytes Out     [total, mean]            0, 0.00
+Success       [ratio]                  100.00%
+Status Codes  [code:count]             200:500
+
+Rotate http://localhost:8080/upload/r_-45,w_400,h_400/Rovinj-Croatia.jpg
+Requests      [total, rate]            500, 50.10
+Duration      [total, attack, wait]    10.851828209s, 9.97999994s, 871.828269ms
+Latencies     [mean, 50, 95, 99, max]  2.286214264s, 2.140216211s, 4.513043865s, 7.226125489s, 7.251871479s
+Bytes In      [total, mean]            987720, 1975.44
+Bytes Out     [total, mean]            0, 0.00
+Success       [ratio]                  100.00%
+Status Codes  [code:count]             200:500
+```
+
 # Demo Application running:
 
 [http://oi.flyimg.io](http://oi.flyimg.io)
@@ -424,7 +506,7 @@ aws_s3:
 
 # Roadmap:
 
-- [ ] Benchmark the application.
+- [x] Benchmark the application.
 - [ ] Decouple the core logic from Silex in order to make it portable.
 - [ ] Test it with couple of frameworks, Phalcon Php is a good candidate.
 - [ ] Add overlays functionality (Text on top of the image)
