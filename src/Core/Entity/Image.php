@@ -60,10 +60,11 @@ class Image
 
     /**
      * Image constructor.
-     * @param array $options
+     *
+     * @param array  $options
      * @param string $sourceFile
      */
-    public function __construct(array $options, $sourceFile)
+    public function __construct(array $options, string $sourceFile)
     {
         $this->options = $options;
         $this->sourceFile = $sourceFile;
@@ -76,7 +77,7 @@ class Image
     /**
      * @return array
      */
-    public function getOptions()
+    public function getOptions(): array
     {
         return $this->options;
     }
@@ -84,7 +85,7 @@ class Image
     /**
      * @param array $options
      */
-    public function setOptions($options)
+    public function setOptions(array $options)
     {
         $this->options = $options;
     }
@@ -92,7 +93,7 @@ class Image
     /**
      * @return string
      */
-    public function getSourceFile()
+    public function getSourceFile(): string
     {
         return $this->sourceFile;
     }
@@ -100,7 +101,7 @@ class Image
     /**
      * @param string $sourceFile
      */
-    public function setSourceFile($sourceFile)
+    public function setSourceFile(string $sourceFile)
     {
         $this->sourceFile = $sourceFile;
     }
@@ -108,7 +109,7 @@ class Image
     /**
      * @return string
      */
-    public function getNewFileName()
+    public function getNewFileName(): string
     {
         return $this->newFileName;
     }
@@ -116,7 +117,7 @@ class Image
     /**
      * @param string $newFileName
      */
-    public function setNewFileName($newFileName)
+    public function setNewFileName(string $newFileName)
     {
         $this->newFileName = $newFileName;
     }
@@ -124,7 +125,7 @@ class Image
     /**
      * @return string
      */
-    public function getNewFilePath()
+    public function getNewFilePath(): string
     {
         return $this->newFilePath;
     }
@@ -132,7 +133,7 @@ class Image
     /**
      * @param string $newFilePath
      */
-    public function setNewFilePath($newFilePath)
+    public function setNewFilePath(string $newFilePath)
     {
         $this->newFilePath = $newFilePath;
     }
@@ -140,20 +141,20 @@ class Image
     /**
      * @return string
      */
-    public function getTemporaryFile()
+    public function getTemporaryFile(): string
     {
         return $this->temporaryFile;
     }
 
     /**
-     * @param $commandStr
+     * @param string $commandStr
      */
-    public function setCommandString($commandStr)
+    public function setCommandString(string $commandStr)
     {
         $this->commandString = $commandStr;
     }
 
-    public function getCommandString()
+    public function getCommandString(): string
     {
         return $this->commandString;
     }
@@ -250,17 +251,17 @@ class Image
      *
      * @return bool
      */
-    public function isWebPSupport()
+    public function isWebPSupport(): bool
     {
         return $this->outputExtension == self::EXT_WEBP
             || (in_array(self::WEBP_MIME_TYPE, Request::createFromGlobals()->getAcceptableContentTypes())
-            && $this->defaultParams['auto_webp_enabled']);
+                && $this->defaultParams['auto_webp_enabled']);
     }
 
     /**
      * @return bool
      */
-    public function isGifSupport()
+    public function isGifSupport(): bool
     {
         return $this->getSourceMimeType() == self::GIF_MIME_TYPE;
     }
@@ -268,7 +269,7 @@ class Image
     /**
      * @return bool
      */
-    public function isPngSupport()
+    public function isPngSupport(): bool
     {
         return $this->getSourceMimeType() == self::PNG_MIME_TYPE;
     }
@@ -276,7 +277,7 @@ class Image
     /**
      * @return bool
      */
-    public function isMozJpegSupport()
+    public function isMozJpegSupport(): bool
     {
         return $this->extract('mozjpeg') == 1 &&
             (!$this->isPngSupport() || $this->outputExtension == self::EXT_JPG) &&
@@ -287,7 +288,7 @@ class Image
     /**
      * @return string
      */
-    public function getResponseContentType()
+    public function getResponseContentType(): string
     {
         if ($this->getOutputExtension() == self::EXT_WEBP) {
             return self::WEBP_MIME_TYPE;
@@ -305,7 +306,7 @@ class Image
     /**
      * @return string
      */
-    public function getSourceMimeType()
+    public function getSourceMimeType(): string
     {
         return $this->sourceMimeType;
     }
@@ -313,7 +314,7 @@ class Image
     /**
      * @return string
      */
-    public function getContent()
+    public function getContent(): string
     {
         return $this->content;
     }
@@ -321,7 +322,7 @@ class Image
     /**
      * @param string $content
      */
-    public function setContent($content)
+    public function setContent(string $content)
     {
         $this->content = $content;
     }
@@ -329,16 +330,17 @@ class Image
     /**
      * @return string
      */
-    public function getOutputExtension()
+    public function getOutputExtension(): string
     {
         return $this->outputExtension;
     }
 
     /**
      * @param string $key
-     * @return null
+     *
+     * @return string
      */
-    public function extract($key)
+    public function extract(string $key): string
     {
         return $this->extractByKey($key, $this->options);
     }

@@ -44,10 +44,11 @@ class ImageProcessor
 
     /**
      * @param Image $image
+     *
      * @return Image
      * @throws \Exception
      */
-    public function process(Image $image)
+    public function process(Image $image): Image
     {
         try {
             if ($this->filesystem->has($image->getNewFileName()) && $image->getOptions()['refresh']) {
@@ -70,6 +71,7 @@ class ImageProcessor
      * Save new FileName based on source file and list of options
      *
      * @param Image $image
+     *
      * @throws \Exception
      */
     protected function saveNewFile(Image $image)
@@ -103,7 +105,7 @@ class ImageProcessor
      * @param Image $image
      * @param int   $faceCropPosition
      */
-    protected function processCroppingFaces(Image $image, $faceCropPosition = 0)
+    protected function processCroppingFaces(Image $image, int $faceCropPosition = 0)
     {
         if (!is_executable(self::FACEDETECT_COMMAND)) {
             return;
@@ -210,10 +212,11 @@ class ImageProcessor
      * Apply the Quality processor based on options
      *
      * @param Image $image
-     * @param       $command
+     * @param array $command
+     *
      * @return array
      */
-    protected function applyQuality(Image $image, $command)
+    protected function applyQuality(Image $image, array $command): array
     {
         $quality = $image->extract('quality');
         /** WebP format */
@@ -240,14 +243,15 @@ class ImageProcessor
      * Size and Crop logic
      *
      * @param Image $image
+     *
      * @return array
      */
-    protected function generateSize(Image $image)
+    protected function generateSize(Image $image): array
     {
         $targetWidth = $image->extract('width');
         $targetHeight = $image->extract('height');
 
-        $size = '';
+        $size = $extent = '';
         if ($targetWidth) {
             $size .= (string)escapeshellarg($targetWidth);
         }
@@ -263,7 +267,7 @@ class ImageProcessor
         if ($targetWidth && $targetHeight) {
             $extent = ' -extent '.$size;
             $gravity = ' -gravity '.escapeshellarg($image->extract('gravity'));
-            $resizingConstraints ='';
+            $resizingConstraints = '';
             if ($image->extract('crop')) {
                 $resizingConstraints .= '^';
                 /**
@@ -291,10 +295,12 @@ class ImageProcessor
 
     /**
      * Get the image Identity information
+     *
      * @param Image $image
+     *
      * @return string
      */
-    public function getImageIdentity(Image $image)
+    public function getImageIdentity(Image $image): string
     {
         $output = $this->execute(self::IM_IDENTITY_COMMAND." ".$image->getNewFilePath());
 
@@ -302,11 +308,12 @@ class ImageProcessor
     }
 
     /**
-     * @param $commandStr
-     * @return string
+     * @param string $commandStr
+     *
+     * @return array
      * @throws \Exception
      */
-    protected function execute($commandStr)
+    protected function execute(string $commandStr): array
     {
         exec($commandStr, $output, $code);
         if (count($output) === 0) {

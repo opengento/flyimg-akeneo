@@ -9,9 +9,10 @@ trait ParserTrait
      *
      * @param string $options
      * @param array  $defaultParams
+     *
      * @return array
      */
-    public function parseOptions($options, array $defaultParams)
+    public function parseOptions(string $options, array $defaultParams): array
     {
         $defaultOptions = $defaultParams['default_options'];
         $optionsKeys = $defaultParams['options_keys'];
@@ -34,11 +35,12 @@ trait ParserTrait
      *
      * @param string $key
      * @param array  $options
-     * @return null
+     *
+     * @return string
      */
-    public function extractByKey($key, &$options)
+    public function extractByKey(string $key, array &$options): string
     {
-        $value = null;
+        $value = '';
         if (isset($options[$key])) {
             $value = $options[$key];
             unset($options[$key]);

@@ -16,10 +16,11 @@ class DefaultController extends CoreController
 
     /**
      * @param string $options
-     * @param null   $imageSrc
+     * @param string $imageSrc
+     *
      * @return Response
      */
-    public function uploadAction($options, $imageSrc = null)
+    public function uploadAction(string $options, string $imageSrc = null): Response
     {
         try {
             $image = $this->getCoreManager()->processImage($options, $imageSrc);
@@ -32,10 +33,11 @@ class DefaultController extends CoreController
 
     /**
      * @param string $options
-     * @param null   $imageSrc
+     * @param string $imageSrc
+     *
      * @return Response
      */
-    public function pathAction($options, $imageSrc = null)
+    public function pathAction(string $options, string $imageSrc = null): Response
     {
         try {
             $image = $this->getCoreManager()->processImage($options, $imageSrc);

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Core\Resolver\ControllerResolver;
 use Core\Service\CoreManager;
 use Core\Service\ImageProcessor;

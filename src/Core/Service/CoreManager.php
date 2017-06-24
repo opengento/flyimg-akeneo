@@ -22,6 +22,7 @@ class CoreManager
 
     /**
      * CoreManager constructor.
+     *
      * @param ImageProcessor $imageProcessor
      * @param array          $defaultParams
      */
@@ -34,7 +35,7 @@ class CoreManager
     /**
      * @return ImageProcessor
      */
-    public function getImageProcessor()
+    public function getImageProcessor(): ImageProcessor
     {
         return $this->imageProcessor;
     }
@@ -42,7 +43,7 @@ class CoreManager
     /**
      * @return array
      */
-    public function getDefaultParams()
+    public function getDefaultParams(): array
     {
         return $this->defaultParams;
     }
@@ -50,9 +51,10 @@ class CoreManager
     /**
      * @param $options
      * @param $imageSrc
+     *
      * @return Image
      */
-    public function processImage($options, $imageSrc)
+    public function processImage(string $options, string $imageSrc): Image
     {
         $parsedOptions = $this->parse($options);
         $image = new Image($parsedOptions, $imageSrc);
@@ -65,16 +67,19 @@ class CoreManager
 
     /**
      * @param $options
+     *
      * @return array
      */
-    public function parse($options)
+    public function parse(string $options):array
     {
         return $this->parseOptions($options, $this->defaultParams);
     }
 
     /**
      * Check Restricted Domain enabled
+     *
      * @param Image $image
+     *
      * @throws AppException
      */
     protected function checkRestrictedDomains(Image $image)

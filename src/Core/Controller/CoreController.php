@@ -25,17 +25,17 @@ class CoreController
     /**
      * @return CoreManager
      */
-    public function getCoreManager()
+    public function getCoreManager(): CoreManager
     {
         return $this->app['core.manager'];
     }
 
     /**
-     * @param       $templateName
-     * @param array $params
+     * @param string $templateName
+     *
      * @return Response
      */
-    public function render($templateName, $params = [])
+    public function render(string $templateName): Response
     {
         ob_start();
         include(ROOT_DIR.'/src/Core/Views/'.$templateName.'.php');
@@ -47,9 +47,10 @@ class CoreController
 
     /**
      * @param Image $image
+     *
      * @return Response
      */
-    public function generateImageResponse(Image $image)
+    public function generateImageResponse(Image $image): Response
     {
         $response = new Response();
         $response->setContent($image->getContent());
@@ -61,9 +62,10 @@ class CoreController
 
     /**
      * @param Image $image
+     *
      * @return Response
      */
-    public function generatePathResponse(Image $image)
+    public function generatePathResponse(Image $image): Response
     {
         $response = new Response();
         $imagePath = $image->getNewFileName();
@@ -77,9 +79,10 @@ class CoreController
     /**
      * @param Image    $image
      * @param Response $response
+     *
      * @return Response
      */
-    protected function setHeadersContent(Image $image, Response $response)
+    protected function setHeadersContent(Image $image, Response $response): Response
     {
         $response->headers->set('Content-Type', $image->getResponseContentType());
 

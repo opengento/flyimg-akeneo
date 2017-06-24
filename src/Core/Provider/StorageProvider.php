@@ -38,6 +38,8 @@ class StorageProvider implements ServiceProviderInterface
 
     /**
      * @param Container $app
+     *
+     * @return string
      */
     protected function registerStorageSystemLocal(Container $app)
     {
@@ -68,7 +70,9 @@ class StorageProvider implements ServiceProviderInterface
 
     /**
      * @param Container $app
-     * @throws \Exception
+     *
+     * @return string
+     * @throws MissingParamsException
      */
     protected function registerStorageSystemS3(Container $app)
     {
