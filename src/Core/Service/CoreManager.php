@@ -5,6 +5,7 @@ namespace Core\Service;
 use Core\Entity\Image;
 use Core\Exception\AppException;
 use Core\Traits\ParserTrait;
+use League\Flysystem\Filesystem;
 
 /**
  * Class CoreManager
@@ -20,16 +21,22 @@ class CoreManager
     /** @var array */
     protected $defaultParams;
 
+    /** @var Filesystem */
+    protected $filesystem;
+
+
     /**
      * CoreManager constructor.
      *
      * @param ImageProcessor $imageProcessor
      * @param array          $defaultParams
+     * @param Filesystem     $filesystem
      */
-    public function __construct(ImageProcessor $imageProcessor, array $defaultParams)
+    public function __construct(ImageProcessor $imageProcessor, array $defaultParams, Filesystem $filesystem)
     {
         $this->imageProcessor = $imageProcessor;
         $this->defaultParams = $defaultParams;
+        $this->filesystem = $filesystem;
     }
 
     /**
@@ -56,11 +63,26 @@ class CoreManager
      */
     public function processImage(string $options, string $imageSrc): Image
     {
+        $this->checkRestrictedDomains($imageSrc);
         $parsedOptions = $this->parse($options);
         $image = new Image($parsedOptions, $imageSrc);
-        $this->checkRestrictedDomains($image);
 
-        $image = $this->getImageProcessor()->process($image);
+        try {
+
+            if ($this->filesystem->has($image->getNewFileName()) && $image->getOptions()['refresh']) {
+                $this->filesystem->delete($image->getNewFileName());
+            }
+
+            if (!$this->filesystem->has($image->getNewFileName())) {
+                $image = $this->getImageProcessor()->processNewImage($image);
+            }
+
+            $image->setContent($this->filesystem->read($image->getNewFileName()));
+        } catch (\Exception $e) {
+            $image->unlinkUsedFiles();
+            throw $e;
+        }
+
 
         return $image;
     }
@@ -70,7 +92,7 @@ class CoreManager
      *
      * @return array
      */
-    public function parse(string $options):array
+    public function parse(string $options): array
     {
         return $this->parseOptions($options, $this->defaultParams);
     }
@@ -78,19 +100,19 @@ class CoreManager
     /**
      * Check Restricted Domain enabled
      *
-     * @param Image $image
+     * @param string $imageSource
      *
      * @throws AppException
      */
-    protected function checkRestrictedDomains(Image $image)
+    protected function checkRestrictedDomains(string $imageSource)
     {
         if ($this->defaultParams['restricted_domains'] &&
             is_array($this->defaultParams['whitelist_domains']) &&
-            !in_array(parse_url($image->getSourceFile(), PHP_URL_HOST), $this->defaultParams['whitelist_domains'])
+            !in_array(parse_url($imageSource, PHP_URL_HOST), $this->defaultParams['whitelist_domains'])
         ) {
             throw  new AppException(
                 'Restricted domains enabled, the domain your fetching from is not allowed: '.
-                parse_url($image->getSourceFile(), PHP_URL_HOST)
+                parse_url($imageSource, PHP_URL_HOST)
             );
         }
     }
