@@ -56,10 +56,11 @@ class CoreManager
     }
 
     /**
-     * @param $options
-     * @param $imageSrc
+     * @param string $options
+     * @param string $imageSrc
      *
      * @return Image
+     * @throws \Exception
      */
     public function processImage(string $options, string $imageSrc): Image
     {
@@ -68,7 +69,6 @@ class CoreManager
         $image = new Image($parsedOptions, $imageSrc);
 
         try {
-
             if ($this->filesystem->has($image->getNewFileName()) && $image->getOptions()['refresh']) {
                 $this->filesystem->delete($image->getNewFileName());
             }
