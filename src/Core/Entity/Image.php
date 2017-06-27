@@ -41,7 +41,7 @@ class Image
     protected $newFilePath;
 
     /** @var string */
-    protected $temporaryFile;
+    protected $originalFile;
 
     /** @var string */
     protected $sourceMimeType;
@@ -69,8 +69,8 @@ class Image
         $this->options = $options;
         $this->sourceFile = $sourceFile;
 
-        $this->saveToTemporaryFile();
         $this->generateFilesName();
+        $this->saveToTemporaryFile();
         $this->generateFileExtension();
     }
 
@@ -141,9 +141,9 @@ class Image
     /**
      * @return string
      */
-    public function getTemporaryFile(): string
+    public function getOriginalFile(): string
     {
-        return $this->temporaryFile;
+        return $this->originalFile ?: '';
     }
 
     /**
@@ -160,37 +160,97 @@ class Image
     }
 
     /**
+     * @return string
+     */
+    public function getSourceMimeType(): string
+    {
+        return $this->sourceMimeType ?: '';
+    }
+
+    /**
+     * @return string
+     */
+    public function getContent(): string
+    {
+        return $this->content;
+    }
+
+    /**
+     * @param string $content
+     */
+    public function setContent(string $content)
+    {
+        $this->content = $content;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOutputExtension(): string
+    {
+        return $this->outputExtension;
+    }
+
+    /**
+     * @param string $key
+     *
+     * @return string
+     */
+    public function extract(string $key): string
+    {
+        return $this->extractByKey($key, $this->options);
+    }
+
+    /**
      * Save given image to temporary file and return the path
      *
      * @throws \Exception
      */
     protected function saveToTemporaryFile()
     {
-        if (!$resource = @fopen($this->getSourceFile(), "r")) {
+        if (file_exists($this->originalFile) && !$this->options['refresh']) {
+            return;
+        }
+
+        $opts = [
+            'http' =>
+                [
+                    'method' => 'GET',
+                    'max_redirects' => '0',
+                ],
+        ];
+        $context = stream_context_create($opts);
+
+        if (!$stream = @fopen($this->getSourceFile(), 'r', false, $context)
+        ) {
             throw  new ReadFileException(
                 'Error occurred while trying to read the file Url : '
                 .$this->getSourceFile()
             );
         }
-        $content = "";
-        while ($line = fread($resource, 1024)) {
-            $content .= $line;
-        }
-        $this->temporaryFile = TMP_DIR.uniqid("", true);
-        file_put_contents($this->temporaryFile, $content);
-        $this->sourceMimeType = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $this->temporaryFile);
+        $content = stream_get_contents($stream);
+        fclose($stream);
+        file_put_contents($this->originalFile, $content);
     }
 
     /**
+     * @param bool $allFiles
      * Remove the generated files
      */
-    public function unlinkUsedFiles()
+    public function unlinkUsedFiles(bool $allFiles = false)
     {
-        if (file_exists($this->getTemporaryFile())) {
-            unlink($this->getTemporaryFile());
-        }
         if (file_exists($this->getNewFilePath())) {
             unlink($this->getNewFilePath());
+        }
+
+        if ($allFiles) {
+            $fullPath = UPLOAD_DIR.$this->getNewFileName();
+            if (file_exists($fullPath)) {
+                unlink($fullPath);
+            }
+            if (file_exists($this->getOriginalFile())) {
+                unlink($this->getOriginalFile());
+            }
         }
     }
 
@@ -204,6 +264,8 @@ class Image
         $this->newFileName = md5(implode('.', $hashedOptions).$this->sourceFile);
         $this->newFilePath = TMP_DIR.$this->newFileName;
 
+        $this->originalFile = TMP_DIR.'original-'.(md5($hashedOptions['face-crop-position'].$this->sourceFile));
+
         if ($this->options['refresh']) {
             $this->newFilePath .= uniqid("-", true);
         }
@@ -214,7 +276,9 @@ class Image
      */
     protected function generateFileExtension()
     {
+        $this->sourceMimeType = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $this->originalFile);
         $outputExtension = $this->extract('output');
+
         if ($outputExtension == self::EXT_AUTO) {
             $this->outputExtension = self::EXT_JPG;
             if ($this->isPngSupport()) {
@@ -232,7 +296,7 @@ class Image
                 [self::EXT_PNG, self::EXT_JPG, self::EXT_GIF, self::EXT_JPG, self::EXT_WEBP]
             )
             ) {
-                throw new InvalidArgumentException("Invalid file output requested");
+                throw new InvalidArgumentException("Invalid file output requested : ".$outputExtension);
             }
             $this->outputExtension = $outputExtension;
         }
@@ -301,47 +365,5 @@ class Image
         }
 
         return self::JPEG_MIME_TYPE;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSourceMimeType(): string
-    {
-        return $this->sourceMimeType;
-    }
-
-    /**
-     * @return string
-     */
-    public function getContent(): string
-    {
-        return $this->content;
-    }
-
-    /**
-     * @param string $content
-     */
-    public function setContent(string $content)
-    {
-        $this->content = $content;
-    }
-
-    /**
-     * @return string
-     */
-    public function getOutputExtension(): string
-    {
-        return $this->outputExtension;
-    }
-
-    /**
-     * @param string $key
-     *
-     * @return string
-     */
-    public function extract(string $key): string
-    {
-        return $this->extractByKey($key, $this->options);
     }
 }

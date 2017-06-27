@@ -71,7 +71,7 @@ $app['image.processor'] = function ($app) {
 
 /** Core Manager Service */
 $app['core.manager'] = function ($app) {
-    return new CoreManager($app['image.processor'], $app['params']);
+    return new CoreManager($app['image.processor'], $app['params'], $app['flysystems']['upload_dir']);
 };
 
 /** debug conf */

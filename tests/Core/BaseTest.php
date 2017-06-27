@@ -1,4 +1,5 @@
 <?php
+
 namespace Tests\Core;
 
 use Core\Entity\Image;
@@ -17,15 +18,16 @@ class BaseTest extends \PHPUnit_Framework_TestCase
      * @var Application
      */
     protected $app = null;
-    /**
-     * @var Image
-     */
-    protected $image = null;
 
     /**
      * @var CoreManager
      */
     protected $coreManager = null;
+
+    /**
+     * @var array
+     */
+    protected $generatedImage = [];
 
     /**
      *
@@ -34,8 +36,6 @@ class BaseTest extends \PHPUnit_Framework_TestCase
     {
         $this->app = $this->createApplication();
         $this->coreManager = $this->app['core.manager'];
-        $parsedOptions = $this->coreManager->parse(self::OPTION_URL);
-        $this->image = new Image($parsedOptions, self::JPG_TEST_IMAGE);
     }
 
     /**
@@ -43,11 +43,11 @@ class BaseTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        if (file_exists($this->image->getNewFilePath())) {
-            unlink($this->image->getNewFilePath());
-        }
-        if (file_exists($this->image->getTemporaryFile())) {
-            unlink($this->image->getTemporaryFile());
+        foreach ($this->generatedImage as $image) {
+            if (!$image instanceof Image) {
+                continue;
+            }
+            $image->unlinkUsedFiles(true);
         }
     }
 
@@ -69,12 +69,5 @@ class BaseTest extends \PHPUnit_Framework_TestCase
     public function testApplicationInstance()
     {
         $this->assertInstanceOf('Silex\Application', $this->app);
-    }
-
-    /**
-     */
-    public function testImageInstance()
-    {
-        $this->assertInstanceOf('Core\Entity\Image', $this->image);
     }
 }

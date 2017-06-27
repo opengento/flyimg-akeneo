@@ -43,38 +43,14 @@ class ImageProcessor
     }
 
     /**
+     * Save new FileName based on source file and list of options
+     *
      * @param Image $image
      *
      * @return Image
      * @throws \Exception
      */
-    public function process(Image $image): Image
-    {
-        try {
-            if ($this->filesystem->has($image->getNewFileName()) && $image->getOptions()['refresh']) {
-                $this->filesystem->delete($image->getNewFileName());
-            }
-            if (!$this->filesystem->has($image->getNewFileName())) {
-                $this->saveNewFile($image);
-            }
-
-            $image->setContent($this->filesystem->read($image->getNewFileName()));
-        } catch (\Exception $e) {
-            $image->unlinkUsedFiles();
-            throw $e;
-        }
-
-        return $image;
-    }
-
-    /**
-     * Save new FileName based on source file and list of options
-     *
-     * @param Image $image
-     *
-     * @throws \Exception
-     */
-    protected function saveNewFile(Image $image)
+    public function processNewImage(Image $image): Image
     {
         $faceCrop = $image->extract('face-crop');
         $faceCropPosition = $image->extract('face-crop-position');
@@ -97,6 +73,8 @@ class ImageProcessor
         }
 
         $this->filesystem->write($image->getNewFileName(), stream_get_contents(fopen($image->getNewFilePath(), 'r')));
+
+        return $image;
     }
 
     /**
@@ -110,7 +88,7 @@ class ImageProcessor
         if (!is_executable(self::FACEDETECT_COMMAND)) {
             return;
         }
-        $commandStr = self::FACEDETECT_COMMAND." ".$image->getTemporaryFile();
+        $commandStr = self::FACEDETECT_COMMAND." ".$image->getOriginalFile();
         $output = $this->execute($commandStr);
         if (empty($output[$faceCropPosition])) {
             return;
@@ -120,8 +98,8 @@ class ImageProcessor
             list($geometryX, $geometryY, $geometryW, $geometryH) = $geometry;
             $cropCmdStr =
                 self::IM_CONVERT_COMMAND.
-                " '{$image->getTemporaryFile()}' -crop {$geometryW}x{$geometryH}+{$geometryX}+{$geometryY} ".
-                $image->getTemporaryFile();
+                " '{$image->getOriginalFile()}' -crop {$geometryW}x{$geometryH}+{$geometryX}+{$geometryY} ".
+                $image->getOriginalFile();
             $this->execute($cropCmdStr);
         }
     }
@@ -136,7 +114,7 @@ class ImageProcessor
         if (!is_executable(self::FACEDETECT_COMMAND)) {
             return;
         }
-        $commandStr = self::FACEDETECT_COMMAND." ".$image->getTemporaryFile();
+        $commandStr = self::FACEDETECT_COMMAND." ".$image->getOriginalFile();
         $output = $this->execute($commandStr);
         if (empty($output)) {
             return;
@@ -148,7 +126,7 @@ class ImageProcessor
                 $cropCmdStr = self::IM_MOGRIFY_COMMAND.
                     " -gravity NorthWest -region {$geometryW}x{$geometryH}+{$geometryX}+{$geometryY} ".
                     "-scale '10%' -scale '1000%' ".
-                    $image->getTemporaryFile();
+                    $image->getOriginalFile();
                 $this->execute($cropCmdStr);
             }
         }
@@ -172,7 +150,7 @@ class ImageProcessor
         $resizeOperator = $resize ? 'resize' : 'thumbnail';
         $command = [];
         $command[] = self::IM_CONVERT_COMMAND;
-        $tmpFileName = $image->getTemporaryFile();
+        $tmpFileName = $image->getOriginalFile();
 
         //Check the image is gif
         if ($image->isGifSupport()) {

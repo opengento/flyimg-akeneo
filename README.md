@@ -470,27 +470,27 @@ Requires: Vegeta [http://github.com/tsenart/vegeta](http://github.com/tsenart/ve
 ```
 Crop http://localhost:8080/upload/w_200,h_200,c_1,/Rovinj-Croatia.jpg
 Requests      [total, rate]            500, 50.10
-Duration      [total, attack, wait]    9.987040447s, 9.979999952s, 7.040495ms
-Latencies     [mean, 50, 95, 99, max]  30.374428ms, 7.118491ms, 198.48037ms, 403.203168ms, 667.636703ms
-Bytes In      [total, mean]            86208, 172.42
+Duration      [total, attack, wait]    9.986739873s, 9.97999984s, 6.740033ms
+Latencies     [mean, 50, 95, 99, max]  25.076911ms, 6.640774ms, 188.643721ms, 331.643374ms, 636.521662ms
+Bytes In      [total, mean]            213904, 427.81
 Bytes Out     [total, mean]            0, 0.00
 Success       [ratio]                  100.00%
 Status Codes  [code:count]             200:500
 
 Resize http://localhost:8080/upload/w_200,h_200,rz_1/Rovinj-Croatia.jpg
 Requests      [total, rate]            500, 50.10
-Duration      [total, attack, wait]    9.986398956s, 9.979999972s, 6.398984ms
-Latencies     [mean, 50, 95, 99, max]  14.058886ms, 7.27949ms, 26.480589ms, 218.968846ms, 289.695028ms
-Bytes In      [total, mean]            101675, 203.35
+Duration      [total, attack, wait]    9.987057007s, 9.979999967s, 7.05704ms
+Latencies     [mean, 50, 95, 99, max]  12.830654ms, 7.643809ms, 40.270126ms, 108.39337ms, 195.252615ms
+Bytes In      [total, mean]            77994, 155.99
 Bytes Out     [total, mean]            0, 0.00
 Success       [ratio]                  100.00%
 Status Codes  [code:count]             200:500
 
 Rotate http://localhost:8080/upload/r_-45,w_400,h_400/Rovinj-Croatia.jpg
 Requests      [total, rate]            500, 50.10
-Duration      [total, attack, wait]    10.851828209s, 9.97999994s, 871.828269ms
-Latencies     [mean, 50, 95, 99, max]  2.286214264s, 2.140216211s, 4.513043865s, 7.226125489s, 7.251871479s
-Bytes In      [total, mean]            987720, 1975.44
+Duration      [total, attack, wait]    9.986181761s, 9.979999903s, 6.181858ms
+Latencies     [mean, 50, 95, 99, max]  984.630622ms, 585.392512ms, 2.660701812s, 2.763049369s, 6.202687668s
+Bytes In      [total, mean]            1304682, 2609.36
 Bytes Out     [total, mean]            0, 0.00
 Success       [ratio]                  100.00%
 Status Codes  [code:count]             200:500

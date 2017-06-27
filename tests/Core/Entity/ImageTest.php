@@ -1,4 +1,5 @@
 <?php
+
 namespace Tests\Core\Entity;
 
 use Core\Entity\Image;
@@ -41,8 +42,11 @@ class ImageTest extends BaseTest
             'gif-frame' => '0',
             'thread' => '1',
         ];
+        $parsedOptions = $this->coreManager->parse(self::OPTION_URL);
+        $image = new Image($parsedOptions, self::JPG_TEST_IMAGE);
+        $this->generatedImage[] = $image;
 
-        $this->assertEquals($this->image->getOptions(), $expectedParseArray);
+        $this->assertEquals($image->getOptions(), $expectedParseArray);
     }
 
     /**
@@ -50,7 +54,11 @@ class ImageTest extends BaseTest
      */
     public function testSaveToTemporaryFile()
     {
-        $this->assertFileExists($this->image->getTemporaryFile());
+        $parsedOptions = $this->coreManager->parse(self::OPTION_URL);
+        $image = new Image($parsedOptions, self::JPG_TEST_IMAGE);
+        $this->generatedImage[] = $image;
+
+        $this->assertFileExists($image->getOriginalFile());
     }
 
     /**
@@ -59,7 +67,8 @@ class ImageTest extends BaseTest
     public function testSaveToTemporaryFileException()
     {
         $this->expectException(ReadFileException::class);
-        $this->image = new Image([], parent::JPG_TEST_IMAGE.'--fail');
+        $image = new Image(['output' => 'jpg'], parent::JPG_TEST_IMAGE.'--fail');
+        $this->generatedImage[] = $image;
     }
 
     /**
@@ -68,8 +77,14 @@ class ImageTest extends BaseTest
     public function testGenerateFilesName()
     {
         $image = new Image($this->coreManager->parse(parent::OPTION_URL), parent::JPG_TEST_IMAGE);
-        $this->assertEquals($this->image->getNewFileName(), $image->getNewFileName());
-        $this->assertNotEquals($this->image->getNewFilePath(), $image->getNewFilePath());
+        $parsedOptions = $this->coreManager->parse(self::OPTION_URL);
+        $image2 = new Image($parsedOptions, self::JPG_TEST_IMAGE);
+
+        $this->generatedImage[] = $image2;
+        $this->generatedImage[] = $image;
+
+        $this->assertEquals($image2->getNewFileName(), $image->getNewFileName());
+        $this->assertNotEquals($image2->getNewFilePath(), $image->getNewFilePath());
     }
 
     /**
@@ -77,7 +92,10 @@ class ImageTest extends BaseTest
      */
     public function testExtractByKey()
     {
-        $this->image->extract('width');
-        $this->assertFalse(array_key_exists('width', $this->image->getOptions()));
+        $parsedOptions = $this->coreManager->parse(self::OPTION_URL);
+        $image = new Image($parsedOptions, self::JPG_TEST_IMAGE);
+        $image->extract('width');
+        $this->generatedImage[] = $image;
+        $this->assertFalse(array_key_exists('width', $image->getOptions()));
     }
 }
