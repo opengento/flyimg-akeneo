@@ -55,7 +55,7 @@ class StorageProvider implements ServiceProviderInterface
             ]
         );
 
-        $app['flysystems']['file_path_resolver'] = function () use ($app) {
+        $app['flysystems']['file_path_resolver'] = function() use ($app) {
             $hostname = getenv('HOSTNAME_URL');
             if (empty($hostname)) {
                 $schema = $app['request_context']->getScheme();
@@ -106,7 +106,7 @@ class StorageProvider implements ServiceProviderInterface
             ]
         );
 
-        $app['flysystems']['file_path_resolver'] = function () use ($s3Params) {
+        $app['flysystems']['file_path_resolver'] = function() use ($s3Params) {
             return sprintf('https://s3.%s.amazonaws.com/%s/', $s3Params['region'], $s3Params['bucket_name']).'%s';
         };
     }

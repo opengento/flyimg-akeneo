@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 use Core\Resolver\ControllerResolver;
 use Core\Service\CoreManager;
@@ -37,7 +37,7 @@ $app['params'] = Yaml::parse(file_get_contents(__DIR__.'/config/parameters.yml')
  */
 $app['routes'] = $app->extend(
     'routes',
-    function (RouteCollection $routes) {
+    function(RouteCollection $routes) {
         $loader = new YamlFileLoader(new FileLocator(__DIR__.'/config'));
         $collection = $loader->load('routes.yml');
         $routes->addCollection($collection);
@@ -60,17 +60,17 @@ $app->register(
 );
 
 /** Controller Resolver */
-$app['resolver'] = function ($app) {
+$app['resolver'] = function($app) {
     return new ControllerResolver($app, $app['logger']);
 };
 
 /** Image processor Service */
-$app['image.processor'] = function ($app) {
+$app['image.processor'] = function($app) {
     return new ImageProcessor($app['flysystems']['upload_dir']);
 };
 
 /** Core Manager Service */
-$app['core.manager'] = function ($app) {
+$app['core.manager'] = function($app) {
     return new CoreManager($app['image.processor'], $app['params'], $app['flysystems']['upload_dir']);
 };
 
