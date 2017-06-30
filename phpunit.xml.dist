@@ -10,7 +10,7 @@
          syntaxCheck="true"
 >
     <php>
-        <env name="HOSTNAME_URL" value="http://localhost"/>
+        <env name="HOSTNAME_URL" value=""/>
     </php>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">

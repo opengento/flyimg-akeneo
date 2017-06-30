@@ -3,16 +3,16 @@
 namespace Tests\Core\Service;
 
 use Core\Entity\Image;
+use Imagick;
 use Tests\Core\BaseTest;
 
-class ImageProcessorTest extends BaseTest
+class ImageHandlerTest extends BaseTest
 {
-
     /**
      */
     public function testProcessPNG()
     {
-        $image = $this->ImageHandler->processImage(parent::OPTION_URL.',o_png', parent::PNG_TEST_IMAGE);
+        $image = $this->ImageHandler->processImage(parent::CROP_OPTION_URL.',o_png', parent::PNG_TEST_IMAGE);
         $this->generatedImage[] = $image;
         $this->assertFileExists($image->getNewFilePath());
         $this->assertEquals(Image::PNG_MIME_TYPE, $this->getFileMemeType($image->getNewFilePath()));
@@ -36,6 +36,19 @@ class ImageProcessorTest extends BaseTest
         $this->generatedImage[] = $image;
         $this->assertFileExists($image->getNewFilePath());
         $this->assertEquals(Image::JPEG_MIME_TYPE, $this->getFileMemeType($image->getNewFilePath()));
+    }
+
+    /**
+     */
+    public function testProcessFaceCropping()
+    {
+        $image = $this->ImageHandler->processImage('fc_1,rf_1', parent::FACES_TEST_IMAGE);
+        $image1 = new \Imagick($image->getNewFilePath());
+        $image2 = new \Imagick(parent::FACES_CP0_TEST_IMAGE);
+        $result = $image1->compareImages($image2, \Imagick::METRIC_MEANSQUAREERROR);
+        $this->generatedImage[] = $image;
+        $this->assertFileExists($image->getNewFilePath());
+        $this->assertEquals(0, $result[1]);
     }
 
     /**

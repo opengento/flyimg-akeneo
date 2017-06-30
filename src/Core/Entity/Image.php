@@ -83,27 +83,11 @@ class Image
     }
 
     /**
-     * @param array $options
-     */
-    public function setOptions(array $options)
-    {
-        $this->options = $options;
-    }
-
-    /**
      * @return string
      */
     public function getSourceFile(): string
     {
         return $this->sourceFile;
-    }
-
-    /**
-     * @param string $sourceFile
-     */
-    public function setSourceFile(string $sourceFile)
-    {
-        $this->sourceFile = $sourceFile;
     }
 
     /**
@@ -115,27 +99,11 @@ class Image
     }
 
     /**
-     * @param string $newFileName
-     */
-    public function setNewFileName(string $newFileName)
-    {
-        $this->newFileName = $newFileName;
-    }
-
-    /**
      * @return string
      */
     public function getNewFilePath(): string
     {
         return $this->newFilePath;
-    }
-
-    /**
-     * @param string $newFilePath
-     */
-    public function setNewFilePath(string $newFilePath)
-    {
-        $this->newFilePath = $newFilePath;
     }
 
     /**
