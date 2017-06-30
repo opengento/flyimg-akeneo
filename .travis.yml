@@ -3,7 +3,7 @@ env:
     - CC_TEST_REPORTER_ID=20996649247bafadc73d7ed5aa45bfb5e3a7bee4c7d2edeef2a2d9626c6101d9
     - GIT_COMMITTED_AT=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then git log -1 --pretty=format:%ct; else git log -1 --skip 1 --pretty=format:%ct; fi)
 
-language: php ruby
+language: ruby
 
 services:
   - docker
