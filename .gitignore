@@ -1,5 +1,6 @@
 /vendor/
 /var/
+/build/
 /web/uploads
 
 # Elastic Beanstalk Files
