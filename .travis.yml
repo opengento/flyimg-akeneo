@@ -15,7 +15,7 @@ script:
   - docker exec flyimg vendor/bin/phpunit --coverage-clover build/logs/clover.xml
 
 after_success:
-  - docker exec flyimg CODECLIMATE_REPO_TOKEN=20996649247bafadc73d7ed5aa45bfb5e3a7bee4c7d2edeef2a2d9626c6101d9 ./vendor/bin/test-reporter
+  - docker exec flyimg sh -c "CODECLIMATE_REPO_TOKEN=20996649247bafadc73d7ed5aa45bfb5e3a7bee4c7d2edeef2a2d9626c6101d9 ./vendor/bin/test-reporter"
 
 notifications:
   email:
