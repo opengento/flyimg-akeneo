@@ -5,10 +5,10 @@ namespace Core\Processor;
 use Core\Entity\Image;
 
 /**
- * Class FaceDetectionProcessor
+ * Class FaceDetectProcessor
  * @package Core\Service
  */
-class FaceDetectionProcessor extends Processor
+class FaceDetectProcessor extends Processor
 {
     /**
      * Face detection cropping

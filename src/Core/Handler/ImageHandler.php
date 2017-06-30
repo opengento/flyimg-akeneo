@@ -5,7 +5,7 @@ namespace Core\Handler;
 use Core\Entity\Image;
 use Core\Exception\AppException;
 use Core\Processor\ImageProcessor;
-use Core\Processor\FaceDetectionProcessor;
+use Core\Processor\FaceDetectProcessor;
 use Core\Traits\ParserTrait;
 use League\Flysystem\Filesystem;
 
@@ -20,8 +20,8 @@ class ImageHandler
     /** @var ImageProcessor */
     protected $imageProcessor;
 
-    /** @var FaceDetectionProcessor */
-    protected $fdProcessor;
+    /** @var FaceDetectProcessor */
+    protected $faceDetectProcessor;
 
     /** @var Filesystem */
     protected $filesystem;
@@ -32,19 +32,19 @@ class ImageHandler
     /**
      * ImageHandler constructor.
      *
-     * @param ImageProcessor         $imageProcessor
-     * @param FaceDetectionProcessor $fdProcessor
-     * @param Filesystem             $filesystem
-     * @param array                  $defaultParams
+     * @param ImageProcessor      $imageProcessor
+     * @param FaceDetectProcessor $faceDetectProcessor
+     * @param Filesystem          $filesystem
+     * @param array               $defaultParams
      */
     public function __construct(
         ImageProcessor $imageProcessor,
-        FaceDetectionProcessor $fdProcessor,
+        FaceDetectProcessor $faceDetectProcessor,
         Filesystem $filesystem,
         array $defaultParams
     ) {
         $this->imageProcessor = $imageProcessor;
-        $this->fdProcessor = $fdProcessor;
+        $this->faceDetectProcessor = $faceDetectProcessor;
         $this->filesystem = $filesystem;
         $this->defaultParams = $defaultParams;
     }
@@ -106,11 +106,11 @@ class ImageHandler
         $faceBlur = $image->extract('face-blur');
 
         if ($faceBlur && !$image->isGifSupport()) {
-            $this->fdProcessor->blurFaces($image);
+            $this->faceDetectProcessor->blurFaces($image);
         }
 
         if ($faceCrop && !$image->isGifSupport()) {
-            $this->fdProcessor->cropFaces($image, $faceCropPosition);
+            $this->faceDetectProcessor->cropFaces($image, $faceCropPosition);
         }
     }
 

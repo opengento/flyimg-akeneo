@@ -80,7 +80,7 @@ $app['image.processor'] = function () {
 };
 /** facedetection processor Service */
 $app['facedetection.processor'] = function () {
-    return new \Core\Processor\FaceDetectionProcessor();
+    return new \Core\Processor\FaceDetectProcessor();
 };
 
 /** Core Manager Service */
