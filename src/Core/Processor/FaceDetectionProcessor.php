@@ -16,7 +16,7 @@ class FaceDetectionProcessor extends Processor
      * @param Image $image
      * @param int   $faceCropPosition
      */
-    public function processCroppingFaces(Image $image, int $faceCropPosition = 0)
+    public function cropFaces(Image $image, int $faceCropPosition = 0)
     {
         if (!is_executable(self::FACEDETECT_COMMAND)) {
             return;
@@ -42,7 +42,7 @@ class FaceDetectionProcessor extends Processor
      *
      * @param Image $image
      */
-    public function processBlurringFaces(Image $image)
+    public function blurFaces(Image $image)
     {
         if (!is_executable(self::FACEDETECT_COMMAND)) {
             return;

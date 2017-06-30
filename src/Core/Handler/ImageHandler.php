@@ -4,7 +4,6 @@ namespace Core\Handler;
 
 use Core\Entity\Image;
 use Core\Exception\AppException;
-use Core\Exception\ReadFileException;
 use Core\Processor\ImageProcessor;
 use Core\Processor\FaceDetectionProcessor;
 use Core\Traits\ParserTrait;
@@ -22,7 +21,7 @@ class ImageHandler
     protected $imageProcessor;
 
     /** @var FaceDetectionProcessor */
-    protected $faceDetectionProcessor;
+    protected $fdProcessor;
 
     /** @var Filesystem */
     protected $filesystem;
@@ -34,18 +33,18 @@ class ImageHandler
      * ImageHandler constructor.
      *
      * @param ImageProcessor         $imageProcessor
-     * @param FaceDetectionProcessor $faceDetectionProcessor
+     * @param FaceDetectionProcessor $fdProcessor
      * @param Filesystem             $filesystem
      * @param array                  $defaultParams
      */
     public function __construct(
         ImageProcessor $imageProcessor,
-        FaceDetectionProcessor $faceDetectionProcessor,
+        FaceDetectionProcessor $fdProcessor,
         Filesystem $filesystem,
         array $defaultParams
     ) {
         $this->imageProcessor = $imageProcessor;
-        $this->faceDetectionProcessor = $faceDetectionProcessor;
+        $this->fdProcessor = $fdProcessor;
         $this->filesystem = $filesystem;
         $this->defaultParams = $defaultParams;
     }
@@ -107,11 +106,11 @@ class ImageHandler
         $faceBlur = $image->extract('face-blur');
 
         if ($faceBlur && !$image->isGifSupport()) {
-            $this->faceDetectionProcessor->processBlurringFaces($image);
+            $this->fdProcessor->blurFaces($image);
         }
 
         if ($faceCrop && !$image->isGifSupport()) {
-            $this->faceDetectionProcessor->processCroppingFaces($image, $faceCropPosition);
+            $this->fdProcessor->cropFaces($image, $faceCropPosition);
         }
     }
 
