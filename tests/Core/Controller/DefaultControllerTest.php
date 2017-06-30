@@ -45,17 +45,6 @@ class DefaultControllerTest extends WebTestCase
     /**
      *
      */
-    public function testUploadActionWithRefreshOption()
-    {
-        $client = static::createClient();
-        $client->request('GET', '/upload/w_200,h_200,o_gif,rf_1/'.BaseTest::JPG_TEST_IMAGE);
-        $this->assertTrue($client->getResponse()->isOk());
-        $this->assertFalse($client->getResponse()->isEmpty());
-    }
-
-    /**
-     *
-     */
     public function testUploadActionForbidden()
     {
         $client = static::createClient();
