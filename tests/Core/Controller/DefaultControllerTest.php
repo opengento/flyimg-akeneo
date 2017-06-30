@@ -89,7 +89,7 @@ class DefaultControllerTest extends WebTestCase
     public function testUploadActionWithRestrictedDomains()
     {
         $client = static::createClient();
-        $class = new ReflectionClass ($this->app['image.handler']);
+        $class = new ReflectionClass($this->app['image.handler']);
         $property = $class->getProperty('defaultParams');
         $property->setAccessible(true);
         $defaultParams = $this->app['image.handler']->getDefaultParams();
