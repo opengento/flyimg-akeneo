@@ -23,7 +23,7 @@ class DefaultController extends CoreController
     public function uploadAction(string $options, string $imageSrc = null): Response
     {
         try {
-            $image = $this->getCoreManager()->processImage($options, $imageSrc);
+            $image = $this->getImageHandler()->processImage($options, $imageSrc);
         } catch (\Exception $e) {
             return new Response($e->getMessage().' '.$e->getFile().' '.$e->getLine(), Response::HTTP_FORBIDDEN);
         }
@@ -40,7 +40,7 @@ class DefaultController extends CoreController
     public function pathAction(string $options, string $imageSrc = null): Response
     {
         try {
-            $image = $this->getCoreManager()->processImage($options, $imageSrc);
+            $image = $this->getImageHandler()->processImage($options, $imageSrc);
         } catch (\Exception $e) {
             return new Response($e->getMessage().' '.$e->getFile().' '.$e->getLine(), Response::HTTP_FORBIDDEN);
         }

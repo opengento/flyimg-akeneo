@@ -42,7 +42,7 @@ class ImageTest extends BaseTest
             'gif-frame' => '0',
             'thread' => '1',
         ];
-        $parsedOptions = $this->coreManager->parse(self::OPTION_URL);
+        $parsedOptions = $this->ImageHandler->parseOptions(self::OPTION_URL, $this->ImageHandler->getDefaultParams());
         $image = new Image($parsedOptions, self::JPG_TEST_IMAGE);
         $this->generatedImage[] = $image;
 
@@ -54,7 +54,7 @@ class ImageTest extends BaseTest
      */
     public function testSaveToTemporaryFile()
     {
-        $parsedOptions = $this->coreManager->parse(self::OPTION_URL);
+        $parsedOptions = $this->ImageHandler->parseOptions(self::OPTION_URL, $this->ImageHandler->getDefaultParams());
         $image = new Image($parsedOptions, self::JPG_TEST_IMAGE);
         $this->generatedImage[] = $image;
 
@@ -76,8 +76,9 @@ class ImageTest extends BaseTest
      */
     public function testGenerateFilesName()
     {
-        $image = new Image($this->coreManager->parse(parent::OPTION_URL), parent::JPG_TEST_IMAGE);
-        $parsedOptions = $this->coreManager->parse(self::OPTION_URL);
+        $parsedOptions = $this->ImageHandler->parseOptions(self::OPTION_URL, $this->ImageHandler->getDefaultParams());
+        $image = new Image($parsedOptions, parent::JPG_TEST_IMAGE);
+        $parsedOptions = $this->ImageHandler->parseOptions(self::OPTION_URL, $this->ImageHandler->getDefaultParams());
         $image2 = new Image($parsedOptions, self::JPG_TEST_IMAGE);
 
         $this->generatedImage[] = $image2;
@@ -92,7 +93,7 @@ class ImageTest extends BaseTest
      */
     public function testExtractByKey()
     {
-        $parsedOptions = $this->coreManager->parse(self::OPTION_URL);
+        $parsedOptions = $this->ImageHandler->parseOptions(self::OPTION_URL, $this->ImageHandler->getDefaultParams());
         $image = new Image($parsedOptions, self::JPG_TEST_IMAGE);
         $image->extract('width');
         $this->generatedImage[] = $image;

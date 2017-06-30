@@ -468,29 +468,29 @@ See [benchmark.sh](https://github.com/flyimg/flyimg/blob/master/benchmark.sh) fo
 Requires: Vegeta [http://github.com/tsenart/vegeta](http://github.com/tsenart/vegeta)
 
 ```
-Crop http://localhost:8080/upload/w_200,h_200,c_1,/Rovinj-Croatia.jpg
+Crop http://localhost:8080/upload/w_200,h_200,c_1/Rovinj-Croatia.jpg
 Requests      [total, rate]            500, 50.10
-Duration      [total, attack, wait]    9.986739873s, 9.97999984s, 6.740033ms
-Latencies     [mean, 50, 95, 99, max]  25.076911ms, 6.640774ms, 188.643721ms, 331.643374ms, 636.521662ms
-Bytes In      [total, mean]            213904, 427.81
+Duration      [total, attack, wait]    9.991377689s, 9.97999997s, 11.377719ms
+Latencies     [mean, 50, 95, 99, max]  19.402096ms, 12.844271ms, 54.65001ms, 96.276948ms, 135.597203ms
+Bytes In      [total, mean]            5337500, 10675.00
 Bytes Out     [total, mean]            0, 0.00
 Success       [ratio]                  100.00%
 Status Codes  [code:count]             200:500
 
 Resize http://localhost:8080/upload/w_200,h_200,rz_1/Rovinj-Croatia.jpg
 Requests      [total, rate]            500, 50.10
-Duration      [total, attack, wait]    9.987057007s, 9.979999967s, 7.05704ms
-Latencies     [mean, 50, 95, 99, max]  12.830654ms, 7.643809ms, 40.270126ms, 108.39337ms, 195.252615ms
-Bytes In      [total, mean]            77994, 155.99
+Duration      [total, attack, wait]    9.992435445s, 9.979999871s, 12.435574ms
+Latencies     [mean, 50, 95, 99, max]  16.676093ms, 12.376525ms, 49.676187ms, 97.354697ms, 127.14737ms
+Bytes In      [total, mean]            3879500, 7759.00
 Bytes Out     [total, mean]            0, 0.00
 Success       [ratio]                  100.00%
 Status Codes  [code:count]             200:500
 
 Rotate http://localhost:8080/upload/r_-45,w_400,h_400/Rovinj-Croatia.jpg
 Requests      [total, rate]            500, 50.10
-Duration      [total, attack, wait]    9.986181761s, 9.979999903s, 6.181858ms
-Latencies     [mean, 50, 95, 99, max]  984.630622ms, 585.392512ms, 2.660701812s, 2.763049369s, 6.202687668s
-Bytes In      [total, mean]            1304682, 2609.36
+Duration      [total, attack, wait]    9.992650741s, 9.979999937s, 12.650804ms
+Latencies     [mean, 50, 95, 99, max]  13.634143ms, 11.587252ms, 26.873827ms, 50.446923ms, 68.222253ms
+Bytes In      [total, mean]            17609000, 35218.00
 Bytes Out     [total, mean]            0, 0.00
 Success       [ratio]                  100.00%
 Status Codes  [code:count]             200:500

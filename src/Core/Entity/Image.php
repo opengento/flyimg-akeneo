@@ -348,22 +348,4 @@ class Image
             (!$this->isGifSupport()) &&
             ($this->getOutputExtension() != self::EXT_GIF);
     }
-
-    /**
-     * @return string
-     */
-    public function getResponseContentType(): string
-    {
-        if ($this->getOutputExtension() == self::EXT_WEBP) {
-            return self::WEBP_MIME_TYPE;
-        }
-        if ($this->getOutputExtension() == self::EXT_PNG) {
-            return self::PNG_MIME_TYPE;
-        }
-        if ($this->getOutputExtension() == self::EXT_GIF) {
-            return self::GIF_MIME_TYPE;
-        }
-
-        return self::JPEG_MIME_TYPE;
-    }
 }

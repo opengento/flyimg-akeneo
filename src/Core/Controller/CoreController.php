@@ -3,7 +3,7 @@
 namespace Core\Controller;
 
 use Core\Entity\Image;
-use Core\Service\CoreManager;
+use Core\Handler\ImageHandler;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -23,11 +23,11 @@ class CoreController
     }
 
     /**
-     * @return CoreManager
+     * @return ImageHandler
      */
-    public function getCoreManager(): CoreManager
+    public function getImageHandler(): ImageHandler
     {
-        return $this->app['core.manager'];
+        return $this->app['image.handler'];
     }
 
     /**
@@ -84,7 +84,7 @@ class CoreController
      */
     protected function setHeadersContent(Image $image, Response $response): Response
     {
-        $response->headers->set('Content-Type', $image->getResponseContentType());
+        $response->headers->set('Content-Type', $this->getImageHandler()->getResponseContentType($image));
 
         $expireDate = new \DateTime();
         $expireDate->add(new \DateInterval('P1Y'));
