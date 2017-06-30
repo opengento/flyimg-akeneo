@@ -8,14 +8,15 @@ language: ruby
 services:
   - docker
 
+rvm:
+  - 2.2.0
+
 before_install:
   - docker build -t flyimg .
   - docker run -t -d -i -v $(pwd):/var/www/html --name flyimg flyimg
   - docker exec flyimg composer install
   - docker exec flyimg vendor/bin/phpcs --config-set installed_paths vendor/escapestudios/symfony2-coding-standard
 
-rvm:
-  - 2.2.0
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
@@ -23,8 +24,7 @@ before_script:
 script:
   - docker exec flyimg vendor/bin/phpunit tests/
   - docker exec flyimg vendor/bin/phpcs --standard=PSR2 src/ tests/
-  - bundle exec rspec
-  - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT; fi
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 
 notifications:
   email:
