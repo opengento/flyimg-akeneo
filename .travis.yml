@@ -12,7 +12,10 @@ before_install:
 script:
   - docker exec flyimg vendor/bin/phpunit tests/
   - docker exec flyimg vendor/bin/phpcs --standard=PSR2 src/ tests/
-#  - docker exec flyimg vendor/bin/phpcs --standard=Symfony2 src/
+  - docker exec flyimg vendor/bin/phpunit tests/ --coverage-clover build/logs/clover.xml
+
+after_success:
+  - docker exec flyimg CODECLIMATE_REPO_TOKEN=924e83ea145961a9296beefddfc5c12d56f891c9 ./vendor/bin/test-reporter
 
 notifications:
   email:
