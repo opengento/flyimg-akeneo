@@ -1,47 +1,15 @@
 <?php
 
-namespace Core\Service;
+namespace Core\Processor;
 
 use Core\Entity\Image;
-use Core\Exception\AppException;
-use League\Flysystem\Filesystem;
 
 /**
  * Class ImageProcessor
  * @package Core\Service
  */
-class ImageProcessor
+class ImageProcessor extends Processor
 {
-    /** Bin path */
-    const MOZJPEG_COMMAND = '/opt/mozjpeg/bin/cjpeg';
-    const IM_CONVERT_COMMAND = '/usr/bin/convert';
-    const IM_MOGRIFY_COMMAND = '/usr/bin/mogrify';
-    const IM_IDENTITY_COMMAND = '/usr/bin/identify';
-    const FACEDETECT_COMMAND = '/usr/local/bin/facedetect';
-    const CWEBP_COMMAND = '/usr/bin/cwebp';
-
-    /** Image options excluded from IM command */
-    const EXCLUDED_IM_OPTIONS = ['quality', 'mozjpeg', 'refresh', 'webp-lossless'];
-
-    /** @var Filesystem */
-    protected $filesystem;
-
-    /** @var array */
-    protected $params;
-
-    /** @var  Image */
-    protected $image;
-
-    /**
-     * ImageProcessor constructor.
-     *
-     * @param Filesystem $filesystem
-     */
-    public function __construct(Filesystem $filesystem)
-    {
-        $this->filesystem = $filesystem;
-    }
-
     /**
      * Save new FileName based on source file and list of options
      *
@@ -52,84 +20,10 @@ class ImageProcessor
      */
     public function processNewImage(Image $image): Image
     {
-        $faceCrop = $image->extract('face-crop');
-        $faceCropPosition = $image->extract('face-crop-position');
-        $faceBlur = $image->extract('face-blur');
-
         $this->generateCmdString($image);
-
-        if ($faceBlur && !$image->isGifSupport()) {
-            $this->processBlurringFaces($image);
-        }
-
-        if ($faceCrop && !$image->isGifSupport()) {
-            $this->processCroppingFaces($image, $faceCropPosition);
-        }
-
         $this->execute($image->getCommandString());
 
-        if ($this->filesystem->has($image->getNewFileName())) {
-            $this->filesystem->delete($image->getNewFileName());
-        }
-
-        $this->filesystem->write($image->getNewFileName(), stream_get_contents(fopen($image->getNewFilePath(), 'r')));
-
         return $image;
-    }
-
-    /**
-     * Face detection cropping
-     *
-     * @param Image $image
-     * @param int   $faceCropPosition
-     */
-    protected function processCroppingFaces(Image $image, int $faceCropPosition = 0)
-    {
-        if (!is_executable(self::FACEDETECT_COMMAND)) {
-            return;
-        }
-        $commandStr = self::FACEDETECT_COMMAND." ".$image->getOriginalFile();
-        $output = $this->execute($commandStr);
-        if (empty($output[$faceCropPosition])) {
-            return;
-        }
-        $geometry = explode(" ", $output[$faceCropPosition]);
-        if (count($geometry) == 4) {
-            list($geometryX, $geometryY, $geometryW, $geometryH) = $geometry;
-            $cropCmdStr =
-                self::IM_CONVERT_COMMAND.
-                " '{$image->getOriginalFile()}' -crop {$geometryW}x{$geometryH}+{$geometryX}+{$geometryY} ".
-                $image->getOriginalFile();
-            $this->execute($cropCmdStr);
-        }
-    }
-
-    /**
-     * Blurring Faces
-     *
-     * @param Image $image
-     */
-    protected function processBlurringFaces(Image $image)
-    {
-        if (!is_executable(self::FACEDETECT_COMMAND)) {
-            return;
-        }
-        $commandStr = self::FACEDETECT_COMMAND." ".$image->getOriginalFile();
-        $output = $this->execute($commandStr);
-        if (empty($output)) {
-            return;
-        }
-        foreach ((array)$output as $outputLine) {
-            $geometry = explode(" ", $outputLine);
-            if (count($geometry) == 4) {
-                list($geometryX, $geometryY, $geometryW, $geometryH) = $geometry;
-                $cropCmdStr = self::IM_MOGRIFY_COMMAND.
-                    " -gravity NorthWest -region {$geometryW}x{$geometryH}+{$geometryX}+{$geometryY} ".
-                    "-scale '10%' -scale '1000%' ".
-                    $image->getOriginalFile();
-                $this->execute($cropCmdStr);
-            }
-        }
     }
 
     /**
@@ -268,46 +162,5 @@ class ImageProcessor
         }
 
         return [$size, $extent, $gravity];
-    }
-
-
-    /**
-     * Get the image Identity information
-     *
-     * @param Image $image
-     *
-     * @return string
-     */
-    public function getImageIdentity(Image $image): string
-    {
-        $output = $this->execute(self::IM_IDENTITY_COMMAND." ".$image->getNewFilePath());
-
-        return !empty($output[0]) ? $output[0] : "";
-    }
-
-    /**
-     * @param string $commandStr
-     *
-     * @return array
-     * @throws \Exception
-     */
-    protected function execute(string $commandStr): array
-    {
-        exec($commandStr, $output, $code);
-        if (count($output) === 0) {
-            $outputError = $code;
-        } else {
-            $outputError = implode(PHP_EOL, $output);
-        }
-
-        if ($code !== 0) {
-            throw new AppException(
-                "Command failed. The exit code: ".
-                $outputError."<br>The last line of output: ".
-                $commandStr
-            );
-        }
-
-        return $output;
     }
 }

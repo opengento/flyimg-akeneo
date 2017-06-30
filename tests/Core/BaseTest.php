@@ -3,7 +3,7 @@
 namespace Tests\Core;
 
 use Core\Entity\Image;
-use Core\Service\CoreManager;
+use Core\Handler\ImageHandler;
 use Silex\Application;
 
 class BaseTest extends \PHPUnit_Framework_TestCase
@@ -20,9 +20,9 @@ class BaseTest extends \PHPUnit_Framework_TestCase
     protected $app = null;
 
     /**
-     * @var CoreManager
+     * @var ImageHandler
      */
-    protected $coreManager = null;
+    protected $ImageHandler = null;
 
     /**
      * @var array
@@ -35,7 +35,7 @@ class BaseTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->app = $this->createApplication();
-        $this->coreManager = $this->app['core.manager'];
+        $this->ImageHandler = $this->app['image.handler'];
     }
 
     /**

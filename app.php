@@ -2,10 +2,6 @@
 
 declare(strict_types = 1);
 
-use Core\Resolver\ControllerResolver;
-use Core\Service\CoreManager;
-use Core\Service\ImageProcessor;
-use Monolog\Logger;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Routing\Loader\YamlFileLoader;
 use Symfony\Component\Routing\RouteCollection;
@@ -37,7 +33,7 @@ $app['params'] = Yaml::parse(file_get_contents(__DIR__.'/config/parameters.yml')
  */
 $app['routes'] = $app->extend(
     'routes',
-    function(RouteCollection $routes) {
+    function (RouteCollection $routes) {
         $loader = new YamlFileLoader(new FileLocator(__DIR__.'/config'));
         $collection = $loader->load('routes.yml');
         $routes->addCollection($collection);
@@ -47,31 +43,54 @@ $app['routes'] = $app->extend(
 );
 
 /** Register Storage provider */
-$app->register(new \Core\Provider\StorageProvider());
 
-/** Monolog Service*/
+switch ($app['params']['storage_system']) {
+    case 's3':
+        $app->register(new \Core\StorageProvider\S3StorageProvider());
+        break;
+    case 'local':
+    default:
+        $app->register(new \Core\StorageProvider\LocalStorageProvider());
+        break;
+}
+
+/** Monolog Service */
 $app->register(
     new Silex\Provider\MonologServiceProvider(),
     array(
         'monolog.name' => 'flyimg',
-        'monolog.level' => Logger::ERROR,
+        'monolog.level' => \Monolog\Logger::ERROR,
         'monolog.logfile' => 'php://stderr',
     )
 );
 
 /** Controller Resolver */
-$app['resolver'] = function($app) {
-    return new ControllerResolver($app, $app['logger']);
+/**
+ * @param \Silex\Application $app
+ *
+ * @return \Core\Resolver\ControllerResolver
+ */
+$app['resolver'] = function (\Silex\Application $app) {
+    return new \Core\Resolver\ControllerResolver($app, $app['logger']);
 };
 
 /** Image processor Service */
-$app['image.processor'] = function($app) {
-    return new ImageProcessor($app['flysystems']['upload_dir']);
+$app['image.processor'] = function () {
+    return new \Core\Processor\ImageProcessor();
+};
+/** facedetection processor Service */
+$app['facedetection.processor'] = function () {
+    return new \Core\Processor\FaceDetectionProcessor();
 };
 
 /** Core Manager Service */
-$app['core.manager'] = function($app) {
-    return new CoreManager($app['image.processor'], $app['params'], $app['flysystems']['upload_dir']);
+$app['image.handler'] = function (\Silex\Application $app) {
+    return new \Core\Handler\ImageHandler(
+        $app['image.processor'],
+        $app['facedetection.processor'],
+        $app['flysystems']['upload_dir'],
+        $app['params']
+    );
 };
 
 /** debug conf */
