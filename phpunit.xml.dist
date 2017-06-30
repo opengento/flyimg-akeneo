@@ -9,6 +9,9 @@
          stopOnFailure="false"
          syntaxCheck="true"
 >
+    <php>
+        <env name="HOSTNAME_URL" value="http://localhost"/>
+    </php>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">./src/</directory>
