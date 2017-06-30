@@ -13,6 +13,7 @@ script:
   - docker exec flyimg vendor/bin/phpunit
   - docker exec flyimg vendor/bin/phpcs --standard=PSR2 src/ tests/
   - docker exec flyimg vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+#  - docker exec flyimg vendor/bin/phpunit --coverage-html build/html
 
 after_success:
   - docker exec flyimg sh -c "CODECLIMATE_REPO_TOKEN=20996649247bafadc73d7ed5aa45bfb5e3a7bee4c7d2edeef2a2d9626c6101d9 ./vendor/bin/test-reporter"
