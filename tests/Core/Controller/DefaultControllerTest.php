@@ -65,17 +65,6 @@ class DefaultControllerTest extends WebTestCase
     /**
      *
      */
-    public function testUploadActionWebp()
-    {
-        $client = static::createClient();
-        $client->request('GET', '/upload/w_200,h_200,c_1,o_webp/'.BaseTest::WEBP_TEST_IMAGE);
-        $this->assertTrue($client->getResponse()->isOk());
-        $this->assertFalse($client->getResponse()->isEmpty());
-    }
-
-    /**
-     *
-     */
     public function testPathAction()
     {
         $client = static::createClient();
