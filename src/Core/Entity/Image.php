@@ -52,9 +52,6 @@ class Image
     /** @var string */
     protected $commandString;
 
-    /** @var array */
-    protected $defaultParams;
-
     /** @var string */
     protected $content;
 
@@ -274,20 +271,17 @@ class Image
     }
 
     /**
-     * Return bollean stating if WebP image format is supported; following these conditions:
+     * Return boolean stating if WebP image format is supported; following these conditions:
      *  - The request is specifically expecting a webP response, independent of the browser's capabilities
-     *  OR both:
+     *  OR:
      *  - The browser sent headers explicitly stating it supports webp (absolute requirement)
-     *  AND
-     *  - The app config/parameters.yml states that auto webP serving is enabled
      *
      * @return bool
      */
     public function isWebPSupport(): bool
     {
         return $this->outputExtension == self::EXT_WEBP
-            || (in_array(self::WEBP_MIME_TYPE, Request::createFromGlobals()->getAcceptableContentTypes())
-                && $this->defaultParams['auto_webp_enabled']);
+            || (in_array(self::WEBP_MIME_TYPE, Request::createFromGlobals()->getAcceptableContentTypes()));
     }
 
     /**
