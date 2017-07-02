@@ -3,7 +3,8 @@
 namespace Tests\Core\Service;
 
 use Core\Entity\Image;
-use Imagick;
+use Core\Exception\AppException;
+use ReflectionClass;
 use Tests\Core\BaseTest;
 
 class ImageHandlerTest extends BaseTest
@@ -36,19 +37,6 @@ class ImageHandlerTest extends BaseTest
         $this->generatedImage[] = $image;
         $this->assertFileExists($image->getNewFilePath());
         $this->assertEquals(Image::JPEG_MIME_TYPE, $this->getFileMemeType($image->getNewFilePath()));
-    }
-
-    /**
-     */
-    public function testProcessFaceCropping()
-    {
-        $image = $this->ImageHandler->processImage('fc_1,rf_1', parent::FACES_TEST_IMAGE);
-        $image1 = new \Imagick($image->getNewFilePath());
-        $image2 = new \Imagick(parent::FACES_CP0_TEST_IMAGE);
-        $result = $image1->compareImages($image2, \Imagick::METRIC_MEANSQUAREERROR);
-        $this->generatedImage[] = $image;
-        $this->assertFileExists($image->getNewFilePath());
-        $this->assertEquals(0, $result[1]);
     }
 
     /**
@@ -108,6 +96,23 @@ class ImageHandlerTest extends BaseTest
         $this->generatedImage[] = $image;
         $this->assertFileExists($image->getNewFilePath());
         $this->assertEquals(Image::WEBP_MIME_TYPE, $this->getFileMemeType($image->getNewFilePath()));
+    }
+
+    /**
+     *
+     */
+    public function testRestrictedDomains()
+    {
+        $this->expectException(AppException::class);
+        $class = new ReflectionClass($this->app['image.handler']);
+        $property = $class->getProperty('defaultParams');
+        $property->setAccessible(true);
+        $defaultParams = $this->app['image.handler']->getDefaultParams();
+        $defaultParams['restricted_domains'] = true;
+        $property->setValue($this->app['image.handler'], $defaultParams);
+
+        $image = $this->ImageHandler->processImage(parent::OPTION_URL.',o_webp', parent::PNG_TEST_IMAGE);
+        $this->generatedImage[] = $image;
     }
 
     /**

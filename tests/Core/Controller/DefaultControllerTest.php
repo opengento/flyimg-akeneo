@@ -2,7 +2,7 @@
 
 namespace Tests\Core\Controller;
 
-use Core\StorageProvider\S3StorageProvider;
+use Core\StorageProvider\S3StorageProviderTest;
 use ReflectionClass;
 use Silex\WebTestCase;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -58,7 +58,7 @@ class DefaultControllerTest extends WebTestCase
     public function testUploadActionInvalidExtension()
     {
         $client = static::createClient();
-        $client->request('GET', '/upload/w_200,h_200,c_1,o_xxx/Rovinj-Croatia-nonExist.jpg');
+        $client->request('GET', '/upload/w_200,h_200,c_1,o_xxx/'.BaseTest::JPG_TEST_IMAGE);
         $this->assertTrue($client->getResponse()->isForbidden());
     }
 
@@ -79,43 +79,6 @@ class DefaultControllerTest extends WebTestCase
     public function testPathActionForbidden()
     {
         $client = static::createClient();
-        $client->request('GET', '/path/w_200,h_200,c_1/Rovinj-Croatia-nonExist.jpg');
-        $this->assertTrue($client->getResponse()->isForbidden());
-    }
-
-    /**
-     *
-     */
-    public function testUploadActionWithRestrictedDomains()
-    {
-        $client = static::createClient();
-        $class = new ReflectionClass($this->app['image.handler']);
-        $property = $class->getProperty('defaultParams');
-        $property->setAccessible(true);
-        $defaultParams = $this->app['image.handler']->getDefaultParams();
-        $defaultParams['restricted_domains'] = true;
-        $property->setValue($this->app['image.handler'], $defaultParams);
-        $client->request('GET', '/path/w_200,h_200,c_1/Rovinj-Croatia-nonExist.jpg');
-        $this->assertTrue($client->getResponse()->isForbidden());
-    }
-
-    /**
-     *
-     */
-    public function testUploadActionWithS3Storage()
-    {
-        $client = static::createClient();
-        unset($this->app['flysystems']);
-        $awsS3 = [
-            'aws_s3' => [
-                'access_id' => 'xxxxx',
-                'secret_key' => 'xxxxx',
-                'region' => 'xxxxx',
-                'bucket_name' => 'xxxxx',
-            ],
-        ];
-        $this->app['params'] = array_merge($this->app['params'], $awsS3);
-        $this->app->register(new S3StorageProvider());
         $client->request('GET', '/path/w_200,h_200,c_1/Rovinj-Croatia-nonExist.jpg');
         $this->assertTrue($client->getResponse()->isForbidden());
     }

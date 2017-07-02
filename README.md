@@ -422,8 +422,14 @@ whitelist_domains:
 
 Run test:
 -----
+
 ```sh
-docker exec -it flyimg vendor/bin/phpunit tests/
+docker exec flyimg vendor/bin/phpunit
+```
+
+Generate Html Code Coverage
+```sh
+docker exec flyimg vendor/bin/phpunit --coverage-html build/html
 ```
 
 How to Provision the application on
