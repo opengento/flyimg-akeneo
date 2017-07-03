@@ -199,23 +199,28 @@ class Image
     }
 
     /**
-     * @param bool $allFiles
-     * Remove the generated files
+     * Remove Temporary file
      */
-    public function unlinkUsedFiles(bool $allFiles = false)
+    public function removeTemporaryFiles()
     {
         if (file_exists($this->getNewFilePath())) {
             unlink($this->getNewFilePath());
         }
+    }
 
-        if ($allFiles) {
-            $fullPath = UPLOAD_DIR.$this->getNewFileName();
-            if (file_exists($fullPath)) {
-                unlink($fullPath);
-            }
-            if (file_exists($this->getOriginalFile())) {
-                unlink($this->getOriginalFile());
-            }
+    /**
+     * Remove all generated files
+     */
+    public function cleanupFiles()
+    {
+        $this->removeTemporaryFiles();
+
+        $fullPath = UPLOAD_DIR.$this->getNewFileName();
+        if (file_exists($fullPath)) {
+            unlink($fullPath);
+        }
+        if (file_exists($this->getOriginalFile())) {
+            unlink($this->getOriginalFile());
         }
     }
 
