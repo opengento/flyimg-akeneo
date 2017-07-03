@@ -64,8 +64,9 @@ $app->register(
     )
 );
 
-/** Controller Resolver */
 /**
+ * Controller Resolver
+ *
  * @param \Silex\Application $app
  *
  * @return \Core\Resolver\ControllerResolver
@@ -83,7 +84,13 @@ $app['facedetection.processor'] = function () {
     return new \Core\Processor\FaceDetectProcessor();
 };
 
-/** Core Manager Service */
+/**
+ * Core Manager Service
+ *
+ * @param \Silex\Application $app
+ *
+ * @return \Core\Handler\ImageHandler
+ */
 $app['image.handler'] = function (\Silex\Application $app) {
     return new \Core\Handler\ImageHandler(
         $app['image.processor'],

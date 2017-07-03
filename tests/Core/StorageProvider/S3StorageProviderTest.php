@@ -3,6 +3,7 @@
 namespace Tests\Core\StorageProvider;
 
 use Aws\S3\Exception\S3Exception;
+use Core\Exception\MissingParamsException;
 use Core\Handler\ImageHandler;
 use Core\StorageProvider\S3StorageProvider;
 use Tests\Core\BaseTest;
@@ -44,10 +45,13 @@ class S3StorageProviderTest extends BaseTest
      */
     public function testUploadActionWithS3StorageException()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(MissingParamsException::class);
         $awsS3 = [
             'aws_s3' => [
                 'access_id' => 'xxxxx',
+                'secret_key' => '',
+                'region' => '',
+                'bucket_name' => '',
             ],
         ];
         $this->app['params'] = array_merge($this->app['params'], $awsS3);

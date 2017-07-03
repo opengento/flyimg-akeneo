@@ -2,8 +2,6 @@
 
 namespace Tests\Core\Processor;
 
-use Core\Exception\ExecFailedException;
-use Core\Processor\Processor;
 use Tests\Core\BaseTest;
 
 /**

@@ -13,7 +13,7 @@ class ImageHandlerTest extends BaseTest
      */
     public function testProcessPNG()
     {
-        $image = $this->ImageHandler->processImage(parent::CROP_OPTION_URL.',o_png', parent::PNG_TEST_IMAGE);
+        $image = $this->ImageHandler->processImage(parent::CROP_OPTION_URL, parent::PNG_TEST_IMAGE);
         $this->generatedImage[] = $image;
         $this->assertFileExists($image->getNewFilePath());
         $this->assertEquals(Image::PNG_MIME_TYPE, $this->getFileMemeType($image->getNewFilePath()));
