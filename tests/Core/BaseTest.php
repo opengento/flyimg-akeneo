@@ -57,7 +57,7 @@ class BaseTest extends \PHPUnit_Framework_TestCase
             if (!$image instanceof Image) {
                 continue;
             }
-            $image->unlinkUsedFiles(true);
+            $image->cleanupFiles();
         }
     }
 

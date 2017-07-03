@@ -55,7 +55,7 @@ class CoreController
         $response = new Response();
         $response->setContent($image->getContent());
         $response = $this->setHeadersContent($image, $response);
-        $image->unlinkUsedFiles();
+        $image->removeTemporaryFiles();
 
         return $response;
     }
@@ -71,7 +71,7 @@ class CoreController
         $imagePath = $image->getNewFileName();
         $imagePath = sprintf($this->app['flysystems']['file_path_resolver'], $imagePath);
         $response->setContent($imagePath);
-        $image->unlinkUsedFiles();
+        $image->removeTemporaryFiles();
 
         return $response;
     }

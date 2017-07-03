@@ -89,7 +89,7 @@ class ImageHandler
 
             $image->setContent($this->filesystem->read($image->getNewFileName()));
         } catch (\Exception $e) {
-            $image->unlinkUsedFiles();
+            $image->removeTemporaryFiles();
             throw $e;
         }
 
