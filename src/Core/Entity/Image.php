@@ -52,9 +52,6 @@ class Image
     /** @var string */
     protected $commandString;
 
-    /** @var array */
-    protected $defaultParams;
-
     /** @var string */
     protected $content;
 
@@ -83,27 +80,11 @@ class Image
     }
 
     /**
-     * @param array $options
-     */
-    public function setOptions(array $options)
-    {
-        $this->options = $options;
-    }
-
-    /**
      * @return string
      */
     public function getSourceFile(): string
     {
         return $this->sourceFile;
-    }
-
-    /**
-     * @param string $sourceFile
-     */
-    public function setSourceFile(string $sourceFile)
-    {
-        $this->sourceFile = $sourceFile;
     }
 
     /**
@@ -115,27 +96,11 @@ class Image
     }
 
     /**
-     * @param string $newFileName
-     */
-    public function setNewFileName(string $newFileName)
-    {
-        $this->newFileName = $newFileName;
-    }
-
-    /**
      * @return string
      */
     public function getNewFilePath(): string
     {
         return $this->newFilePath;
-    }
-
-    /**
-     * @param string $newFilePath
-     */
-    public function setNewFilePath(string $newFilePath)
-    {
-        $this->newFilePath = $newFilePath;
     }
 
     /**
@@ -306,20 +271,17 @@ class Image
     }
 
     /**
-     * Return bollean stating if WebP image format is supported; following these conditions:
+     * Return boolean stating if WebP image format is supported; following these conditions:
      *  - The request is specifically expecting a webP response, independent of the browser's capabilities
-     *  OR both:
+     *  OR:
      *  - The browser sent headers explicitly stating it supports webp (absolute requirement)
-     *  AND
-     *  - The app config/parameters.yml states that auto webP serving is enabled
      *
      * @return bool
      */
     public function isWebPSupport(): bool
     {
         return $this->outputExtension == self::EXT_WEBP
-            || (in_array(self::WEBP_MIME_TYPE, Request::createFromGlobals()->getAcceptableContentTypes())
-                && $this->defaultParams['auto_webp_enabled']);
+            || (in_array(self::WEBP_MIME_TYPE, Request::createFromGlobals()->getAcceptableContentTypes()));
     }
 
     /**

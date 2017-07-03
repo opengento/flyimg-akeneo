@@ -3,16 +3,17 @@
 namespace Tests\Core\Service;
 
 use Core\Entity\Image;
+use Core\Exception\AppException;
+use ReflectionClass;
 use Tests\Core\BaseTest;
 
-class ImageProcessorTest extends BaseTest
+class ImageHandlerTest extends BaseTest
 {
-
     /**
      */
     public function testProcessPNG()
     {
-        $image = $this->ImageHandler->processImage(parent::OPTION_URL.',o_png', parent::PNG_TEST_IMAGE);
+        $image = $this->ImageHandler->processImage(parent::CROP_OPTION_URL.',o_png', parent::PNG_TEST_IMAGE);
         $this->generatedImage[] = $image;
         $this->assertFileExists($image->getNewFilePath());
         $this->assertEquals(Image::PNG_MIME_TYPE, $this->getFileMemeType($image->getNewFilePath()));
@@ -95,6 +96,23 @@ class ImageProcessorTest extends BaseTest
         $this->generatedImage[] = $image;
         $this->assertFileExists($image->getNewFilePath());
         $this->assertEquals(Image::WEBP_MIME_TYPE, $this->getFileMemeType($image->getNewFilePath()));
+    }
+
+    /**
+     *
+     */
+    public function testRestrictedDomains()
+    {
+        $this->expectException(AppException::class);
+        $class = new ReflectionClass($this->app['image.handler']);
+        $property = $class->getProperty('defaultParams');
+        $property->setAccessible(true);
+        $defaultParams = $this->app['image.handler']->getDefaultParams();
+        $defaultParams['restricted_domains'] = true;
+        $property->setValue($this->app['image.handler'], $defaultParams);
+
+        $image = $this->ImageHandler->processImage(parent::OPTION_URL.',o_webp', parent::PNG_TEST_IMAGE);
+        $this->generatedImage[] = $image;
     }
 
     /**
