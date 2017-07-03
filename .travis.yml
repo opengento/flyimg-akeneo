@@ -10,7 +10,6 @@ before_install:
   - docker exec flyimg vendor/bin/phpcs --config-set installed_paths vendor/escapestudios/symfony2-coding-standard
 
 script:
-  - docker exec flyimg vendor/bin/phpunit
   - docker exec flyimg vendor/bin/phpcs --standard=PSR2 src/ tests/
   - docker exec flyimg vendor/bin/phpunit --coverage-clover build/logs/clover.xml
 #  - docker exec flyimg vendor/bin/phpunit --coverage-html build/html
