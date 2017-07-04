@@ -6,7 +6,6 @@ use Core\Entity\Image;
 use Core\Exception\AppException;
 use Core\Processor\ImageProcessor;
 use Core\Processor\FaceDetectProcessor;
-use Core\Traits\ParserTrait;
 use League\Flysystem\Filesystem;
 
 /**
@@ -15,8 +14,6 @@ use League\Flysystem\Filesystem;
  */
 class ImageHandler
 {
-    use ParserTrait;
-
     /** @var ImageProcessor */
     protected $imageProcessor;
 
@@ -75,7 +72,7 @@ class ImageHandler
     public function processImage(string $options, string $imageSrc): Image
     {
         $this->checkRestrictedDomains($imageSrc);
-        $parsedOptions = $this->parseOptions($options, $this->defaultParams);
+        $parsedOptions = $this->parseOptions($options);
         $image = new Image($parsedOptions, $imageSrc);
 
         try {
@@ -171,5 +168,30 @@ class ImageHandler
         }
 
         return Image::JPEG_MIME_TYPE;
+    }
+
+    /**
+     * Parse options: match options keys and merge default options with given ones
+     *
+     * @param string $options
+     *
+     * @return array
+     */
+    public function parseOptions(string $options): array
+    {
+        $defaultOptions = $this->defaultParams['default_options'];
+        $optionsKeys = $this->defaultParams['options_keys'];
+        $optionsSeparator = !empty($this->defaultParams['options_separator']) ?
+            $this->defaultParams['options_separator'] : ',';
+        $optionsUrl = explode($optionsSeparator, $options);
+        $options = [];
+        foreach ($optionsUrl as $option) {
+            $optArray = explode('_', $option);
+            if (key_exists($optArray[0], $optionsKeys) && !empty($optionsKeys[$optArray[0]])) {
+                $options[$optionsKeys[$optArray[0]]] = $optArray[1];
+            }
+        }
+
+        return array_merge($defaultOptions, $options);
     }
 }

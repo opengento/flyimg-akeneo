@@ -4,7 +4,6 @@ namespace Core\Entity;
 
 use Core\Exception\InvalidArgumentException;
 use Core\Exception\ReadFileException;
-use Core\Traits\ParserTrait;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -13,8 +12,6 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class Image
 {
-    use ParserTrait;
-
     /** Content TYPE */
     const WEBP_MIME_TYPE = 'image/webp';
     const JPEG_MIME_TYPE = 'image/jpeg';
@@ -163,7 +160,13 @@ class Image
      */
     public function extract(string $key): string
     {
-        return $this->extractByKey($key, $this->options);
+        $value = '';
+        if (isset($this->options[$key])) {
+            $value = $this->options[$key];
+            unset($this->options[$key]);
+        }
+
+        return $value;
     }
 
     /**
