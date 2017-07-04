@@ -1,4 +1,7 @@
-<img alt="Flyimglogo" src="https://raw.githubusercontent.com/flyimg/graphic-assets/master/logo/raster/flyimg-logo-rgb.png" width="300">
+
+<p align="center"><a href="https://flyimg.io" target="_blank">
+    <img alt="Flyimglogo" src="https://raw.githubusercontent.com/flyimg/graphic-assets/master/logo/raster/flyimg-logo-rgb.png" width="300">
+</a></p>
 
 # Flyimg
 
