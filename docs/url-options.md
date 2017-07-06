@@ -26,7 +26,7 @@ It's the first operation the server does, it will try to get an image from the U
 
 ---
 
-## image_options
+# image_options
 
 Here you set all the transformations and output settings you want to apply to the image you are fetching.
 
@@ -35,7 +35,7 @@ We put a lot of defaults in place to prevent distortion, bad quality, weird crop
 
 The script **does a lot of sanitizing** of the parameters, so many options will not work or have to be carefullly escaped. Priority is given to safety and eas of use.
 
-# Basic geometry
+## Basic geometry
 
 ### `w` : width
 `int`
@@ -104,7 +104,7 @@ The basic options are: `NorthWest`, `North`, `NorthEast`, `West`, `Center`, `Eas
 
 ---
 
-# Output file formats
+## Output file formats
 
 ### `o` : output
 `string`
@@ -139,7 +139,7 @@ The basic options are: `NorthWest`, `North`, `NorthEast`, `West`, `Center`, `Eas
 
 ---
 
-# Refresh or re-fetch source image
+## Refresh or re-fetch source image
 
 ### `rf` : refresh
 *Default:* `false`
@@ -151,9 +151,9 @@ The nginx server will send headers to prevent caching of this request.
 
 It will also send headers with the command done on the image + info returned by the command identity from Imagemagik.
 
----
+--- 
 
-# Fancy options
+## Fancy options
 
 ### `bg` : background
 `color` (multiple formats)
@@ -198,51 +198,141 @@ For the hex code, the hash `#` character should be replaced by `%23`
 
 **example:`unsh_0.25x0.25+8+0.065`** 
 
-### `fc` : face-crop
-*Default:* `0`
-*Description:* blah blah blah
-
-### `fcp` : face-crop-position
-*Default:* `0`
-*Description:* blah blah blah
-
-### `fb` : face-blur
-*Default:* `0`
-*Description:* blah blah blah
-
 ### `f` : filter
+`string`
 *Default:* `Lanczos`
-*Description:* blah blah blah
+*Description:* Resizing algorithm, Triangle is a smoother lighter option
+
+**example:`f_Triangle`** 
 
 ### `sc` : scale
 *Default:* `null`
-*Description:* blah blah blah
+*Description:* The "-scale" resize operator is a simplified, faster form of the resize command. Useful for fast exact scaling of pixels.
+
+**example:`sc_1`** 
+
+### `fc` : face-crop
+`int`
+*Default:* `0`
+*Description:* Using [facedetect](https://github.com/wavexx/facedetect) repository to detect faces and passe the coordinates to ImageMagick to crop.
+
+**example:`fc_1`** 
+
+`fc_1` :  `http://oi.flyimg.io/upload/fc_1/http://facedetection.jaysalvat.com/img/faces.jpg`
+
+[![fc_1](http://oi.flyimg.io/upload/fc_1/http://facedetection.jaysalvat.com/img/faces.jpg)](http://oi.flyimg.io/upload/fc_1/http://facedetection.jaysalvat.com/img/faces.jpg)
+
+### `fcp` : face-crop-position
+`int`
+*Default:* `0`
+*Description:* When using the Face crop option and when the image contain more than one face, you can specify which one you want get cropped
+
+**example:`fcp_1`,`fcp_0`,...** 
+
+`fcp_2` : `http://oi.flyimg.io/upload/fc_1,fcp_2/http://facedetection.jaysalvat.com/img/faces.jpg`
+
+[![fcp_2](http://oi.flyimg.io/upload/fc_1,fcp_2/http://facedetection.jaysalvat.com/img/faces.jpg)](http://oi.flyimg.io/upload/fc_1,fcp_2/http://facedetection.jaysalvat.com/img/faces.jpg)
+
+### `fb` : face-blur
+`int`
+*Default:* `0`
+*Description:* Apply blur effect on faces in a given image
+
+**example:`fb_1`** 
+
+`fb_1`  : `http://oi.flyimg.io/upload/fb_1/http://facedetection.jaysalvat.com/img/faces.jpg`
+
+[![fb_1](http://oi.flyimg.io/upload/fb_1/http://facedetection.jaysalvat.com/img/faces.jpg)](http://oi.flyimg.io/upload/fb_1/http://facedetection.jaysalvat.com/img/faces.jpg)
 
 ### `sf` : sampling-factor
 *Default:* `1x1`
-*Description:* blah blah blah
+*Description:* ...
 
 ### `ett` : extent
 *Default:* `null`
-*Description:* blah blah blah
+*Description:* ... not ready
 
 ### `par` : preserve-aspect-ratio
+`int`
 *Default:* `1`
-*Description:* blah blah blah
+*Description:* If set to 0, when passing width and height to an image, the image will be distorted to fill the size of the rectangle defined by width and height.
 
 ### `pns` : preserve-natural-size
+`int`
 *Default:* `1`
-*Description:* blah blah blah
+*Description:* If set to 0 and if the source image is smaller than the target dimensions, the image will be stretched to the target size.
 
 ### `gf` : gif-frame
+`int`
 *Default:* `0`
-*Description:* blah blah blah
+*Description:* ...
 
+--- 
 
-## process-type: *upload* or *path*
+# process-type: *upload* or *path*
 
 There are 2 main proceses you can do for images.
 
 The first: **upload**, grabs an image from a URL, transforms it, saves it, and serves it, as an image, with all the apropiate headers.
 
 The second: **path**, grabs an image from a URL, transforms it, saves it, and returns the absolute path to the image as a string, in the body of the response.
+
+--- 
+
+## Options keys
+
+```yml
+options_keys:
+  moz: mozjpeg
+  q: quality
+  o: output
+  unsh: unsharp
+  fc: face-crop
+  fcp: face-crop-position
+  fb: face-blur
+  w: width
+  h: height
+  c: crop
+  bg: background
+  st: strip
+  rz: resize
+  g: gravity
+  f: filter
+  r: rotate
+  sc: scale
+  sf: sampling-factor
+  rf: refresh
+  ett: extent
+  par: preserve-aspect-ratio
+  pns: preserve-natural-size
+  webpl: webp-lossless
+```
+
+## Default options values
+
+```yml
+default_options:
+  mozjpeg: 1
+  quality: 90
+  output: auto
+  unsharp: null
+  face-crop: 0
+  face-crop-position: 0
+  face-blur: 0
+  width: null
+  height: null
+  crop: null
+  background: null
+  strip: 1
+  resize: null
+  gravity: Center
+  filter: Lanczos
+  rotate: null
+  scale: null
+  sampling-factor: 1x1
+  refresh: false
+  extent: null
+  preserve-aspect-ratio: 1
+  preserve-natural-size: 1
+  webp-lossless: 0
+```

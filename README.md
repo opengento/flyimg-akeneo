@@ -74,34 +74,15 @@ http://oi.flyimg.io/upload/w_200,h_200,c_1,r_90/https://m0.cl/t/resize-test_1920
          * [with composer](#with-composer)
    * [Testing Flyimg service](#testing-flyimg-service)
    * [How to transform images](#how-to-transform-images)
-      * [Options keys](#options-keys)
-      * [Default options values](#default-options-values)
-   * [Option details](#option-details)
-      * [output string](#output-string)
-      * [mozjpeg bool](#mozjpeg-bool)
-      * [quality int (0-100)](#quality-int-0-100)
-      * [width int](#width-int)
-      * [height int](#height-int)
-      * [Using width AND height](#using-width-and-height)
-      * [crop bool](#crop-bool)
-      * [gravity string](#gravity-string)
-      * [background color (multiple formats)](#background-color-multiple-formats)
-      * [strip int](#strip-int)
-      * [resize int](#resize-int)
-      * [unsharp radiusxsigma{ gain}{ threshold}](#unsharp-radiusxsigmagainthreshold)
-      * [filter string](#filter-string)
-      * [scale int](#scale-int)
-      * [rotate string](#rotate-string)
-      * [refresh int](#refresh-int)
-      * [Face Crop int](#face-crop-int)
-      * [Face Crop Position int](#face-crop-position-int)
-      * [Face Blur int](#face-blur-int)
-      * [Enable Restricted Domains](#enable-restricted-domains)
-      * [Run test](#run-test)
-      * [How to Provision the application on](#how-to-provision-the-application-on)
+   * [Basic Option details](#basic-option-details)
+      * [Full url option details document](docs/url-options.md)
+   * [Application Server Options](#server-options)
+      * [Application Options Document](docs/application-options.md)
+   * [Enable Restricted Domains](#enable-restricted-domains)
+   * [Run test](#run-test)
+   * [How to Provision the application on](#how-to-provision-the-application-on)
    * [Technology stack](#technology-stack)
       * [Abstract storage with Flysystem](#abstract-storage-with-flysystem)
-         * [Using AWS S3 as Storage Provider](#using-aws-s3-as-storage-provider)
    * [Benchmark](#benchmark)
    * [Demo Application running](#demo-application-running)
    * [Roadmap](#roadmap)
@@ -194,74 +175,15 @@ This is fetching an image from Mozilla, resizing it, saving it and serving it.
 
 # How to transform images
 
-You go to your server URL`http://imgs.kitty.com` and append `/upload/`;  after that you can pass these options below, followed by an underscore and a value `w_250,q_50` Options are separated by coma (configurable to other separator) . 
+You go to your server URL`http://imgs.kitty.com` and append `/upload/`;  after that you can pass these options below, followed by an underscore and a value `w_250,q_50` Options are separated by coma (configurable to other separator).
+
 After the options put the source of your image, it can be relative to your server or absolute: `/https://my.storage.io/imgs/pretty-kitten.jpg`
+
 So to get a pretty kitten at 250 pixels wide, with 50% compression, you would write.
 `<img src="http://imgs.kitty.com/upload/w_250,q_50/https://my.storage.io/imgs/pretty-kitten.jpg">`
 
----
 
-Options keys
--------------
-
-```yml
-options_keys:
-  moz: mozjpeg
-  q: quality
-  o: output
-  unsh: unsharp
-  fc: face-crop
-  fcp: face-crop-position
-  fb: face-blur
-  w: width
-  h: height
-  c: crop
-  bg: background
-  st: strip
-  rz: resize
-  g: gravity
-  f: filter
-  r: rotate
-  sc: scale
-  sf: sampling-factor
-  rf: refresh
-  ett: extent
-  par: preserve-aspect-ratio
-  pns: preserve-natural-size
-  webpl: webp-lossless
-```
-
-Default options values
------------------------
-
-```yml
-default_options:
-  mozjpeg: 1
-  quality: 90
-  output: auto
-  unsharp: null
-  face-crop: 0
-  face-crop-position: 0
-  face-blur: 0
-  width: null
-  height: null
-  crop: null
-  background: null
-  strip: 1
-  resize: null
-  gravity: Center
-  filter: Lanczos
-  rotate: null
-  scale: null
-  sampling-factor: 1x1
-  refresh: false
-  extent: null
-  preserve-aspect-ratio: 1
-  preserve-natural-size: 1
-  webp-lossless: 0
-```
-
-# Basic Option details
+## Basic Option details
 You can see the full list of options configurable by URL params, **with examples**, in the [URL-Options document](docs/url-options.md) 
 
 We put a lot of defaults in place to prevent distortion, bad quality, weird cropping and unwanted paddings.
@@ -322,17 +244,12 @@ The basic options are: `NorthWest`, `North`, `NorthEast`, `West`, `Center`, `Eas
 
 `r_45` :  `http://oi.flyimg.io/upload/r_-45,w_400,h_400/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg`
 
----
-
-## Output file formats
-
 ### `o` : output
 `string`
 *Default:* `auto`
 *Description:* Output format requested, for example you can force the output as jpeg file in case of source file is png. The default `auto` will try to output the same format as the source image or fallback to **jpg**.
 
 **example:`o_auto`,`o_png`,`o_webp`,`o_jpeg`,`o_jpg`** 
-
 
 ### `q` : quality
 `int` (0-100)
@@ -346,8 +263,6 @@ The basic options are: `NorthWest`, `North`, `NorthEast`, `West`, `Center`, `Eas
 
 `q_100`  :  `http://oi.flyimg.io/upload/q_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg`
 
----
-
 ### Refresh or re-fetch source image
 `rf` : refresh
 *Default:* `false`
@@ -356,6 +271,10 @@ The basic options are: `NorthWest`, `North`, `NorthEast`, `West`, `Center`, `Eas
 **example:`rf_1`** 
 
 --- 
+
+## Server Options
+
+There are some easy to setup server configurations in the `config/parameters.yml` file, you can see the full list of options and server configurations in the **[Application Options Document](docs/application-options.md)** 
 
 ## Security: Restricting Source Domains:
 
