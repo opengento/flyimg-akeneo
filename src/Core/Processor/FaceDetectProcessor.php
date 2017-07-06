@@ -2,7 +2,7 @@
 
 namespace Core\Processor;
 
-use Core\Entity\Image;
+use Core\Entity\InputImage;
 
 /**
  * Class FaceDetectProcessor
@@ -13,15 +13,15 @@ class FaceDetectProcessor extends Processor
     /**
      * Face detection cropping
      *
-     * @param Image $image
-     * @param int   $faceCropPosition
+     * @param InputImage $inputImage
+     * @param int        $faceCropPosition
      */
-    public function cropFaces(Image $image, int $faceCropPosition = 0)
+    public function cropFaces(InputImage $inputImage, int $faceCropPosition = 0)
     {
         if (!is_executable(self::FACEDETECT_COMMAND)) {
             return;
         }
-        $commandStr = self::FACEDETECT_COMMAND." ".$image->getOriginalFile();
+        $commandStr = self::FACEDETECT_COMMAND." ".$inputImage->getSourceImagePath();
         $output = $this->execute($commandStr);
         if (empty($output[$faceCropPosition])) {
             return;
@@ -31,8 +31,8 @@ class FaceDetectProcessor extends Processor
             list($geometryX, $geometryY, $geometryW, $geometryH) = $geometry;
             $cropCmdStr =
                 self::IM_CONVERT_COMMAND.
-                " '{$image->getOriginalFile()}' -crop {$geometryW}x{$geometryH}+{$geometryX}+{$geometryY} ".
-                $image->getOriginalFile();
+                " '{$inputImage->getSourceImagePath()}' -crop {$geometryW}x{$geometryH}+{$geometryX}+{$geometryY} ".
+                $inputImage->getSourceImagePath();
             $this->execute($cropCmdStr);
         }
     }
@@ -40,14 +40,14 @@ class FaceDetectProcessor extends Processor
     /**
      * Blurring Faces
      *
-     * @param Image $image
+     * @param InputImage $inputImage
      */
-    public function blurFaces(Image $image)
+    public function blurFaces(InputImage $inputImage)
     {
         if (!is_executable(self::FACEDETECT_COMMAND)) {
             return;
         }
-        $commandStr = self::FACEDETECT_COMMAND." ".$image->getOriginalFile();
+        $commandStr = self::FACEDETECT_COMMAND." ".$inputImage->getSourceImagePath();
         $output = $this->execute($commandStr);
         if (empty($output)) {
             return;
@@ -59,7 +59,7 @@ class FaceDetectProcessor extends Processor
                 $cropCmdStr = self::IM_MOGRIFY_COMMAND.
                     " -gravity NorthWest -region {$geometryW}x{$geometryH}+{$geometryX}+{$geometryY} ".
                     "-scale '10%' -scale '1000%' ".
-                    $image->getOriginalFile();
+                    $inputImage->getSourceImagePath();
                 $this->execute($cropCmdStr);
             }
         }

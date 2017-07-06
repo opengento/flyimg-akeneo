@@ -2,14 +2,15 @@
 
 namespace Tests\Core\Entity;
 
-use Core\Entity\Image;
+use Core\Entity\InputImage;
+use Core\Entity\OutputImage;
 use Core\Exception\ReadFileException;
 use Tests\Core\BaseTest;
 
 /**
  * @backupGlobals disabled
  */
-class ImageTest extends BaseTest
+class OutputImageTest extends BaseTest
 {
     /**
      * Test parseOptions Method
@@ -43,10 +44,11 @@ class ImageTest extends BaseTest
             'thread' => '1',
         ];
         $parsedOptions = $this->ImageHandler->parseOptions(self::OPTION_URL);
-        $image = new Image($parsedOptions, self::JPG_TEST_IMAGE);
+        $inputImage = new InputImage($parsedOptions, self::JPG_TEST_IMAGE);
+        $image = new OutputImage($inputImage);
         $this->generatedImage[] = $image;
 
-        $this->assertEquals($image->getOptions(), $expectedParseArray);
+        $this->assertEquals($image->getInputImage()->getOptions(), $expectedParseArray);
     }
 
     /**
@@ -55,20 +57,11 @@ class ImageTest extends BaseTest
     public function testSaveToTemporaryFile()
     {
         $parsedOptions = $this->ImageHandler->parseOptions(self::OPTION_URL);
-        $image = new Image($parsedOptions, self::JPG_TEST_IMAGE);
+        $inputImage = new InputImage($parsedOptions, self::JPG_TEST_IMAGE);
+        $image = new OutputImage($inputImage);
         $this->generatedImage[] = $image;
 
-        $this->assertFileExists($image->getOriginalFile());
-    }
-
-    /**
-     * Test SaveToTemporaryFileException
-     */
-    public function testSaveToTemporaryFileException()
-    {
-        $this->expectException(ReadFileException::class);
-        $image = new Image(['output' => 'jpg'], parent::JPG_TEST_IMAGE.'--fail');
-        $this->generatedImage[] = $image;
+        $this->assertFileExists($image->getInputImage()->getSourceImagePath());
     }
 
     /**
@@ -77,15 +70,18 @@ class ImageTest extends BaseTest
     public function testGenerateFilesName()
     {
         $parsedOptions = $this->ImageHandler->parseOptions(self::OPTION_URL);
-        $image = new Image($parsedOptions, parent::JPG_TEST_IMAGE);
+        $inputImage = new InputImage($parsedOptions, self::JPG_TEST_IMAGE);
+        $image = new OutputImage($inputImage);
         $parsedOptions = $this->ImageHandler->parseOptions(self::OPTION_URL);
-        $image2 = new Image($parsedOptions, self::JPG_TEST_IMAGE);
+
+        $inputImage = new InputImage($parsedOptions, self::JPG_TEST_IMAGE);
+        $image2 = new OutputImage($inputImage);
 
         $this->generatedImage[] = $image2;
         $this->generatedImage[] = $image;
 
-        $this->assertEquals($image2->getNewFileName(), $image->getNewFileName());
-        $this->assertNotEquals($image2->getNewFilePath(), $image->getNewFilePath());
+        $this->assertEquals($image2->getOutputImageName(), $image->getOutputImageName());
+        $this->assertNotEquals($image2->getOutputImagePath(), $image->getOutputImagePath());
     }
 
     /**
@@ -94,9 +90,11 @@ class ImageTest extends BaseTest
     public function testExtractByKey()
     {
         $parsedOptions = $this->ImageHandler->parseOptions(self::OPTION_URL);
-        $image = new Image($parsedOptions, self::JPG_TEST_IMAGE);
+        $inputImage = new InputImage($parsedOptions, self::JPG_TEST_IMAGE);
+        $image = new OutputImage($inputImage);
+
         $image->extract('width');
         $this->generatedImage[] = $image;
-        $this->assertFalse(array_key_exists('width', $image->getOptions()));
+        $this->assertFalse(array_key_exists('width', $image->getInputImage()->getOptions()));
     }
 }
