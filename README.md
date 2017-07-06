@@ -2,6 +2,7 @@
 
 # Flyimg
 
+[![Backers on Open Collective](https://opencollective.com/flyimg/backers/badge.svg)](#backers) [![Sponsors on Open Collective](https://opencollective.com/flyimg/sponsors/badge.svg)](#sponsors)
 [![Build Status](https://travis-ci.org/flyimg/flyimg.svg?branch=master)](https://travis-ci.org/flyimg/flyimg)
 [![Code Climate](https://codeclimate.com/github/flyimg/flyimg/badges/gpa.svg)](https://codeclimate.com/github/flyimg/flyimg)
 [![Issue Count](https://codeclimate.com/github/flyimg/flyimg/badges/issue_count.svg)](https://codeclimate.com/github/flyimg/flyimg)
@@ -63,19 +64,81 @@ http://oi.flyimg.io/upload/w_200,h_200,c_1,r_90/https://m0.cl/t/resize-test_1920
 ![lago_ranco](http://oi.flyimg.io/upload/w_200,h_200,c_1,r_90/https://m0.cl/t/resize-test_1920.jpg)
 
 
-# Installation and setup
+# Table of Contents
 
-You can spin up your own working server in 10 minutes using the provision scripts for [AWS Elastic Beanstalk](https://github.com/flyimg/Elastic-Beanstalk-provision) or the [DigitalOcean Ubuntu Droplets](https://github.com/flyimg/DigitalOcean-provision) <small>(more environments to come)</small>. For other environments or if you want to tweak and play in your machine before rolling out, read along...
-
-## Requirements
+   * [Requirements](#requirements)
+   * [Installation [Deployment mode]](#installation-deployment-mode)
+   * [Installation [Development Mode]](#installation-development-mode)
+      * [Installation](#installation)
+         * [with git](#with-git)
+         * [with composer](#with-composer)
+   * [Testing Flyimg service](#testing-flyimg-service)
+   * [How to transform images](#how-to-transform-images)
+      * [Options keys](#options-keys)
+      * [Default options values](#default-options-values)
+   * [Option details](#option-details)
+      * [output string](#output-string)
+      * [mozjpeg bool](#mozjpeg-bool)
+      * [quality int (0-100)](#quality-int-0-100)
+      * [width int](#width-int)
+      * [height int](#height-int)
+      * [Using width AND height](#using-width-and-height)
+      * [crop bool](#crop-bool)
+      * [gravity string](#gravity-string)
+      * [background color (multiple formats)](#background-color-multiple-formats)
+      * [strip int](#strip-int)
+      * [resize int](#resize-int)
+      * [unsharp radiusxsigma{ gain}{ threshold}](#unsharp-radiusxsigmagainthreshold)
+      * [filter string](#filter-string)
+      * [scale int](#scale-int)
+      * [rotate string](#rotate-string)
+      * [refresh int](#refresh-int)
+      * [Face Crop int](#face-crop-int)
+      * [Face Crop Position int](#face-crop-position-int)
+      * [Face Blur int](#face-blur-int)
+      * [Enable Restricted Domains](#enable-restricted-domains)
+      * [Run test](#run-test)
+      * [How to Provision the application on](#how-to-provision-the-application-on)
+   * [Technology stack](#technology-stack)
+      * [Abstract storage with Flysystem](#abstract-storage-with-flysystem)
+         * [Using AWS S3 as Storage Provider](#using-aws-s3-as-storage-provider)
+   * [Benchmark](#benchmark)
+   * [Demo Application running](#demo-application-running)
+   * [Roadmap](#roadmap)
+   * [Contributors](#contributors)
+   * [Backers](#backers)
+   * [Sponsors](#sponsors)
+   
+   
+# Requirements
 
 You will need to have **Docker** on your machine. Optionally you can use Docker machine to create a virtual environment. We have tested on **Mac**, **Windows** and **Ubuntu**.
 
-## Instalation
+# Installation [Deployment mode]
+
+Pull the docker image
+
+```bash
+docker pull flyimg/flyimg-build
+```
+
+Start the container
+
+```bash
+docker run -itd -p 8080:80 flyimg/flyimg-build
+```
+Check [how to provision the application](#how-to-provision-the-application-on)
+
+# Installation [Development Mode]
+
+You can spin up your own working server in 10 minutes using the provision scripts for [AWS Elastic Beanstalk](https://github.com/flyimg/Elastic-Beanstalk-provision) or the [DigitalOcean Ubuntu Droplets](https://github.com/flyimg/DigitalOcean-provision) <small>(more environments to come)</small>. For other environments or if you want to tweak and play in your machine before rolling out, read along...
+
+## Installation
 
 You can use `git` or `composer` for the first step. 
 
 ### with git
+
 ```sh
 git clone https://github.com/flyimg/flyimg.git
 ```
@@ -96,13 +159,13 @@ This will download and build the main image, It will take a few minutes. If you 
 Then run the container:
 
 ```sh
-docker run -t -d -i -p 8080:80 -v $(pwd):/var/www/html --name flyimg flyimg
+docker run -itd -p 8080:80 -v $(pwd):/var/www/html --name flyimg flyimg
 ```
 
 For Fish shell users: 
 
 ```sh
-docker run -t -d -i -p 8080:80 -v $PWD:/var/www/html --name flyimg flyimg
+docker run -itd -p 8080:80 -v $PWD:/var/www/html --name flyimg flyimg
 ```
 
 The above command will make the Dockerfile run supervisord command which launches 2 processes: **nginx** and **php-fpm** and starts listening on port 8080.
@@ -113,17 +176,21 @@ The above command will make the Dockerfile run supervisord command which launche
 docker exec -it flyimg composer install
 ```
 
-Again, it will take a few minutes to download the dependencies. Same as before, if you get some errors you should try running `composer install` again. 
+Again, it will take a few minutes to download the dependencies. Same as before, if you get some errors you should try running `composer install` again.
+ 
 
-After composer is done, you can navigate to your machine's IP in port 8080 (ex: http://127.0.0.1:8080/ ) ; you should get a message saying: **Hello from Flyimg!** and a small homepage of flyimg already working. If you get any errors  at this stage it's most likely that composer has not finished installing or skipped something.
+# Testing Flyimg service
+
+You can navigate to your machine's IP in port 8080 (ex: http://127.0.0.1:8080/ ) ; you should get a message saying: **Hello from Flyimg!** and a small homepage of flyimg already working. If you get any errors  at this stage it's most likely that composer has not finished installing or skipped something.
 
 You can test your image resizing service by navigating to: http://127.0.0.1:8080/upload/w_130,h_113,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg
 
 ![ff-logo](http://oi.flyimg.io/upload/w_130,h_113,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg)
 
-### It's working!
+**It's working!**
 
 This is fetching an image from Mozilla, resizing it, saving it and serving it.
+
 
 # How to transform images
 
@@ -134,7 +201,7 @@ So to get a pretty kitten at 250 pixels wide, with 50% compression, you would wr
 
 ---
 
-Options keys:
+Options keys
 -------------
 
 ```yml
@@ -164,7 +231,7 @@ options_keys:
   webpl: webp-lossless
 ```
 
-Default options values:
+Default options values
 -----------------------
 
 ```yml
@@ -392,11 +459,18 @@ whitelist_domains:
 ```
 
 ## Run test:
+
 ```sh
-docker exec -it flyimg vendor/bin/phpunit tests/
+docker exec flyimg vendor/bin/phpunit
+```
+
+Generate Html Code Coverage
+```sh
+docker exec flyimg vendor/bin/phpunit --coverage-html build/html
 ```
 
 ## How to Provision the application on:
+
 - [DigitalOcean](https://github.com/flyimg/DigitalOcean-provision)
 - [AWS Elastic-Beanstalk](https://github.com/flyimg/Elastic-Beanstalk-provision)
 
@@ -409,7 +483,7 @@ docker exec -it flyimg vendor/bin/phpunit tests/
 * Storage: [Flysystem](http://flysystem.thephpleague.com/)
 * Containerisation:  Docker
 
-## Abstract storage with Flysystem:
+## Abstract storage with Flysystem
 
 Storage files based on [Flysystem](http://flysystem.thephpleague.com/) which is `a filesystem abstraction allows you to easily swap out a local filesystem for a remote one. Technical debt is reduced as is the chance of vendor lock-in.`
 
@@ -417,21 +491,84 @@ Default storage is Local, but you can use other Adapters like AWS S3, Azure, FTP
 
 Currently, only the **local** and **S3** are implemented as Storage Provider in Flyimg application, but you can add your specific one easily in `src/Core/Provider/StorageProvider.php`. Check an [example for AWS S3 here](https://github.com/flyimg/flyimg/blob/master/docs/application-options.md#using-aws-s3-as-storage-provider).
 
-# Demo Application running:
+# Benchmark
+
+See [benchmark.sh](https://github.com/flyimg/flyimg/blob/master/benchmark.sh) for more details
+Requires: Vegeta [http://github.com/tsenart/vegeta](http://github.com/tsenart/vegeta)
+
+```
+Crop http://localhost:8080/upload/w_200,h_200,c_1/Rovinj-Croatia.jpg
+Requests      [total, rate]            500, 50.10
+Duration      [total, attack, wait]    9.991377689s, 9.97999997s, 11.377719ms
+Latencies     [mean, 50, 95, 99, max]  19.402096ms, 12.844271ms, 54.65001ms, 96.276948ms, 135.597203ms
+Bytes In      [total, mean]            5337500, 10675.00
+Bytes Out     [total, mean]            0, 0.00
+Success       [ratio]                  100.00%
+Status Codes  [code:count]             200:500
+
+Resize http://localhost:8080/upload/w_200,h_200,rz_1/Rovinj-Croatia.jpg
+Requests      [total, rate]            500, 50.10
+Duration      [total, attack, wait]    9.992435445s, 9.979999871s, 12.435574ms
+Latencies     [mean, 50, 95, 99, max]  16.676093ms, 12.376525ms, 49.676187ms, 97.354697ms, 127.14737ms
+Bytes In      [total, mean]            3879500, 7759.00
+Bytes Out     [total, mean]            0, 0.00
+Success       [ratio]                  100.00%
+Status Codes  [code:count]             200:500
+
+Rotate http://localhost:8080/upload/r_-45,w_400,h_400/Rovinj-Croatia.jpg
+Requests      [total, rate]            500, 50.10
+Duration      [total, attack, wait]    9.992650741s, 9.979999937s, 12.650804ms
+Latencies     [mean, 50, 95, 99, max]  13.634143ms, 11.587252ms, 26.873827ms, 50.446923ms, 68.222253ms
+Bytes In      [total, mean]            17609000, 35218.00
+Bytes Out     [total, mean]            0, 0.00
+Success       [ratio]                  100.00%
+Status Codes  [code:count]             200:500
+```
+
+# Demo Application running
 
 [http://oi.flyimg.io](http://oi.flyimg.io)
 
 ![resize-test](http://oi.flyimg.io/upload/w_300,h_250,c_1/https://m0.cl/t/resize-test_1920.jpg)
 
 
-# Roadmap:
+# Roadmap
 
-- [ ] Benchmark the application.
-- [ ] Decouple the core logic from Silex in order to make portable.
+- [x] Benchmark the application.
+- [ ] Decouple the core logic from Silex in order to make it portable.
 - [ ] Test it with couple of frameworks, Phalcon Php is a good candidate.
 - [ ] Add overlays functionality (Text on top of the image)
 - [ ] Storage auto-mapping
 - [ ] Add support for FLIFF, BPG and JPEG2000
+
+# Contributors
+
+This project exists thanks to all the people who contribute.
+<a href="graphs/contributors"><img src="https://opencollective.com/flyimg/contributors.svg?width=890" /></a>
+
+
+# Backers
+
+Thank you to all our backers! [[Become a backer](https://opencollective.com/flyimg#backer)]
+
+<a href="https://opencollective.com/flyimg#backers" target="_blank"><img src="https://opencollective.com/flyimg/backers.svg?width=890"></a>
+
+
+# Sponsors
+
+Thank you to all our sponsors! (please ask your company to also support this open source project by [becoming a sponsor](https://opencollective.com/flyimg#sponsor))
+
+<a href="https://opencollective.com/flyimg/sponsor/0/website" target="_blank"><img src="https://opencollective.com/flyimg/sponsor/0/avatar.svg"></a>
+<a href="https://opencollective.com/flyimg/sponsor/1/website" target="_blank"><img src="https://opencollective.com/flyimg/sponsor/1/avatar.svg"></a>
+<a href="https://opencollective.com/flyimg/sponsor/2/website" target="_blank"><img src="https://opencollective.com/flyimg/sponsor/2/avatar.svg"></a>
+<a href="https://opencollective.com/flyimg/sponsor/3/website" target="_blank"><img src="https://opencollective.com/flyimg/sponsor/3/avatar.svg"></a>
+<a href="https://opencollective.com/flyimg/sponsor/4/website" target="_blank"><img src="https://opencollective.com/flyimg/sponsor/4/avatar.svg"></a>
+<a href="https://opencollective.com/flyimg/sponsor/5/website" target="_blank"><img src="https://opencollective.com/flyimg/sponsor/5/avatar.svg"></a>
+<a href="https://opencollective.com/flyimg/sponsor/6/website" target="_blank"><img src="https://opencollective.com/flyimg/sponsor/6/avatar.svg"></a>
+<a href="https://opencollective.com/flyimg/sponsor/7/website" target="_blank"><img src="https://opencollective.com/flyimg/sponsor/7/avatar.svg"></a>
+<a href="https://opencollective.com/flyimg/sponsor/8/website" target="_blank"><img src="https://opencollective.com/flyimg/sponsor/8/avatar.svg"></a>
+<a href="https://opencollective.com/flyimg/sponsor/9/website" target="_blank"><img src="https://opencollective.com/flyimg/sponsor/9/avatar.svg"></a>
+
 
 
 Licence: MIT

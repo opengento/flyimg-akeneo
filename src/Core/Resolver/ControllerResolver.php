@@ -1,4 +1,5 @@
 <?php
+
 namespace Core\Resolver;
 
 use Core\Controller\CoreController;
@@ -32,6 +33,6 @@ class ControllerResolver extends SilexControllerResolver
             $controller->setApp($this->app);
         }
 
-        return array($controller, $method);
+        return [$controller, $method];
     }
 }

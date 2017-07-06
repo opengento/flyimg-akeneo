@@ -1,31 +1,40 @@
 <?php
+
 namespace Tests\Core;
 
 use Core\Entity\Image;
-use Core\Service\CoreManager;
+use Core\Handler\ImageHandler;
 use Silex\Application;
 
 class BaseTest extends \PHPUnit_Framework_TestCase
 {
     const JPG_TEST_IMAGE = __DIR__.'/../testImages/square.jpg';
     const PNG_TEST_IMAGE = __DIR__.'/../testImages/square.png';
+    const WEBP_TEST_IMAGE = __DIR__.'/../testImages/square.webp';
     const GIF_TEST_IMAGE = __DIR__.'/../testImages/animated.gif';
+
+    const FACES_TEST_IMAGE = __DIR__.'/../testImages/faces.jpg';
+    const FACES_CP0_TEST_IMAGE = __DIR__.'/../testImages/face_cp0.jpg';
+    const FACES_BLUR_TEST_IMAGE = __DIR__.'/../testImages/face_fb.jpg';
+
     const OPTION_URL = 'w_200,h_100,c_1,bg_#999999,rz_1,sc_50,r_-45,unsh_0.25x0.25+8+0.065,ett_100x80,fb_1,rf_1';
-    const GIF_OPTION_URL = 'w_200,h_100,rf_1';
+    const CROP_OPTION_URL = 'w_200,h_100,c_1,rf_1';
+    const GIF_OPTION_URL = 'w_100,h_100,rf_1';
 
     /**
      * @var Application
      */
     protected $app = null;
-    /**
-     * @var Image
-     */
-    protected $image = null;
 
     /**
-     * @var CoreManager
+     * @var ImageHandler
      */
-    protected $coreManager = null;
+    protected $ImageHandler = null;
+
+    /**
+     * @var array
+     */
+    protected $generatedImage = [];
 
     /**
      *
@@ -33,9 +42,7 @@ class BaseTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->app = $this->createApplication();
-        $this->coreManager = $this->app['core.manager'];
-        $parsedOptions = $this->coreManager->parse(self::OPTION_URL);
-        $this->image = new Image($parsedOptions, self::JPG_TEST_IMAGE);
+        $this->ImageHandler = $this->app['image.handler'];
     }
 
     /**
@@ -43,11 +50,14 @@ class BaseTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        if (file_exists($this->image->getNewFilePath())) {
-            unlink($this->image->getNewFilePath());
-        }
-        if (file_exists($this->image->getTemporaryFile())) {
-            unlink($this->image->getTemporaryFile());
+        unset($this->ImageHandler);
+        unset($this->app);
+        
+        foreach ($this->generatedImage as $image) {
+            if (!$image instanceof Image) {
+                continue;
+            }
+            $image->unlinkUsedFiles(true);
         }
     }
 
@@ -69,12 +79,5 @@ class BaseTest extends \PHPUnit_Framework_TestCase
     public function testApplicationInstance()
     {
         $this->assertInstanceOf('Silex\Application', $this->app);
-    }
-
-    /**
-     */
-    public function testImageInstance()
-    {
-        $this->assertInstanceOf('Core\Entity\Image', $this->image);
     }
 }
