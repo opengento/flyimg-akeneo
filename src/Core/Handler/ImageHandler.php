@@ -2,7 +2,8 @@
 
 namespace Core\Handler;
 
-use Core\Entity\Image;
+use Core\Entity\InputImage;
+use Core\Entity\OutputImage;
 use Core\Exception\AppException;
 use Core\Processor\ImageProcessor;
 use Core\Processor\FaceDetectProcessor;
@@ -66,68 +67,70 @@ class ImageHandler
      * @param string $options
      * @param string $imageSrc
      *
-     * @return Image
+     * @return OutputImage
      * @throws \Exception
      */
-    public function processImage(string $options, string $imageSrc): Image
+    public function processImage(string $options, string $imageSrc): OutputImage
     {
         $this->checkRestrictedDomains($imageSrc);
+
         $parsedOptions = $this->parseOptions($options);
-        $image = new Image($parsedOptions, $imageSrc);
+        $inputImage = new InputImage($parsedOptions, $imageSrc);
+        $outputImage = new OutputImage($inputImage);
 
         try {
-            if ($this->filesystem->has($image->getNewFileName()) && $image->getOptions()['refresh']) {
-                $this->filesystem->delete($image->getNewFileName());
+            if ($this->filesystem->has($outputImage->getOutputImageName()) && $parsedOptions['refresh']) {
+                $this->filesystem->delete($outputImage->getOutputImageName());
             }
 
-            if (!$this->filesystem->has($image->getNewFileName())) {
-                $image = $this->processNewImage($image);
+            if (!$this->filesystem->has($outputImage->getOutputImageName())) {
+                $outputImage = $this->processNewImage($outputImage);
             }
 
-            $image->setContent($this->filesystem->read($image->getNewFileName()));
+            $outputImage->setOutputImageContent($this->filesystem->read($outputImage->getOutputImageName()));
         } catch (\Exception $e) {
-            $image->removeTemporaryFiles();
+            $outputImage->removeOutputImage();
             throw $e;
         }
 
-        return $image;
+        return $outputImage;
     }
 
     /**
-     * @param Image $image
+     * @param OutputImage $outputImage
      */
-    protected function faceDetectionProcess(Image $image): void
+    protected function faceDetectionProcess(OutputImage $outputImage): void
     {
-        $faceCrop = $image->extract('face-crop');
-        $faceCropPosition = $image->extract('face-crop-position');
-        $faceBlur = $image->extract('face-blur');
+        $faceCrop = $outputImage->extract('face-crop');
+        $faceCropPosition = $outputImage->extract('face-crop-position');
+        $faceBlur = $outputImage->extract('face-blur');
 
-        if ($faceBlur && !$image->isGifSupport()) {
-            $this->faceDetectProcessor->blurFaces($image);
+        if ($faceBlur && !$outputImage->isGifSupport()) {
+            $this->faceDetectProcessor->blurFaces($outputImage->getInputImage());
         }
 
-        if ($faceCrop && !$image->isGifSupport()) {
-            $this->faceDetectProcessor->cropFaces($image, $faceCropPosition);
+        if ($faceCrop && !$outputImage->isGifSupport()) {
+            $this->faceDetectProcessor->cropFaces($outputImage->getInputImage(), $faceCropPosition);
         }
     }
 
     /**
-     * @param Image $image
+     * @param OutputImage $outputImage
      *
-     * @return Image
+     * @return OutputImage
      */
-    protected function processNewImage(Image $image): Image
+    protected function processNewImage(OutputImage $outputImage): OutputImage
     {
         //Check Face Detection options
-        $this->faceDetectionProcess($image);
+        $this->faceDetectionProcess($outputImage);
 
-        $image = $this->getImageProcessor()->processNewImage($image);
+        $outputImage = $this->getImageProcessor()->processNewImage($outputImage);
         $this->filesystem->write(
-            $image->getNewFileName(),
-            stream_get_contents(fopen($image->getNewFilePath(), 'r'))
+            $outputImage->getOutputImageName(),
+            stream_get_contents(fopen($outputImage->getOutputImagePath(), 'r'))
         );
 
-        return $image;
+        return $outputImage;
     }
 
     /**
@@ -151,23 +154,23 @@ class ImageHandler
     }
 
     /**
-     * @param Image $image
+     * @param OutputImage $outputImage
      *
      * @return string
      */
-    public function getResponseContentType(Image $image): string
+    public function getResponseContentType(OutputImage $outputImage): string
     {
-        if ($image->getOutputExtension() == Image::EXT_WEBP) {
-            return Image::WEBP_MIME_TYPE;
+        if ($outputImage->getOutputImageExtension() == OutputImage::EXT_WEBP) {
+            return OutputImage::WEBP_MIME_TYPE;
         }
-        if ($image->getOutputExtension() == Image::EXT_PNG) {
-            return Image::PNG_MIME_TYPE;
+        if ($outputImage->getOutputImageExtension() == OutputImage::EXT_PNG) {
+            return OutputImage::PNG_MIME_TYPE;
         }
-        if ($image->getOutputExtension() == Image::EXT_GIF) {
-            return Image::GIF_MIME_TYPE;
+        if ($outputImage->getOutputImageExtension() == OutputImage::EXT_GIF) {
+            return OutputImage::GIF_MIME_TYPE;
         }
 
-        return Image::JPEG_MIME_TYPE;
+        return OutputImage::JPEG_MIME_TYPE;
     }
 
     /**

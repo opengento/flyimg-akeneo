@@ -2,7 +2,7 @@
 
 namespace Tests\Core;
 
-use Core\Entity\Image;
+use Core\Entity\OutputImage;
 use Core\Handler\ImageHandler;
 use Silex\Application;
 
@@ -54,7 +54,7 @@ class BaseTest extends \PHPUnit_Framework_TestCase
         unset($this->app);
         
         foreach ($this->generatedImage as $image) {
-            if (!$image instanceof Image) {
+            if (!$image instanceof OutputImage) {
                 continue;
             }
             $image->cleanupFiles();

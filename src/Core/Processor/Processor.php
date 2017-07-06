@@ -2,7 +2,7 @@
 
 namespace Core\Processor;
 
-use Core\Entity\Image;
+use Core\Entity\OutputImage;
 use Core\Exception\ExecFailedException;
 
 /**
@@ -11,16 +11,21 @@ use Core\Exception\ExecFailedException;
  */
 class Processor
 {
-    /** Bin path */
+    /** MozJPEG bin path */
     public const MOZJPEG_COMMAND = '/opt/mozjpeg/bin/cjpeg';
+
+    /** ImageMagick bin path*/
     public const IM_CONVERT_COMMAND = '/usr/bin/convert';
     public const IM_IDENTITY_COMMAND = '/usr/bin/identify';
+    public const IM_MOGRIFY_COMMAND = '/usr/bin/mogrify';
+
+    /** CWEBP bin path */
     public const CWEBP_COMMAND = '/usr/bin/cwebp';
 
-    public const IM_MOGRIFY_COMMAND = '/usr/bin/mogrify';
+    /** FaceDetect bin path */
     public const FACEDETECT_COMMAND = '/usr/local/bin/facedetect';
 
-    /** Image options excluded from IM command */
+    /** OutputImage options excluded from IM command */
     const EXCLUDED_IM_OPTIONS = ['quality', 'mozjpeg', 'refresh', 'webp-lossless'];
 
     /**
@@ -52,13 +57,13 @@ class Processor
     /**
      * Get the image Identity information
      *
-     * @param Image $image
+     * @param OutputImage $image
      *
      * @return string
      */
-    public function getImageIdentity(Image $image): string
+    public function getImageIdentity(OutputImage $image): string
     {
-        $output = $this->execute(self::IM_IDENTITY_COMMAND." ".$image->getNewFilePath());
+        $output = $this->execute(self::IM_IDENTITY_COMMAND." ".$image->getOutputImagePath());
 
         return !empty($output[0]) ? $output[0] : "";
     }
