@@ -19,6 +19,6 @@ class InputImageTest extends BaseTest
     {
         $this->expectException(ReadFileException::class);
 
-        $inputImage = new InputImage(['output' => 'jpg'], parent::JPG_TEST_IMAGE.'--fail');
+        new InputImage(['output' => 'jpg'], parent::JPG_TEST_IMAGE.'--fail');
     }
 }
