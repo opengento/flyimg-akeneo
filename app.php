@@ -75,11 +75,11 @@ $app['resolver'] = function (\Silex\Application $app) {
     return new \Core\Resolver\ControllerResolver($app, $app['logger']);
 };
 
-/** Image processor Service */
+/** ImageProcessor Service */
 $app['image.processor'] = function () {
     return new \Core\Processor\ImageProcessor();
 };
-/** facedetection processor Service */
+/** FaceDetectProcessor Service */
 $app['facedetection.processor'] = function () {
     return new \Core\Processor\FaceDetectProcessor();
 };

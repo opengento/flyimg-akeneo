@@ -2,7 +2,7 @@
 
 namespace Core\Controller;
 
-use Core\Entity\Image;
+use Core\Entity\OutputImage;
 use Core\Handler\ImageHandler;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Response;
@@ -46,45 +46,46 @@ class CoreController
     }
 
     /**
-     * @param Image $image
+     * @param OutputImage $image
      *
      * @return Response
      */
-    public function generateImageResponse(Image $image): Response
+    public function generateImageResponse(OutputImage $image): Response
     {
         $response = new Response();
-        $response->setContent($image->getContent());
+        $response->setContent($image->getOutputImageContent());
         $response = $this->setHeadersContent($image, $response);
-        $image->unlinkUsedFiles();
+        $image->removeOutputImage();
 
         return $response;
     }
 
     /**
-     * @param Image $image
+     * @param OutputImage $image
      *
      * @return Response
      */
-    public function generatePathResponse(Image $image): Response
+    public function generatePathResponse(OutputImage $image): Response
     {
         $response = new Response();
-        $imagePath = $image->getNewFileName();
+        $imagePath = $image->getOutputImageName();
         $imagePath = sprintf($this->app['flysystems']['file_path_resolver'], $imagePath);
         $response->setContent($imagePath);
-        $image->unlinkUsedFiles();
+        $image->removeOutputImage();
 
         return $response;
     }
 
     /**
-     * @param Image    $image
-     * @param Response $response
+     * @param OutputImage $image
+     * @param Response    $response
      *
      * @return Response
      */
-    protected function setHeadersContent(Image $image, Response $response): Response
+    protected function setHeadersContent(OutputImage $image, Response $response): Response
     {
-        $response->headers->set('Content-Type', $this->getImageHandler()->getResponseContentType($image));
+        $imageHandler = $this->getImageHandler();
+        $response->headers->set('Content-Type', $imageHandler->getResponseContentType($image));
 
         $expireDate = new \DateTime();
         $expireDate->add(new \DateInterval('P1Y'));
@@ -95,11 +96,11 @@ class CoreController
         $response->setSharedMaxAge($longCacheTime);
         $response->setPublic();
 
-        if ($image->getOptions()['refresh']) {
+        if ($image->getInputImage()->getOptions()['refresh']) {
             $response->headers->set('Cache-Control', 'no-cache, private');
             $response->setExpires(null)->expire();
 
-            $response->headers->set('im-identify', $this->app['image.processor']->getImageIdentity($image));
+            $response->headers->set('im-identify', $imageHandler->getImageProcessor()->getImageIdentity($image));
             $response->headers->set('im-command', $image->getCommandString());
         }
 
