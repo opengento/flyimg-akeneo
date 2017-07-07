@@ -226,8 +226,8 @@ We put a lot of defaults in place to prevent distortion, bad quality, weird crop
 The most common URL options are:
 
 ### `w` : width
-`int`
-*Default:* `null`
+`int`  
+*Default:* `null`  
 *Description:* Sets the target width of the image. If not set, width will be calculated in order to keep aspect ratio.
 
 **example:`w_100`** 
@@ -235,8 +235,8 @@ The most common URL options are:
 `w_100` :   `http://oi.flyimg.io/upload/w_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg`
 
 ### `h` : height
-`int`
-*Default:* `null`
+`int`  
+*Default:* `null`  
 *Description:* Sets the target height of the image. If not set, height will be calculated in order to keep aspect ratio.
 
 **example:`h_100`** 
@@ -245,7 +245,7 @@ The most common URL options are:
 
 ### Using width AND height
 
-**example:`h_300,w_300`** 
+**example:`h_300,w_300`**  
 By default setting width and height together, works like defining a rectangle that will define a **max-width** and **max-height** and the image will scale propotionally to fit that area without cropping.
 
 By default; width, height, or both will **not scale up** an image that is smaller than the defined dimensions.
@@ -254,8 +254,8 @@ By default; width, height, or both will **not scale up** an image that is smalle
 
 
 ### `c` : crop
-`bool`
-*Default:* `false`
+`bool`  
+*Default:* `false`  
 *Description:* When both width and height are set, this allows the image to be cropped so it fills the **width x height** area.
 
 **example:`c_1`** 
@@ -263,16 +263,16 @@ By default; width, height, or both will **not scale up** an image that is smalle
 `c_1,h_400,w_400` : `http://oi.flyimg.io/upload/c_1,h_400,w_400/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg`
 
 ### `g` : gravity
-`string`
-*Default:* `Center`
+`string`  
+*Default:* `Center`  
 *Description:* When crop is applied, changing the gravity will define which part of the image is kept inside the crop area.
 The basic options are: `NorthWest`, `North`, `NorthEast`, `West`, `Center`, `East`, `SouthWest`, `South`, `SouthEast`.
 
 **example:`g_West`** 
 
 ### `r` : rotate
-`string`
-*Default:* `null`
+`string`  
+*Default:* `null`  
 *Description:* Apply image rotation (using shear operations) to the image. 
 
 **example: `r_90`, `r_-180`,...**
@@ -280,15 +280,15 @@ The basic options are: `NorthWest`, `North`, `NorthEast`, `West`, `Center`, `Eas
 `r_45` :  `http://oi.flyimg.io/upload/r_-45,w_400,h_400/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg`
 
 ### `o` : output
-`string`
-*Default:* `auto`
+`string`  
+*Default:* `auto`  
 *Description:* Output format requested, for example you can force the output as jpeg file in case of source file is png. The default `auto` will try to output the same format as the source image or fallback to **jpg**.
 
 **example:`o_auto`,`o_png`,`o_webp`,`o_jpeg`,`o_jpg`** 
 
 ### `q` : quality
-`int` (0-100)
-*Default:* `90`
+`int` (0-100)  
+*Default:* `90`  
 *Description:* Sets the compression level for the output image. Your best results will be between **70** and **95**.
 
 **example:`q_100`,`q_75`,...** 
@@ -299,8 +299,8 @@ The basic options are: `NorthWest`, `North`, `NorthEast`, `West`, `Center`, `Eas
 `q_100`  :  `http://oi.flyimg.io/upload/q_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg`
 
 ### Refresh or re-fetch source image
-`rf` : refresh
-*Default:* `false`
+`rf` : refresh  
+*Default:* `false`  
 *Description:* When this parameter is 1, it will force a re-request of the original image and run it throught the transformations and compression again. It will delete the local cached copy.
 
 **example:`rf_1`** 
