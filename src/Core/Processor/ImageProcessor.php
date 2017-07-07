@@ -2,7 +2,7 @@
 
 namespace Core\Processor;
 
-use Core\Entity\Image;
+use Core\Entity\OutputImage;
 
 /**
  * Class ImageProcessor
@@ -13,43 +13,43 @@ class ImageProcessor extends Processor
     /**
      * Save new FileName based on source file and list of options
      *
-     * @param Image $image
+     * @param OutputImage $outputImage
      *
-     * @return Image
+     * @return OutputImage
      * @throws \Exception
      */
-    public function processNewImage(Image $image): Image
+    public function processNewImage(OutputImage $outputImage): OutputImage
     {
-        $this->generateCmdString($image);
-        $this->execute($image->getCommandString());
+        $this->generateCmdString($outputImage);
+        $this->execute($outputImage->getCommandString());
 
-        return $image;
+        return $outputImage;
     }
 
     /**
      * Generate Command string bases on options
      *
-     * @param Image $image
+     * @param OutputImage $outputImage
      */
-    public function generateCmdString(Image $image)
+    public function generateCmdString(OutputImage $outputImage)
     {
-        $strip = $image->extract('strip');
-        $thread = $image->extract('thread');
-        $resize = $image->extract('resize');
-        $frame = $image->extract('gif-frame');
+        $strip = $outputImage->extract('strip');
+        $thread = $outputImage->extract('thread');
+        $resize = $outputImage->extract('resize');
+        $frame = $outputImage->extract('gif-frame');
 
-        list($size, $extent, $gravity) = $this->generateSize($image);
+        list($size, $extent, $gravity) = $this->generateSize($outputImage);
 
         // we default to thumbnail
         $resizeOperator = $resize ? 'resize' : 'thumbnail';
         $command = [];
         $command[] = self::IM_CONVERT_COMMAND;
-        $tmpFileName = $image->getOriginalFile();
+        $tmpFileName = $outputImage->getInputImage()->getSourceImagePath();
 
         //Check the image is gif
-        if ($image->isGifSupport()) {
+        if ($outputImage->isGifSupport()) {
             $command[] = '-coalesce';
-            if ($image->getOutputExtension() != Image::EXT_GIF) {
+            if ($outputImage->getOutputImageExtension() != OutputImage::EXT_GIF) {
                 $tmpFileName .= '['.escapeshellarg($frame).']';
             }
         }
@@ -59,7 +59,7 @@ class ImageProcessor extends Processor
             $size.$gravity.$extent.
             ' -colorspace sRGB';
 
-        foreach ($image->getOptions() as $key => $value) {
+        foreach ($outputImage->getInputImage()->getOptions() as $key => $value) {
             if (!empty($value) && !in_array($key, self::EXCLUDED_IM_OPTIONS)) {
                 $command[] = "-{$key} ".escapeshellarg($value);
             }
@@ -74,38 +74,38 @@ class ImageProcessor extends Processor
             $command[] = "-limit thread ".escapeshellarg($thread);
         }
 
-        $command = $this->applyQuality($image, $command);
+        $command = $this->applyQuality($outputImage, $command);
 
         $commandStr = implode(' ', $command);
-        $image->setCommandString($commandStr);
+        $outputImage->setCommandString($commandStr);
     }
 
     /**
      * Apply the Quality processor based on options
      *
-     * @param Image $image
-     * @param array $command
+     * @param OutputImage $outputImage
+     * @param array       $command
      *
      * @return array
      */
-    protected function applyQuality(Image $image, array $command): array
+    protected function applyQuality(OutputImage $outputImage, array $command): array
     {
-        $quality = $image->extract('quality');
+        $quality = $outputImage->extract('quality');
         /** WebP format */
-        if (is_executable(self::CWEBP_COMMAND) && $image->isWebPSupport()) {
-            $lossLess = $image->extract('webp-lossless') ? 'true' : 'false';
+        if (is_executable(self::CWEBP_COMMAND) && $outputImage->isWebPSupport()) {
+            $lossLess = $outputImage->extract('webp-lossless') ? 'true' : 'false';
             $command[] = "-quality ".escapeshellarg($quality).
-                " -define webp:lossless=".$lossLess." ".escapeshellarg($image->getNewFilePath());
+                " -define webp:lossless=".$lossLess." ".escapeshellarg($outputImage->getOutputImagePath());
         } /** MozJpeg compression */
-        elseif (is_executable(self::MOZJPEG_COMMAND) && $image->isMozJpegSupport()) {
+        elseif (is_executable(self::MOZJPEG_COMMAND) && $outputImage->isMozJpegSupport()) {
             $command[] = "TGA:- | ".escapeshellarg(self::MOZJPEG_COMMAND)
                 ." -quality ".escapeshellarg($quality)
-                ." -outfile ".escapeshellarg($image->getNewFilePath())
+                ." -outfile ".escapeshellarg($outputImage->getOutputImagePath())
                 ." -targa";
         } /** default ImageMagick compression */
         else {
             $command[] = "-quality ".escapeshellarg($quality).
-                " ".escapeshellarg($image->getNewFilePath());
+                " ".escapeshellarg($outputImage->getOutputImagePath());
         }
 
         return $command;
@@ -114,14 +114,14 @@ class ImageProcessor extends Processor
     /**
      * Size and Crop logic
      *
-     * @param Image $image
+     * @param OutputImage $outputImage
      *
      * @return array
      */
-    protected function generateSize(Image $image): array
+    protected function generateSize(OutputImage $outputImage): array
     {
-        $targetWidth = $image->extract('width');
-        $targetHeight = $image->extract('height');
+        $targetWidth = $outputImage->extract('width');
+        $targetHeight = $outputImage->extract('height');
 
         $size = $extent = '';
         if ($targetWidth) {
@@ -133,14 +133,14 @@ class ImageProcessor extends Processor
 
         // When width and height a whole bunch of special cases must be taken into consideration.
         // resizing constraints (< > ^ !) can only be applied to geometry with both width AND height
-        $preserveNaturalSize = $image->extract('preserve-natural-size');
-        $preserveAspectRatio = $image->extract('preserve-aspect-ratio');
+        $preserveNaturalSize = $outputImage->extract('preserve-natural-size');
+        $preserveAspectRatio = $outputImage->extract('preserve-aspect-ratio');
 
         if ($targetWidth && $targetHeight) {
             $extent = ' -extent '.$size;
-            $gravity = ' -gravity '.escapeshellarg($image->extract('gravity'));
+            $gravity = ' -gravity '.escapeshellarg($outputImage->extract('gravity'));
             $resizingConstraints = '';
-            if ($image->extract('crop')) {
+            if ($outputImage->extract('crop')) {
                 $resizingConstraints .= '^';
                 /**
                  * still need to solve the combination of ^
@@ -157,7 +157,7 @@ class ImageProcessor extends Processor
             $gravity = '';
         }
         //In cas on png format, remove extent option
-        if ($image->isPngSupport()) {
+        if ($outputImage->isPngSupport()) {
             $extent = '';
         }
 
