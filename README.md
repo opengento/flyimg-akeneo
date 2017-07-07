@@ -52,7 +52,7 @@ You pass the image URL and a set of keys with options, like size or compression.
 
 ```
 <!-- https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg -->
-<img src="https://my.img.service.io/upload/w_333,h_333,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg">
+<img src="https://www.myservice.io/upload/w_333,h_333,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg">
 ```
 # Basic Usage Examples
 ## Get an image to fill exact dimensions
@@ -98,6 +98,17 @@ http://oi.flyimg.io/upload/w_200,h_200,c_1,r_90/https://m0.cl/t/resize-test_1920
 
 ![lago_ranco](http://oi.flyimg.io/upload/w_200,h_200,c_1,r_90/https://m0.cl/t/resize-test_1920.jpg)
 
+## Get an image with exact dimensions and low quality
+* Image: `https://m0.cl/t/resize-test_1920.jpg` 
+* Width: 200
+* Height: 200
+* Crop: `c_1`
+* Quality: 30
+
+http://oi.flyimg.io/upload/w_200,h_200,c_1,q_30/https://m0.cl/t/resize-test_1920.jpg
+
+![lago_ranco](http://oi.flyimg.io/upload/w_200,h_200,c_1,q_30/https://m0.cl/t/resize-test_1920.jpg)
+
 
 # Table of Contents
 
@@ -110,11 +121,9 @@ http://oi.flyimg.io/upload/w_200,h_200,c_1,r_90/https://m0.cl/t/resize-test_1920
    * [Testing Flyimg service](#testing-flyimg-service)
    * [How to transform images](#how-to-transform-images)
    * [Basic Option details](#basic-option-details)
-      * [Full url option details document](docs/url-options.md)
    * [Application Server Options](#server-options)
-      * [Application Options Document](docs/application-options.md)
    * [Enable Restricted Domains](#enable-restricted-domains)
-   * [Run test](#run-test)
+   * [Run Unit Tests](#run-unit-tests)
    * [How to Provision the application on](#how-to-provision-the-application-on)
    * [Technology stack](#technology-stack)
       * [Abstract storage with Flysystem](#abstract-storage-with-flysystem)
@@ -327,7 +336,7 @@ whitelist_domains:
     - www.domain-2.org
 ```
 
-## Run test:
+## Run Unit Tests:
 
 ```sh
 docker exec flyimg vendor/bin/phpunit
