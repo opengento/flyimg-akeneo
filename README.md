@@ -46,7 +46,7 @@
 
 Image resizing, cropping and compression on the fly with the impressive [MozJPEG](http://calendar.perfplanet.com/2014/mozjpeg-3-0) compression algorithm. One Docker container to build your own Cloudinary-like service.
 
-### Fetch  an image from anywhere; resize, compress, cache and serve...<small> and serve, and serve, and serve...</small>
+### Fetch an image from anywhere; resize, compress, cache and serve...<small> and serve, and serve, and serve...</small>
 
 You pass the image URL and a set of keys with options, like size or compression. Flyimg will fetch the image, convert it, store it, cache it and serve it. The next time the request comes, it will serve the cached version.
 
@@ -54,13 +54,52 @@ You pass the image URL and a set of keys with options, like size or compression.
 <!-- https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg -->
 <img src="https://my.img.service.io/upload/w_333,h_333,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg">
 ```
-## For example
+# Basic Usage Examples
+## Get an image to fill exact dimensions
+* Image: `https://m0.cl/t/resize-test_1920.jpg` 
+* Width: 300
+* Height: 250
+* Crop if necesary: `c_1`
+
 http://oi.flyimg.io/upload/w_300,h_250,c_1/https://m0.cl/t/resize-test_1920.jpg
 
 ![lago_ranco](http://oi.flyimg.io/upload/w_300,h_250,c_1/https://m0.cl/t/resize-test_1920.jpg)
 
-Table of Contents
-=================
+This will serve the image.
+
+## Get the path to the generated image instead of serving it
+Change the first part of the path from `upload` to `path`, like so:
+
+http://oi.flyimg.io/path/w_300,h_250,c_1/https://m0.cl/t/resize-test_1920.jpg will output in the body of the response:
+
+
+```
+http://localhost:8080/uploads/752d2124eef87b3112779618c96468da.jpg
+```
+
+## Get an image to fit maximum dimensions
+* Image: `https://m0.cl/t/resize-test_1920.jpg` 
+* Width: 300
+* Height: 250
+* Note that we ommit the crop parameter
+
+http://oi.flyimg.io/upload/w_300,h_250/https://m0.cl/t/resize-test_1920.jpg
+
+![lago_ranco](http://oi.flyimg.io/upload/w_300,h_250/https://m0.cl/t/resize-test_1920.jpg)
+
+## Crop to a square and rotate 90 degrees clockwise
+* Image: `https://m0.cl/t/resize-test_1920.jpg` 
+* Width: 200
+* Height: 200
+* Crop: `c_1`
+* Rotate: 90
+
+http://oi.flyimg.io/upload/w_200,h_200,c_1,r_90/https://m0.cl/t/resize-test_1920.jpg
+
+![lago_ranco](http://oi.flyimg.io/upload/w_200,h_200,c_1,r_90/https://m0.cl/t/resize-test_1920.jpg)
+
+
+# Table of Contents
 
    * [Requirements](#requirements)
    * [Installation [Deployment mode]](#installation-deployment-mode)
@@ -70,34 +109,15 @@ Table of Contents
          * [with composer](#with-composer)
    * [Testing Flyimg service](#testing-flyimg-service)
    * [How to transform images](#how-to-transform-images)
-      * [Options keys](#options-keys)
-      * [Default options values](#default-options-values)
-   * [Option details](#option-details)
-      * [output string](#output-string)
-      * [mozjpeg bool](#mozjpeg-bool)
-      * [quality int (0-100)](#quality-int-0-100)
-      * [width int](#width-int)
-      * [height int](#height-int)
-      * [Using width AND height](#using-width-and-height)
-      * [crop bool](#crop-bool)
-      * [gravity string](#gravity-string)
-      * [background color (multiple formats)](#background-color-multiple-formats)
-      * [strip int](#strip-int)
-      * [resize int](#resize-int)
-      * [unsharp radiusxsigma{ gain}{ threshold}](#unsharp-radiusxsigmagainthreshold)
-      * [filter string](#filter-string)
-      * [scale int](#scale-int)
-      * [rotate string](#rotate-string)
-      * [refresh int](#refresh-int)
-      * [Face Crop int](#face-crop-int)
-      * [Face Crop Position int](#face-crop-position-int)
-      * [Face Blur int](#face-blur-int)
-      * [Enable Restricted Domains](#enable-restricted-domains)
-      * [Run test](#run-test)
-      * [How to Provision the application on](#how-to-provision-the-application-on)
+   * [Basic Option details](#basic-option-details)
+      * [Full url option details document](docs/url-options.md)
+   * [Application Server Options](#server-options)
+      * [Application Options Document](docs/application-options.md)
+   * [Enable Restricted Domains](#enable-restricted-domains)
+   * [Run test](#run-test)
+   * [How to Provision the application on](#how-to-provision-the-application-on)
    * [Technology stack](#technology-stack)
       * [Abstract storage with Flysystem](#abstract-storage-with-flysystem)
-         * [Using AWS S3 as Storage Provider](#using-aws-s3-as-storage-provider)
    * [Benchmark](#benchmark)
    * [Demo Application running](#demo-application-running)
    * [Roadmap](#roadmap)
@@ -112,7 +132,7 @@ You will need to have **Docker** on your machine. Optionally you can use Docker 
 
 # Installation [Deployment mode]
 
-Pull the image
+Pull the docker image
 
 ```bash
 docker pull flyimg/flyimg-build
@@ -190,256 +210,108 @@ This is fetching an image from Mozilla, resizing it, saving it and serving it.
 
 # How to transform images
 
-You go to your server URL`http://imgs.kitty.com` and append `/upload/`;  after that you can pass these options below, followed by an underscore and a value `w_250,q_50` Options are separated by coma (configurable to other separator) . 
+You go to your server URL`http://imgs.kitty.com` and append `/upload/`;  after that you can pass these options below, followed by an underscore and a value `w_250,q_50` Options are separated by coma (configurable to other separator).
+
 After the options put the source of your image, it can be relative to your server or absolute: `/https://my.storage.io/imgs/pretty-kitten.jpg`
+
 So to get a pretty kitten at 250 pixels wide, with 50% compression, you would write.
 `<img src="http://imgs.kitty.com/upload/w_250,q_50/https://my.storage.io/imgs/pretty-kitten.jpg">`
 
----
 
-Options keys
--------------
+## Basic Option details
+You can see the full list of options configurable by URL params, **with examples**, in the [URL-Options document](docs/url-options.md) 
 
-```yml
-options_keys:
-  moz: mozjpeg
-  q: quality
-  o: output
-  unsh: unsharp
-  fc: face-crop
-  fcp: face-crop-position
-  fb: face-blur
-  w: width
-  h: height
-  c: crop
-  bg: background
-  st: strip
-  rz: resize
-  g: gravity
-  f: filter
-  r: rotate
-  sc: scale
-  sf: sampling-factor
-  rf: refresh
-  ett: extent
-  par: preserve-aspect-ratio
-  pns: preserve-natural-size
-  webpl: webp-lossless
-```
+We put a lot of defaults in place to prevent distortion, bad quality, weird cropping and unwanted paddings.
 
-Default options values
------------------------
+The most common URL options are:
 
-```yml
-default_options:
-  mozjpeg: 1
-  quality: 90
-  output: auto
-  unsharp: null
-  face-crop: 0
-  face-crop-position: 0
-  face-blur: 0
-  width: null
-  height: null
-  crop: null
-  background: null
-  strip: 1
-  resize: null
-  gravity: Center
-  filter: Lanczos
-  rotate: null
-  scale: null
-  sampling-factor: 1x1
-  refresh: false
-  extent: null
-  preserve-aspect-ratio: 1
-  preserve-natural-size: 1
-  webp-lossless: 0
-```
-
-# Option details
-Most of these options are ImageMagick flags, many can get pretty advanced, use the [ImageMagick docs](http://www.imagemagick.org/script/command-line-options.php). 
-We put a lot of defaults in place to prevent distortion, bad quality 
-
-### output `string`
-**default: auto** : Output format requested, for example you can force the output as jpeg file in case of source file is png.
-
-**example:`o_auto`,`o_png`,`o_webp`,`o_jpeg`,`o_jpg`** 
-
-
-### mozjpeg `bool`
-**default: 1** : Use moz-jpeg compression library, if `false` it fallback to the default ImageMagick compression algorithm.
-
-**example:`moz_0`** 
-
-
-### quality `int` (0-100)
-**default: 90** : Sets the compression level for the output image. Your best results will be between **70** and **95**.
-
-**example:`q_100`,`q_75`,...** 
-
-`q_30`  :  `http://oi.flyimg.io/upload/q_30/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg` 
-
-[![q_30](http://oi.flyimg.io/upload/q_30/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)](http://oi.flyimg.io/upload/q_30/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
-
-
-`q_100`  :  `http://oi.flyimg.io/upload/q_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg`
-
-[![q_100](http://oi.flyimg.io/upload/q_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)](http://oi.flyimg.io/upload/q_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
-
-
-### width `int`
-**default: null** : Sets the target width of the image. If not set, width will be calculated in order to keep aspect ratio.
+### `w` : width
+`int`
+*Default:* `null`
+*Description:* Sets the target width of the image. If not set, width will be calculated in order to keep aspect ratio.
 
 **example:`w_100`** 
 
 `w_100` :   `http://oi.flyimg.io/upload/w_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg`
 
-[![w_100](http://oi.flyimg.io/upload/w_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)](http://oi.flyimg.io/upload/w_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
-
-### height `int`
-**default: null** : Sets the target height of the image. If not set, height will be calculated in order to keep aspect ratio.
+### `h` : height
+`int`
+*Default:* `null`
+*Description:* Sets the target height of the image. If not set, height will be calculated in order to keep aspect ratio.
 
 **example:`h_100`** 
 
 `h_100`  : `http://oi.flyimg.io/upload/h_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg`
- 
-[![h_100](http://oi.flyimg.io/upload/h_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)](http://oi.flyimg.io/upload/h_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
 
 ### Using width AND height
 
 **example:`h_300,w_300`** 
 By default setting width and height together, works like defining a rectangle that will define a **max-width** and **max-height** and the image will scale propotionally to fit that area without cropping.
-<!-- in the future put example images here-->
 
 By default; width, height, or both will **not scale up** an image that is smaller than the defined dimensions.
-<!-- in the future put example images here-->
 
 `h_300,w_300` : `http://oi.flyimg.io/upload/h_300,w_300/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg`
 
-[![h_300,w_300](http://oi.flyimg.io/upload/h_300,w_300/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)](http://oi.flyimg.io/upload/h_300,w_300/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
 
-### crop `bool` 
-**default: false** : When both width and height are set, this allows the image to be cropped so it fills the **width x height** area.
+### `c` : crop
+`bool`
+*Default:* `false`
+*Description:* When both width and height are set, this allows the image to be cropped so it fills the **width x height** area.
 
 **example:`c_1`** 
 
 `c_1,h_400,w_400` : `http://oi.flyimg.io/upload/c_1,h_400,w_400/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg`
 
-[![c_1,h_400,w_400](http://oi.flyimg.io/upload/c_1,h_400,w_400/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)](http://oi.flyimg.io/upload/c_1,h_400,w_400/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
-
-
-### gravity `string`
-**default: Center** : When crop is applied, changing the gravity will define which part of the image is kept inside the crop area.
+### `g` : gravity
+`string`
+*Default:* `Center`
+*Description:* When crop is applied, changing the gravity will define which part of the image is kept inside the crop area.
 The basic options are: `NorthWest`, `North`, `NorthEast`, `West`, `Center`, `East`, `SouthWest`, `South`, `SouthEast`.
 
 **example:`g_West`** 
 
-```sh
-   [...] -gravity NorthWest ...
-
-```
-
-### background `color` (multiple formats) 
-**default: white** : Sets the background of the canvas for the cases where padding is added to the images. It supports hex, css color names, rgb. 
-Only css color names are supported without quotation marks.
-For the hex code, the hash `#` character should be replaced by `%23` 
-
-**example:`bg_red`,`bg_%23ff4455`,`bg_rgb(255,120,100)`,...** 
-
-```sh
-  [...] -background red ...
-  [...] -background "#ff4455" -> "%23ff4455"
-  [...] -background "rgb(255,120,100)" ...
-```
-
-`http://oi.flyimg.io/upload/r_45,w_400,h_400,bg_red/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg`
-
-[![bg_red](http://oi.flyimg.io/upload/r_45,w_400,h_400,bg_red/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)](http://oi.flyimg.io/upload/r_45,w_400,h_400,bg_red/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
-
-### strip `int`
-**default: 1** : removes exif data and additional color profile.
-
-**example:`st_1`** 
-
-### resize `int`
-**default: null** : The alternative resizing method to -thumbnail.
-
-**example:`rz_1`** 
-
-### unsharp `radiusxsigma{+gain}{+threshold}` 
-**default: null** : Sharpens an image with a convolved Gausian operator. A good example `0.25x0.25+8+0.065`.
-
-**example:`unsh_0.25x0.25+8+0.065`** 
-
-```sh
-   [...] -unsharp 0.25x0.25+8+0.065 ...
-```
-
-### filter `string`
-**default: Lanczos** : Resizing algorithm, Triangle is a smoother lighter option
-
-**example:`f_Triangle`** 
-
-```sh
-   [...] -filter Triangle
-```
-
-### scale `int`
-**default: null** : The "-scale" resize operator is a simplified, faster form of the resize command. Useful for fast exact scaling of pixels.
-
-**example:`sc_1`** 
-
-
-### rotate `string`
-**default: null** : Apply image rotation (using shear operations) to the image. 
+### `r` : rotate
+`string`
+*Default:* `null`
+*Description:* Apply image rotation (using shear operations) to the image. 
 
 **example: `r_90`, `r_-180`,...**
 
 `r_45` :  `http://oi.flyimg.io/upload/r_-45,w_400,h_400/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg`
 
-[![r_45](http://oi.flyimg.io/upload/r_-45,w_400,h_400/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)](http://oi.flyimg.io/upload/r_-45,w_400,h_400/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg)
+### `o` : output
+`string`
+*Default:* `auto`
+*Description:* Output format requested, for example you can force the output as jpeg file in case of source file is png. The default `auto` will try to output the same format as the source image or fallback to **jpg**.
 
- 
-### refresh `int`
-**default: false** : Refresh will delete the local cached copy of the file requested and will generate the image again. 
-Also it will send headers with the command done on the image + info returned by the command identity from IM.
+**example:`o_auto`,`o_png`,`o_webp`,`o_jpeg`,`o_jpg`** 
+
+### `q` : quality
+`int` (0-100)
+*Default:* `90`
+*Description:* Sets the compression level for the output image. Your best results will be between **70** and **95**.
+
+**example:`q_100`,`q_75`,...** 
+
+`q_30`  :  `http://oi.flyimg.io/upload/q_30/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg` 
+
+
+`q_100`  :  `http://oi.flyimg.io/upload/q_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg`
+
+### Refresh or re-fetch source image
+`rf` : refresh
+*Default:* `false`
+*Description:* When this parameter is 1, it will force a re-request of the original image and run it throught the transformations and compression again. It will delete the local cached copy.
 
 **example:`rf_1`** 
 
- 
-### Face Crop `int`
-**default: false** : Using [facedetect](https://github.com/wavexx/facedetect) repository to detect faces and passe the coordinates to ImageMagick to crop.
+--- 
 
-**example:`fc_1`** 
+## Server Options
 
-`fc_1` :  `http://oi.flyimg.io/upload/fc_1/http://facedetection.jaysalvat.com/img/faces.jpg`
+There are some easy to setup server configurations in the `config/parameters.yml` file, you can see the full list of options and server configurations in the **[Application Options Document](docs/application-options.md)** 
 
-[![fc_1](http://oi.flyimg.io/upload/fc_1/http://facedetection.jaysalvat.com/img/faces.jpg)](http://oi.flyimg.io/upload/fc_1/http://facedetection.jaysalvat.com/img/faces.jpg)
-
- 
-### Face Crop Position `int`
-**default: false** : When using the Face crop option and when the image contain more than one face, you can specify which one you want get cropped
-
-**example:`fcp_1`,`fcp_0`,...** 
-
-`fcp_2` : `http://oi.flyimg.io/upload/fc_1,fcp_2/http://facedetection.jaysalvat.com/img/faces.jpg`
-
-[![fcp_2](http://oi.flyimg.io/upload/fc_1,fcp_2/http://facedetection.jaysalvat.com/img/faces.jpg)](http://oi.flyimg.io/upload/fc_1,fcp_2/http://facedetection.jaysalvat.com/img/faces.jpg)
-
- 
-### Face Blur `int`
-**default: false** : Apply blur effect on faces in a given image
-
-**example:`fb_1`** 
-
-`fb_1`  : `http://oi.flyimg.io/upload/fb_1/http://facedetection.jaysalvat.com/img/faces.jpg`
-
-[![fb_1](http://oi.flyimg.io/upload/fb_1/http://facedetection.jaysalvat.com/img/faces.jpg)](http://oi.flyimg.io/upload/fb_1/http://facedetection.jaysalvat.com/img/faces.jpg)
-
-
-Enable Restricted Domains
---------------------------
+## Security: Restricting Source Domains:
 
 Restricted domains disabled by default. This means that you can fetch a resource from any URL. To enable the domain restriction, change in config/parameters.yml 
 
@@ -455,8 +327,7 @@ whitelist_domains:
     - www.domain-2.org
 ```
 
-Run test:
------
+## Run test:
 
 ```sh
 docker exec flyimg vendor/bin/phpunit
@@ -467,8 +338,8 @@ Generate Html Code Coverage
 docker exec flyimg vendor/bin/phpunit --coverage-html build/html
 ```
 
-How to Provision the application on
------------------------------------
+## How to Provision the application on:
+
 - [DigitalOcean](https://github.com/flyimg/DigitalOcean-provision)
 - [AWS Elastic-Beanstalk](https://github.com/flyimg/Elastic-Beanstalk-provision)
 
@@ -487,21 +358,7 @@ Storage files based on [Flysystem](http://flysystem.thephpleague.com/) which is 
 
 Default storage is Local, but you can use other Adapters like AWS S3, Azure, FTP, Dropbox, ... 
 
-Currently, only the local and S3 are implemented as Storage Provider in Flyimg application, but you can add your specific one easily in `src/Core/Provider/StorageProvider.php` 
-
-### Using AWS S3 as Storage Provider
-
-in parameters.yml change the `storage_system` option from local to s3, and fill in the aws_s3 options :
-
-```yml
-storage_system: s3
-
-aws_s3:
-  access_id: "s3-access-id"
-  secret_key: "s3-secret-id"
-  region: "s3-region"
-  bucket_name: "s3-bucket-name"
-```
+Currently, only the **local** and **S3** are implemented as Storage Provider in Flyimg application, but you can add your specific one easily in `src/Core/Provider/StorageProvider.php`. Check an [example for AWS S3 here](https://github.com/flyimg/flyimg/blob/master/docs/application-options.md#using-aws-s3-as-storage-provider).
 
 # Benchmark
 
@@ -541,7 +398,7 @@ Status Codes  [code:count]             200:500
 
 [http://oi.flyimg.io](http://oi.flyimg.io)
 
-[http://oi.flyimg.io/upload/w_300,h_250,c_1/https://m0.cl/t/resize-test_1920.jpg]
+![resize-test](http://oi.flyimg.io/upload/w_300,h_250,c_1/https://m0.cl/t/resize-test_1920.jpg)
 
 
 # Roadmap
@@ -551,7 +408,7 @@ Status Codes  [code:count]             200:500
 - [ ] Test it with couple of frameworks, Phalcon Php is a good candidate.
 - [ ] Add overlays functionality (Text on top of the image)
 - [ ] Storage auto-mapping
-
+- [ ] Add support for FLIFF, BPG and JPEG2000
 
 # Contributors
 
