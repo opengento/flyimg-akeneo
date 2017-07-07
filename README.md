@@ -4,42 +4,15 @@
 </a></p>
 
 <p align="center">
-
-<a href="#backers">
-<img alt="Backers on Open Collective" src="https://opencollective.com/flyimg/backers/badge.svg">
-</a>
- 
-<a href="#sponsors">
-<img alt="Sponsors on Open Collective" src="https://opencollective.com/flyimg/sponsors/badge.svg">
-</a>
-
-<a href="https://travis-ci.org/flyimg/flyimg">
-<img alt="Build Status" src="https://travis-ci.org/flyimg/flyimg.svg?branch=master">
-</a>
-
-<a href="https://codeclimate.com/github/flyimg/flyimg">
-<img alt="Code Climate" src="https://codeclimate.com/github/flyimg/flyimg/badges/gpa.svg">
-</a>
-
-<a href="https://codeclimate.com/github/flyimg/flyimg">
-<img alt="Issue Count" src="https://codeclimate.com/github/flyimg/flyimg/badges/issue_count.svg">
-</a>
-
-<a href="https://codeclimate.com/github/flyimg/flyimg/coverage">
-<img alt="Test Coverage" src="https://codeclimate.com/github/flyimg/flyimg/badges/coverage.svg">
-</a>
-
-<a href="https://insight.sensiolabs.com/projects/89b18390-ac79-4c3e-bf6c-92cd9993e8d3">
-<img alt="SensioLabsInsight" src="https://insight.sensiolabs.com/projects/89b18390-ac79-4c3e-bf6c-92cd9993e8d3/mini.png">
-</a>
-
-<a href="https://packagist.org/packages/flyimg/flyimg">
-<img alt="License" src="https://poser.pugx.org/flyimg/flyimg/license.svg">
-</a>
-
-<a href="https://packagist.org/packages/flyimg/flyimg">
-<img alt="Latest Stable Version]" src="https://poser.pugx.org/flyimg/flyimg/v/stable.svg">
-</a>
+<a href="#backers"><img alt="Backers on Open Collective" src="https://opencollective.com/flyimg/backers/badge.svg"></a>
+<a href="#sponsors"><img alt="Sponsors on Open Collective" src="https://opencollective.com/flyimg/sponsors/badge.svg"></a>
+<a href="https://travis-ci.org/flyimg/flyimg"><img alt="Build Status" src="https://travis-ci.org/flyimg/flyimg.svg?branch=master"></a>
+<a href="https://codeclimate.com/github/flyimg/flyimg"><img alt="Code Climate" src="https://codeclimate.com/github/flyimg/flyimg/badges/gpa.svg"></a>
+<a href="https://codeclimate.com/github/flyimg/flyimg"><img alt="Issue Count" src="https://codeclimate.com/github/flyimg/flyimg/badges/issue_count.svg"></a>
+<a href="https://codeclimate.com/github/flyimg/flyimg/coverage"><img alt="Test Coverage" src="https://codeclimate.com/github/flyimg/flyimg/badges/coverage.svg"></a>
+<a href="https://insight.sensiolabs.com/projects/89b18390-ac79-4c3e-bf6c-92cd9993e8d3"><img alt="SensioLabsInsight" src="https://insight.sensiolabs.com/projects/89b18390-ac79-4c3e-bf6c-92cd9993e8d3/mini.png"></a>
+<a href="https://packagist.org/packages/flyimg/flyimg"><img alt="License" src="https://poser.pugx.org/flyimg/flyimg/license.svg"></a>
+<a href="https://packagist.org/packages/flyimg/flyimg"><img alt="Latest Stable Version]" src="https://poser.pugx.org/flyimg/flyimg/v/stable.svg"></a>
 </p>
 
 # Flyimg
@@ -206,7 +179,7 @@ Again, it will take a few minutes to download the dependencies. Same as before, 
 
 # Testing Flyimg service
 
-You can navigate to your machine's IP in port 8080 (ex: http://127.0.0.1:8080/ ) ; you should get a message saying: **Hello from Flyimg!** and a small homepage of flyimg already working. If you get any errors  at this stage it's most likely that composer has not finished installing or skipped something.
+You can navigate to your machine's IP in port 8080 (ex: http://127.0.0.1:8080/ ) ; you should get a message saying: **Hello from Flyimg!** and a small homepage of Flyimg already working. If you get any errors  at this stage it's most likely that composer has not finished installing or skipped something.
 
 You can test your image resizing service by navigating to: http://127.0.0.1:8080/upload/w_130,h_113,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg
 
@@ -230,7 +203,7 @@ So to get a pretty kitten at 250 pixels wide, with 50% compression, you would wr
 ## Basic Option details
 You can see the full list of options configurable by URL params, **with examples**, in the [URL-Options document](docs/url-options.md) 
 
-We put a lot of defaults in place to prevent distortion, bad quality, weird cropping and unwanted paddings.
+We put a lot of defaults in place to prevent distortion, bad quality, weird cropping and unwanted padding.
 
 The most common URL options are:
 
@@ -255,7 +228,7 @@ The most common URL options are:
 ### Using width AND height
 
 **example:`h_300,w_300`**  
-By default setting width and height together, works like defining a rectangle that will define a **max-width** and **max-height** and the image will scale propotionally to fit that area without cropping.
+By default setting width and height together, works like defining a rectangle that will define a **max-width** and **max-height** and the image will scale proportionally to fit that area without cropping.
 
 By default; width, height, or both will **not scale up** an image that is smaller than the defined dimensions.
 
@@ -310,7 +283,7 @@ The basic options are: `NorthWest`, `North`, `NorthEast`, `West`, `Center`, `Eas
 ### Refresh or re-fetch source image
 `rf` : refresh  
 *Default:* `false`  
-*Description:* When this parameter is 1, it will force a re-request of the original image and run it throught the transformations and compression again. It will delete the local cached copy.
+*Description:* When this parameter is 1, it will force a re-request of the original image and run it through the transformations and compression again. It will delete the local cached copy.
 
 **example:`rf_1`** 
 
@@ -355,8 +328,8 @@ docker exec flyimg vendor/bin/phpunit --coverage-html build/html
 # Technology stack
 
 * Server: nginx
-* Application:  [Silex](http://silex.sensiolabs.org/) , a PHP microframework.
-* Image manipulation: ImageMagik
+* Application:  [Silex](http://silex.sensiolabs.org/) , a PHP micro-framework.
+* Image manipulation: ImageMagick
 * JPEG encoder: MozJpeg
 * Storage: [Flysystem](http://flysystem.thephpleague.com/)
 * Containerisation:  Docker
@@ -365,7 +338,7 @@ docker exec flyimg vendor/bin/phpunit --coverage-html build/html
 
 Storage files based on [Flysystem](http://flysystem.thephpleague.com/) which is `a filesystem abstraction allows you to easily swap out a local filesystem for a remote one. Technical debt is reduced as is the chance of vendor lock-in.`
 
-Default storage is Local, but you can use other Adapters like AWS S3, Azure, FTP, Dropbox, ... 
+Default storage is Local, but you can use other Adapters like AWS S3, Azure, FTP, DropBox, ... 
 
 Currently, only the **local** and **S3** are implemented as Storage Provider in Flyimg application, but you can add your specific one easily in `src/Core/Provider/StorageProvider.php`. Check an [example for AWS S3 here](https://github.com/flyimg/flyimg/blob/master/docs/application-options.md#using-aws-s3-as-storage-provider).
 
