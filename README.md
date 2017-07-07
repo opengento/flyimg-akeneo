@@ -422,7 +422,7 @@ Status Codes  [code:count]             200:500
 # Contributors
 
 This project exists thanks to all the people who contribute.
-<a href="graphs/contributors"><img src="https://opencollective.com/flyimg/contributors.svg?width=890" /></a>
+<a href="https://github.com/flyimg/flyimg/graphs/contributors"><img src="https://opencollective.com/flyimg/contributors.svg?width=890" /></a>
 
 
 # Backers
