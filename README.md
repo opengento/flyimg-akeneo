@@ -101,6 +101,7 @@ http://oi.flyimg.io/upload/w_200,h_200,c_1,q_30/https://m0.cl/t/resize-test_1920
    * [Technology stack](#technology-stack)
       * [Abstract storage with Flysystem](#abstract-storage-with-flysystem)
    * [Benchmark](#benchmark)
+   * [Enable Xdebug](https://github.com/flyimg/flyimg/blob/master/docs/enabling-xdebug.md)
    * [Demo Application running](#demo-application-running)
    * [Roadmap](#roadmap)
    * [Contributors](#contributors)
@@ -344,9 +345,15 @@ Currently, only the **local** and **S3** are implemented as Storage Provider in 
 
 # Benchmark
 
-See [benchmark.sh](https://github.com/flyimg/flyimg/blob/master/benchmark.sh) for more details
-Requires: Vegeta [http://github.com/tsenart/vegeta](http://github.com/tsenart/vegeta)
+See [benchmark.sh](https://github.com/flyimg/flyimg/blob/master/benchmark.sh) for more details.
 
+Requires: **Vegeta**[http://github.com/tsenart/vegeta](http://github.com/tsenart/vegeta)
+
+```
+./benchmark.sh
+```
+
+Latest Results:
 ```
 Crop http://localhost:8080/upload/w_200,h_200,c_1/Rovinj-Croatia.jpg
 Requests      [total, rate]            500, 50.10
