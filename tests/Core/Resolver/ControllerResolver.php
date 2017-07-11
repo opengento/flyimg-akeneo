@@ -4,7 +4,6 @@ namespace TestsCore\Resolver;
 
 use Core\Exception\InvalidArgumentException;
 use Silex\Application;
-use Silex\Provider\MonologServiceProvider;
 use Silex\WebTestCase;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Route;
@@ -28,8 +27,6 @@ class ControllerResolverTests extends WebTestCase
         $app = require __DIR__.'/../../../app.php';
         $app['debug'] = true;
         unset($app['exception_handler']);
-
-        $app->register(new MonologServiceProvider());
 
         $app['routes'] = $app->extend(
             'routes',
