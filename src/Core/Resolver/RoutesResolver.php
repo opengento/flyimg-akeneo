@@ -19,12 +19,14 @@ class RoutesResolver
     }
 
     /**
+     * Parse Routes From Yaml File
+     *
      * @param RouteCollection $routes
      * @param string          $yamlFilePath
      *
      * @return RouteCollection
      */
-    public function parseRoutes(RouteCollection $routes, string $yamlFilePath): RouteCollection
+    public function parseRoutesFromYamlFile(RouteCollection $routes, string $yamlFilePath): RouteCollection
     {
         $collection = new RouteCollection();
         $parsedConfig = yaml_parse(file_get_contents($yamlFilePath));

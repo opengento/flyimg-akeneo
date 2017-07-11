@@ -38,7 +38,7 @@ $routesResolver = new \Core\Resolver\RoutesResolver();
 $app['routes'] = $app->extend(
     'routes',
     function (RouteCollection $routes) use ($routesResolver) {
-        return $routesResolver->parseRoutes($routes, __DIR__.'/config/routes.yml');
+        return $routesResolver->parseRoutesFromYamlFile($routes, __DIR__.'/config/routes.yml');
     }
 );
 
