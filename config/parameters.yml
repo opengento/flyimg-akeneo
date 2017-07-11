@@ -7,7 +7,7 @@ debug: true
 header_cache_days: 365
 
 #options separator
-options_separator: ,
+options_separator: ","
 
 #restrict domains, false by default
 restricted_domains: false

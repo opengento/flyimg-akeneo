@@ -1,13 +1,18 @@
 <?php
 
 declare(strict_types = 1);
+require_once __DIR__.'/vendor/autoload.php';
 
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\Routing\Loader\YamlFileLoader;
+use Symfony\Component\Debug\ExceptionHandler;
 use Symfony\Component\Routing\RouteCollection;
-use Symfony\Component\Yaml\Yaml;
 
-$loader = require_once __DIR__.'/vendor/autoload.php';
+$ExceptionHandler = function (\Exception $e) use ($app) {
+    $out = fopen('php://stderr', 'w');
+    fputs($out, $e->getMessage());
+    fclose($out);
+};
+$exceptionHandler = ExceptionHandler::register(false);
+$exceptionHandler->setHandler($ExceptionHandler);
 
 $app = new Silex\Application();
 
@@ -26,21 +31,21 @@ if (!is_dir(TMP_DIR)) {
     mkdir(TMP_DIR, 0777, true);
 }
 
-$app['params'] = Yaml::parse(file_get_contents(__DIR__.'/config/parameters.yml'));
-
 /**
  * Routes
  */
+$routesResolver = new \Core\Resolver\RoutesResolver();
 $app['routes'] = $app->extend(
     'routes',
-    function (RouteCollection $routes) {
-        $loader = new YamlFileLoader(new FileLocator(__DIR__.'/config'));
-        $collection = $loader->load('routes.yml');
-        $routes->addCollection($collection);
-
-        return $routes;
+    function (RouteCollection $routes) use ($routesResolver) {
+        return $routesResolver->parseRoutesFromYamlFile($routes, __DIR__.'/config/routes.yml');
     }
 );
+
+/**
+ * Application parameters
+ */
+$app['params'] = yaml_parse(file_get_contents(__DIR__.'/config/parameters.yml'));
 
 /** Register Storage provider */
 
@@ -53,16 +58,6 @@ switch ($app['params']['storage_system']) {
         $app->register(new \Core\StorageProvider\LocalStorageProvider());
         break;
 }
-
-/** Monolog Service */
-$app->register(
-    new Silex\Provider\MonologServiceProvider(),
-    array(
-        'monolog.name' => 'flyimg',
-        'monolog.level' => \Monolog\Logger::ERROR,
-        'monolog.logfile' => 'php://stderr',
-    )
-);
 
 /**
  * Controller Resolver
