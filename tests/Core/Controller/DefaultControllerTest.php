@@ -2,9 +2,8 @@
 
 namespace Tests\Core\Controller;
 
-use Core\Handler\ImageHandler;
-use Core\StorageProvider\S3StorageProvider;
-use Core\StorageProvider\S3StorageProviderTest;
+use Core\Exception\InvalidArgumentException;
+use Core\Exception\ReadFileException;
 use Silex\WebTestCase;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Tests\Core\BaseTest;
@@ -78,9 +77,9 @@ class DefaultControllerTest extends WebTestCase
      */
     public function testUploadActionForbidden()
     {
+        $this->expectException(ReadFileException::class);
         $client = static::createClient();
         $client->request('GET', '/upload/w_200,h_200,c_1/Rovinj-Croatia-nonExist.jpg');
-        $this->assertTrue($client->getResponse()->isForbidden());
     }
 
     /**
@@ -88,9 +87,9 @@ class DefaultControllerTest extends WebTestCase
      */
     public function testUploadActionInvalidExtension()
     {
+        $this->expectException(InvalidArgumentException::class);
         $client = static::createClient();
         $client->request('GET', '/upload/w_200,h_200,c_1,o_xxx/'.BaseTest::JPG_TEST_IMAGE);
-        $this->assertTrue($client->getResponse()->isForbidden());
     }
 
     /**
@@ -109,9 +108,9 @@ class DefaultControllerTest extends WebTestCase
      */
     public function testPathActionForbidden()
     {
+        $this->expectException(ReadFileException::class);
         $client = static::createClient();
         $client->request('GET', '/path/w_200,h_200,c_1/Rovinj-Croatia-nonExist.jpg');
-        $this->assertTrue($client->getResponse()->isForbidden());
     }
 
     /**

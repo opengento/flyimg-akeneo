@@ -1,20 +1,29 @@
 <?php
 
-declare(strict_types = 1);
 require_once __DIR__.'/vendor/autoload.php';
 
 use Symfony\Component\Debug\ExceptionHandler;
 use Symfony\Component\Routing\RouteCollection;
 
-$ExceptionHandler = function (\Exception $e) use ($app) {
-    $out = fopen('php://stderr', 'w');
-    fputs($out, $e->getMessage());
+$app = new Silex\Application();
+
+$app['env'] = $_ENV['env'] ?: 'dev';
+
+$exceptionHandlerFunction = function (\Exception $e) {
+    $out = fopen('php://stdout', 'w');
+    fputs(
+        $out,
+        "Message: {$e->getMessage()} \nFile: {$e->getFile()}\nLine: {$e->getLine()}\nTrace: {$e->getTraceAsString()}"
+    );
     fclose($out);
 };
-$exceptionHandler = ExceptionHandler::register(false);
-$exceptionHandler->setHandler($ExceptionHandler);
 
-$app = new Silex\Application();
+$exceptionHandler = ExceptionHandler::register(false);
+$exceptionHandler->setHandler($exceptionHandlerFunction);
+
+if ('test' !== $app['env']) {
+    $app->error($exceptionHandlerFunction);
+}
 
 /**
  * Define Constants && Load parameters files

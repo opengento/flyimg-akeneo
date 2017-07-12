@@ -11,6 +11,7 @@
 >
     <php>
         <env name="HOSTNAME_URL" value=""/>
+        <env name="env" value="test" />
     </php>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
