@@ -1,7 +1,7 @@
 application_name: Flyimg.io
 
 #debug
-debug: true
+debug: false
 
 #Number of days for header cache expires `max_age`
 header_cache_days: 365
