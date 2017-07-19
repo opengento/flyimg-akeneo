@@ -98,22 +98,22 @@ class ImageHandlerTest extends BaseTest
         $this->assertEquals(OutputImage::WEBP_MIME_TYPE, $this->getFileMemeType($image->getOutputImagePath()));
     }
 
-    /**
-     *
-     */
-    public function testRestrictedDomains()
-    {
-        $this->expectException(AppException::class);
-        $class = new ReflectionClass($this->app['image.handler']);
-        $property = $class->getProperty('defaultParams');
-        $property->setAccessible(true);
-        $defaultParams = $this->app['image.handler']->getDefaultParams();
-        $defaultParams['restricted_domains'] = true;
-        $property->setValue($this->app['image.handler'], $defaultParams);
-
-        $image = $this->ImageHandler->processImage(parent::OPTION_URL.',o_webp', parent::PNG_TEST_IMAGE);
-        $this->generatedImage[] = $image;
-    }
+//    /**
+//     *
+//     */
+//    public function testRestrictedDomains()
+//    {
+//        $this->expectException(AppException::class);
+//        $class = new ReflectionClass($this->app['image.handler']);
+//        $property = $class->getProperty('defaultParams');
+//        $property->setAccessible(true);
+//        $defaultParams = $this->app['image.handler']->getDefaultParams();
+//        $defaultParams['restricted_domains'] = true;
+//        $property->setValue($this->app['image.handler'], $defaultParams);
+//
+//        $image = $this->ImageHandler->processImage(parent::OPTION_URL.',o_webp', parent::PNG_TEST_IMAGE);
+//        $this->generatedImage[] = $image;
+//    }
 
     /**
      * @param $filePath

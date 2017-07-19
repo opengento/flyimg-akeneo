@@ -32,8 +32,6 @@ class S3StorageProviderTest extends BaseTest
         /** Core Manager Service */
         $this->ImageHandler =
             new ImageHandler(
-                $this->app['image.processor'],
-                $this->app['facedetection.processor'],
                 $this->app['flysystems']['upload_dir'],
                 $this->app['params']
             );

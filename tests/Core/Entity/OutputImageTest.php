@@ -20,35 +20,34 @@ class OutputImageTest extends BaseTest
         $expectedParseArray = [
             'mozjpeg' => 1,
             'quality' => 90,
+            'output' => 'auto',
             'unsharp' => '0.25x0.25+8+0.065',
-            'width' => 200,
-            'height' => 100,
+            'width' => '200',
+            'height' => '100',
             'face-crop' => 0,
             'face-crop-position' => 0,
-            'face-blur' => 1,
-            'crop' => 1,
+            'face-blur' => '1',
+            'crop' => '1',
             'background' => '#999999',
             'strip' => 1,
-            'resize' => 1,
+            'resize' => '1',
             'gravity' => 'Center',
             'filter' => 'Lanczos',
             'rotate' => '-45',
             'scale' => '50',
             'sampling-factor' => '1x1',
-            'refresh' => true,
+            'refresh' => '1',
             'extent' => '100x80',
-            'preserve-aspect-ratio' => '1',
-            'preserve-natural-size' => '1',
-            'webp-lossless' => '0',
-            'gif-frame' => '0',
-            'thread' => '1',
+            'preserve-aspect-ratio' => 1,
+            'preserve-natural-size' => 1,
+            'webp-lossless' => 0,
+            'gif-frame' => 0,
+            'thread' => 1,
         ];
         $parsedOptions = $this->ImageHandler->parseOptions(self::OPTION_URL);
         $inputImage = new InputImage($parsedOptions, self::JPG_TEST_IMAGE);
-        $image = new OutputImage($inputImage);
-        $this->generatedImage[] = $image;
 
-        $this->assertEquals($image->getInputImage()->getOptions(), $expectedParseArray);
+        $this->assertEquals($inputImage->getOptions(), $expectedParseArray);
     }
 
     /**

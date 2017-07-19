@@ -21,6 +21,9 @@ class ImageHandler
     /** @var FaceDetectProcessor */
     protected $faceDetectProcessor;
 
+    /** @var SecurityHandler */
+    protected $securityHandler;
+
     /** @var Filesystem */
     protected $filesystem;
 
@@ -30,21 +33,17 @@ class ImageHandler
     /**
      * ImageHandler constructor.
      *
-     * @param ImageProcessor      $imageProcessor
-     * @param FaceDetectProcessor $faceDetectProcessor
-     * @param Filesystem          $filesystem
-     * @param array               $defaultParams
+     * @param Filesystem $filesystem
+     * @param array      $defaultParams
      */
-    public function __construct(
-        ImageProcessor $imageProcessor,
-        FaceDetectProcessor $faceDetectProcessor,
-        Filesystem $filesystem,
-        array $defaultParams
-    ) {
-        $this->imageProcessor = $imageProcessor;
-        $this->faceDetectProcessor = $faceDetectProcessor;
+    public function __construct(Filesystem $filesystem, array $defaultParams)
+    {
         $this->filesystem = $filesystem;
         $this->defaultParams = $defaultParams;
+
+        $this->imageProcessor = new ImageProcessor();
+        $this->faceDetectProcessor = new FaceDetectProcessor();
+        $this->securityHandler = new SecurityHandler($defaultParams);
     }
 
     /**
@@ -72,9 +71,10 @@ class ImageHandler
      */
     public function processImage(string $options, string $imageSrc): OutputImage
     {
-        $this->checkRestrictedDomains($imageSrc);
+        $this->securityHandler->processChecks($imageSrc);
 
         $parsedOptions = $this->parseOptions($options);
+
         $inputImage = new InputImage($parsedOptions, $imageSrc);
         $outputImage = new OutputImage($inputImage);
 
@@ -131,26 +131,6 @@ class ImageHandler
         );
 
         return $outputImage;
-    }
-
-    /**
-     * Check Restricted Domain enabled
-     *
-     * @param string $imageSource
-     *
-     * @throws AppException
-     */
-    protected function checkRestrictedDomains(string $imageSource)
-    {
-        if ($this->defaultParams['restricted_domains'] &&
-            is_array($this->defaultParams['whitelist_domains']) &&
-            !in_array(parse_url($imageSource, PHP_URL_HOST), $this->defaultParams['whitelist_domains'])
-        ) {
-            throw  new AppException(
-                'Restricted domains enabled, the domain your fetching from is not allowed: '.
-                parse_url($imageSource, PHP_URL_HOST)
-            );
-        }
     }
 
     /**
