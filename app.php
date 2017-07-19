@@ -79,17 +79,8 @@ $app['resolver'] = function (\Silex\Application $app) {
     return new \Core\Resolver\ControllerResolver($app, $app['logger']);
 };
 
-/** ImageProcessor Service */
-$app['image.processor'] = function () {
-    return new \Core\Processor\ImageProcessor();
-};
-/** FaceDetectProcessor Service */
-$app['facedetection.processor'] = function () {
-    return new \Core\Processor\FaceDetectProcessor();
-};
-
 /**
- * Core Manager Service
+ * Register Image Handler
  *
  * @param \Silex\Application $app
  *
@@ -97,8 +88,6 @@ $app['facedetection.processor'] = function () {
  */
 $app['image.handler'] = function (\Silex\Application $app) {
     return new \Core\Handler\ImageHandler(
-        $app['image.processor'],
-        $app['facedetection.processor'],
         $app['flysystems']['upload_dir'],
         $app['params']
     );
