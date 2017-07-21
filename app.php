@@ -95,8 +95,12 @@ $app['image.handler'] = function (\Silex\Application $app) {
     );
 };
 
+/**
+ * To generate a hashed url when security key is enabled
+ * Example usage: php app.php encrypt w_200,h_200,c_1/Rovinj-Croatia.jpg
+ */
 if (!empty($argv[1]) && !empty($argv[2]) && $argv[1] == 'encrypt') {
-    printf("\n%s\n", $app['image.handler']->getSecurityHandler()->encrypt($argv[2]));
+    printf("Hashed request: %s\n", $app['image.handler']->getSecurityHandler()->encrypt($argv[2]));
     exit;
 }
 

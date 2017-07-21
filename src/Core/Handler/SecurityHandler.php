@@ -58,6 +58,7 @@ class SecurityHandler
         if (empty($this->defaultParams['security_key'])) {
             return [$options, $imageSrc];
         }
+
         if (empty($this->defaultParams['security_iv'])) {
             throw  new SecurityException(
                 'Security iv is not set in parameters.yml (security_iv)'
@@ -112,11 +113,18 @@ class SecurityHandler
 
     /**
      * @return array
+     * @throws SecurityException
      */
-    protected function createHash()
+    protected function createHash(): array
     {
         $secretKey = $this->defaultParams['security_key'];
         $secretIv = $this->defaultParams['security_iv'];
+
+        if (empty($secretKey)) {
+            throw  new SecurityException(
+                "security_key in empty im parameters.yml!"
+            );
+        }
         // hash
         $secretKey = hash('sha256', $secretKey);
 
