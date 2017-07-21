@@ -64,9 +64,8 @@ class SecurityHandlerTest extends BaseTest
         $options = parent::OPTION_URL;
         $imageSrc = parent::JPG_TEST_IMAGE;
         $hash = $securityHandler->encrypt($options.'/'.$imageSrc);
-        $hashedImageSrc = '';
-        $securityHandler->checkSecurityHash($hash, $hashedImageSrc);
-        $this->assertEquals($hash, $options);
+        list($hashedOptions, $hashedImageSrc) = $securityHandler->checkSecurityHash($hash, $imageSrc);
+        $this->assertEquals($hashedOptions, $options);
         $this->assertEquals($hashedImageSrc, $imageSrc);
     }
 

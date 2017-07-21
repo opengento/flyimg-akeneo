@@ -50,19 +50,22 @@ class SecurityHandler
      * @param string $options
      * @param string $imageSrc
      *
+     * @return array
      * @throws SecurityException
      */
-    public function checkSecurityHash(string &$options, string &$imageSrc)
+    public function checkSecurityHash(string $options, string $imageSrc): array
     {
         if (empty($this->defaultParams['security_key'])) {
-            return;
+            return [$options, $imageSrc];
         }
         if (empty($this->defaultParams['security_iv'])) {
             throw  new SecurityException(
                 'Security iv is not set in parameters.yml (security_iv)'
             );
         }
+
         $decryptedHash = $this->decrypt($options);
+
         if (empty($decryptedHash)) {
             throw  new SecurityException(
                 "Security Key enabled: Requested URL doesn't match with the hashed Security key !"
@@ -77,8 +80,8 @@ class SecurityHandler
                 $options
             );
         }
-        $options = $explodedOptions;
-        $imageSrc = $explodedImageSrc;
+
+        return [$explodedOptions, $explodedImageSrc];
     }
 
     /**
@@ -88,8 +91,8 @@ class SecurityHandler
      */
     public function encrypt(string $string): string
     {
-        list($key, $iv) = $this->createHash();
-        $output = base64_encode(openssl_encrypt($string, self::ENCRYPT_METHOD, $key, 0, $iv));
+        list($secretKey, $secretIv) = $this->createHash();
+        $output = base64_encode(openssl_encrypt($string, self::ENCRYPT_METHOD, $secretKey, 0, $secretIv));
 
         return $output;
     }
@@ -101,8 +104,8 @@ class SecurityHandler
      */
     public function decrypt(string $string): string
     {
-        list($key, $iv) = $this->createHash();
-        $output = openssl_decrypt(base64_decode($string), self::ENCRYPT_METHOD, $key, 0, $iv);
+        list($secretKey, $secretIv) = $this->createHash();
+        $output = openssl_decrypt(base64_decode($string), self::ENCRYPT_METHOD, $secretKey, 0, $secretIv);
 
         return $output;
     }
@@ -115,11 +118,11 @@ class SecurityHandler
         $secretKey = $this->defaultParams['security_key'];
         $secretIv = $this->defaultParams['security_iv'];
         // hash
-        $key = hash('sha256', $secretKey);
+        $secretKey = hash('sha256', $secretKey);
 
         //initialization vector(IV) - encrypt method AES-256-CBC expects 16 bytes - else you will get a warning
-        $iv = substr(hash('sha256', $secretIv), 0, 16);
+        $secretIv = substr(hash('sha256', $secretIv), 0, 16);
 
-        return [$key, $iv];
+        return [$secretKey, $secretIv];
     }
 }
