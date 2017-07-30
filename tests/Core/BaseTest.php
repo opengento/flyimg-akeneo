@@ -17,6 +17,9 @@ class BaseTest extends \PHPUnit_Framework_TestCase
     const FACES_CP0_TEST_IMAGE = __DIR__.'/../testImages/face_cp0.jpg';
     const FACES_BLUR_TEST_IMAGE = __DIR__.'/../testImages/face_fb.jpg';
 
+    const EXTRACT_TEST_IMAGE = __DIR__.'/../testImages/extract-original.jpg';
+    const EXTRACT_TEST_IMAGE_RESULT = __DIR__.'/../testImages/extract-result.jpg';
+
     const OPTION_URL = 'w_200,h_100,c_1,bg_#999999,rz_1,sc_50,r_-45,unsh_0.25x0.25+8+0.065,ett_100x80,fb_1,rf_1';
     const CROP_OPTION_URL = 'w_200,h_100,c_1,rf_1';
     const GIF_OPTION_URL = 'w_100,h_100,rf_1';
