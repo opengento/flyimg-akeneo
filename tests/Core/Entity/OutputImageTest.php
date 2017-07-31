@@ -42,6 +42,11 @@ class OutputImageTest extends BaseTest
             'preserve-natural-size' => 1,
             'webp-lossless' => 0,
             'gif-frame' => 0,
+            'extract' => null,
+            'extract-top-x' => null,
+            'extract-top-y' => null,
+            'extract-bottom-x' => null,
+            'extract-bottom-y' => null,
             'thread' => 1,
         ];
         $parsedOptions = $this->ImageHandler->parseOptions(self::OPTION_URL);

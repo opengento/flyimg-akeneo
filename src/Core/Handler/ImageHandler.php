@@ -4,9 +4,9 @@ namespace Core\Handler;
 
 use Core\Entity\InputImage;
 use Core\Entity\OutputImage;
-use Core\Exception\AppException;
-use Core\Processor\ImageProcessor;
+use Core\Processor\ExtractProcessor;
 use Core\Processor\FaceDetectProcessor;
+use Core\Processor\ImageProcessor;
 use League\Flysystem\Filesystem;
 
 /**
@@ -20,6 +20,9 @@ class ImageHandler
 
     /** @var FaceDetectProcessor */
     protected $faceDetectProcessor;
+
+    /** @var ExtractProcessor */
+    protected $extractProcessor;
 
     /** @var SecurityHandler */
     protected $securityHandler;
@@ -43,6 +46,7 @@ class ImageHandler
 
         $this->imageProcessor = new ImageProcessor();
         $this->faceDetectProcessor = new FaceDetectProcessor();
+        $this->extractProcessor = new ExtractProcessor();
         $this->securityHandler = new SecurityHandler($defaultParams);
     }
 
@@ -131,6 +135,9 @@ class ImageHandler
      */
     protected function processNewImage(OutputImage $outputImage): OutputImage
     {
+        //Check Extract options
+        $this->extractProcess($outputImage);
+
         //Check Face Detection options
         $this->faceDetectionProcess($outputImage);
 
@@ -141,6 +148,29 @@ class ImageHandler
         );
 
         return $outputImage;
+    }
+
+    /**
+     * @param OutputImage $outputImage
+     */
+    protected function extractProcess(OutputImage $outputImage): void
+    {
+
+        $extract      = $outputImage->extract('extract');
+        $topLeftX     = $outputImage->extract('extract-top-x');
+        $topLeftY     = $outputImage->extract('extract-top-y');
+        $bottomRightX = $outputImage->extract('extract-bottom-x');
+        $bottomRightY = $outputImage->extract('extract-bottom-y');
+
+        if ($extract) {
+            $this->extractProcessor->extract(
+                $outputImage->getInputImage(),
+                $topLeftX,
+                $topLeftY,
+                $bottomRightX,
+                $bottomRightY
+            );
+        }
     }
 
     /**
