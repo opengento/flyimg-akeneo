@@ -67,6 +67,15 @@ class ImageHandler
     }
 
     /**
+     * @return SecurityHandler
+     */
+    public function getSecurityHandler(): SecurityHandler
+    {
+        return $this->securityHandler;
+    }
+
+
+    /**
      * @param string $options
      * @param string $imageSrc
      *
@@ -75,7 +84,8 @@ class ImageHandler
      */
     public function processImage(string $options, string $imageSrc): OutputImage
     {
-        $this->securityHandler->processChecks($imageSrc);
+        list($options, $imageSrc) = $this->securityHandler->checkSecurityHash($options, $imageSrc);
+        $this->securityHandler->checkRestrictedDomains($imageSrc);
 
         $parsedOptions = $this->parseOptions($options);
 

@@ -1,13 +1,17 @@
 application_name: Flyimg.io
 
 #debug
-debug: false
+debug: true
 
 #Number of days for header cache expires `max_age`
 header_cache_days: 365
 
 #options separator
 options_separator: ","
+
+#security key
+security_key: ""
+security_iv: "Secret Initialization vector(IV)"
 
 #restrict domains, false by default
 restricted_domains: false
