@@ -9,9 +9,11 @@ header_cache_days: 365
 #options separator
 options_separator: ","
 
-#security key
+#Security: Signature generation
+# security key
 security_key: ""
-security_iv: "Secret Initialization vector(IV)"
+# secret Initialization vector(IV)
+security_iv: ""
 
 #restrict domains, false by default
 restricted_domains: false
