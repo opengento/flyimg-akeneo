@@ -95,7 +95,8 @@ http://oi.flyimg.io/upload/w_200,h_200,c_1,q_30/https://m0.cl/t/resize-test_1920
    * [How to transform images](#how-to-transform-images)
    * [Basic Option details](#basic-option-details)
    * [Application Server Options](#server-options)
-   * [Enable Restricted Domains](#enable-restricted-domains)
+   * [Security: Enable Restricted Domains](#enable-restricted-domains)
+   * [Security: Signature Generation](#enable-restricted-domains)
    * [Run Unit Tests](#run-unit-tests)
    * [How to Provision the application on](#how-to-provision-the-application-on)
    * [Technology stack](#technology-stack)
@@ -309,6 +310,31 @@ whitelist_domains:
     - www.domain-1.org
     - www.domain-2.org
 ```
+## Security: Signature Generation:
+
+Based on this [RFC](https://github.com/flyimg/flyimg/issues/96) Signature Generation was added to Flyimg in order to avoid DDOS attacks.
+
+First you need to edit `security_key` and `security_iv` in  parameters.yml file and add a proper values.
+Than any request to Fyimg app will throw an error unless it's encrypted.
+
+To generate the encrypted url you need to run this command:
+
+```sh
+docker exec flyimg php app.php encrypt w_200,h_200,c_1/https://m0.cl/t/resize-test_1920.jpg
+```
+
+it'll return something like this:
+
+```sh
+Hashed request: TGQ1WWRKVGUrZUpoNmJMc2RMUENPL2t6ZDJkWkdOejlkM0p0U0F3WTgxOU5IMzF3U3R0d2V4b3dqbG52cFRTSFZDcmhrY1JnaGZYOHJ3V0NpZDNNRmc9PQ==
+```
+
+Now you can request the image throw this new url:
+
+```
+http://localhost:8080/upload/TGQ1WWRKVGUrZUpoNmJMc2RMUENPL2t6ZDJkWkdOejlkM0p0U0F3WTgxOU5IMzF3U3R0d2V4b3dqbG52cFRTSFZDcmhrY1JnaGZYOHJ3V0NpZDNNRmc9PQ==
+```
+
 
 ## Run Unit Tests:
 
