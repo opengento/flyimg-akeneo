@@ -30,7 +30,7 @@ class SecurityHandlerTest extends BaseTest
         $this->expectExceptionMessage(
             "Security Key enabled: Requested URL doesn't match with the hashed Security key !"
         );
-        $this->app['params'] = array_merge($this->app['params'], ['security_key' => 'TestSecurityKey']);
+        $this->app['params'] = array_merge($this->app['params'], ['security_key' => 'TestSecurityKey', 'security_iv' => 'TestSecurityIVXXXX']);
         $securityHandler = new SecurityHandler($this->app['params']);
         $options = parent::OPTION_URL;
         $imageSrc = parent::JPG_TEST_IMAGE;
@@ -59,7 +59,7 @@ class SecurityHandlerTest extends BaseTest
      */
     public function testCheckSecurityHashSuccess()
     {
-        $this->app['params'] = array_merge($this->app['params'], ['security_key' => 'TestSecurityKey']);
+        $this->app['params'] = array_merge($this->app['params'], ['security_key' => 'TestSecurityKey', 'security_iv' => 'TestSecurityIVXXXX']);
         $securityHandler = new SecurityHandler($this->app['params']);
         $options = parent::OPTION_URL;
         $imageSrc = parent::JPG_TEST_IMAGE;
@@ -74,7 +74,7 @@ class SecurityHandlerTest extends BaseTest
      */
     public function testEncryptionDecryption()
     {
-        $this->app['params'] = array_merge($this->app['params'], ['security_key' => 'TestSecurityKey']);
+        $this->app['params'] = array_merge($this->app['params'], ['security_key' => 'TestSecurityKey', 'security_iv' => 'TestSecurityIVXXXX']);
         $securityHandler = new SecurityHandler($this->app['params']);
         $randomString = str_shuffle('AKALEOCJCNXMSOLWO5#KXMw');
         $hashedString = $securityHandler->encrypt($randomString);
