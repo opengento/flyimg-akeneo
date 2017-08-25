@@ -46,7 +46,7 @@ class OutputImage
     protected $commandString;
 
     /** @var array list of the supported output extensions */
-    protected $supportedOutputExtensions = [self::EXT_PNG, self::EXT_JPG, self::EXT_GIF, self::EXT_WEBP];
+    protected $allowedOutExtensions = [self::EXT_PNG, self::EXT_JPG, self::EXT_GIF, self::EXT_WEBP];
 
     /**
      * OutputImage constructor.
@@ -196,7 +196,7 @@ class OutputImage
         } elseif ($requestedOutput == self::EXT_AUTO) {
             $resolvedExtension = $this->getAutoExtension();
         } else {
-            if ( !in_array($requestedOutput, $this->supportedOutputExtensions) ) {
+            if (!in_array($requestedOutput, $this->allowedOutExtensions)) {
                 // Maybe trow exception only when in debug mode ?
                 throw new InvalidArgumentException("Invalid file output requested : ".$requestedOutput);
             }
@@ -215,7 +215,7 @@ class OutputImage
     protected function getAutoExtension(): string
     {
         // for now AUTO means webP, or ...
-        if($this->isWebPBrowserSupported()) {
+        if ($this->isWebPBrowserSupported()) {
             return self::EXT_WEBP;
         }
 
