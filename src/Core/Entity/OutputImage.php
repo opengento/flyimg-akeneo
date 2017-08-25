@@ -8,8 +8,6 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Class OutputImage
  * @package Core\Entity
- *
- * @todo Consider move all the extension / mime-type definitions and checking to a separate class (static?)
  */
 class OutputImage
 {
