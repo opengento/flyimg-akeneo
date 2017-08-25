@@ -109,9 +109,11 @@ The basic options are: `NorthWest`, `North`, `NorthEast`, `West`, `Center`, `Eas
 ### `o` : output
 `string`
 *Default:* `auto`
-*Description:* Output format requested, for example you can force the output as jpeg file in case of source file is png. The default `auto` will try to output the same format as the source image or fallback to **jpg**.
+*Description:* Output format requested, for example you can force the output as jpeg file in case of source file is png. The default `auto` will try to output the best format for the requesting browser, falling back to the same format as the source image or finally with a fallback to **jpg**.
 
-**example:`o_auto`,`o_png`,`o_webp`,`o_jpeg`,`o_jpg`** 
+If `input` is passed, no "optimal" format will be attempted. Flyimg will try to respond with the source format or fallback to `jpg`.
+
+**example:`o_auto`,`o_input`,`o_png`,`o_webp`,`o_jpeg`,`o_jpg`**
 
 
 ### `q` : quality

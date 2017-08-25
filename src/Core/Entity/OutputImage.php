@@ -8,6 +8,8 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Class OutputImage
  * @package Core\Entity
+ *
+ * @todo Consider move all the extension / mime-type definitions and checking to a separate class (static?)
  */
 class OutputImage
 {
@@ -18,6 +20,7 @@ class OutputImage
     const GIF_MIME_TYPE = 'image/gif';
 
     /** Extension output */
+    const EXT_INPUT = 'input';
     const EXT_AUTO = 'auto';
     const EXT_PNG = 'png';
     const EXT_WEBP = 'webp';
@@ -41,6 +44,9 @@ class OutputImage
 
     /** @var string */
     protected $commandString;
+
+    /** @var array list of the supported output extensions */
+    protected $supportedOutputExtensions = [self::EXT_PNG, self::EXT_JPG, self::EXT_GIF, self::EXT_WEBP];
 
     /**
      * OutputImage constructor.
@@ -170,32 +176,77 @@ class OutputImage
      */
     protected function generateFileExtension()
     {
-        $outputExtension = $this->extract('output');
-
-        if ($outputExtension == self::EXT_AUTO) {
-            $this->outputImageExtension = self::EXT_JPG;
-            if ($this->isPngSupport()) {
-                $this->outputImageExtension = self::EXT_PNG;
-            }
-            if ($this->isWebPSupport() || $this->inputImage->getSourceImageMimeType() === self::WEBP_MIME_TYPE) {
-                $this->outputImageExtension = self::EXT_WEBP;
-            }
-            if ($this->isGifSupport()) {
-                $this->outputImageExtension = self::EXT_GIF;
-            }
-        } else {
-            if (!in_array(
-                $outputExtension,
-                [self::EXT_PNG, self::EXT_JPG, self::EXT_GIF, self::EXT_JPG, self::EXT_WEBP]
-            )
-            ) {
-                throw new InvalidArgumentException("Invalid file output requested : ".$outputExtension);
-            }
-            $this->outputImageExtension = $outputExtension;
-        }
+        $this->outputImageExtension = $this->resolveOutputImageExtension($this->extract('output'));
         $fileExtension = '.'.$this->outputImageExtension;
         $this->outputImagePath .= $fileExtension;
         $this->outputImageName .= $fileExtension;
+    }
+
+    /**
+     * Given a certain output expected this method will resolve the extension
+     * @param  string $requestedOutput      file type extension, or behaviour like `auto` or `input`
+     * @return string                       The extension to generate given all the configs and conditions present.
+     */
+    protected function resolveOutputImageExtension(string $requestedOutput): string
+    {
+        $resolvedExtension = self::EXT_JPG;
+
+        if ($requestedOutput == self::EXT_INPUT) {
+            $resolvedExtension = $this->getInputImageExtension();
+        } elseif ($requestedOutput == self::EXT_AUTO) {
+            $resolvedExtension = $this->getAutoExtension();
+        } else {
+            if ( !in_array($requestedOutput, $this->supportedOutputExtensions) ) {
+                // Maybe trow exception only when in debug mode ?
+                throw new InvalidArgumentException("Invalid file output requested : ".$requestedOutput);
+            }
+            $resolvedExtension = $requestedOutput;
+        }
+        return $resolvedExtension;
+    }
+    /**
+     * This method defines what extension / format to use in the output image, using the following criteria:
+     *   1. Optimal image format for the requesting browser
+     *   2. Source image format
+     *   3. JPG
+     *
+     * @return string One image extension
+     */
+    protected function getAutoExtension(): string
+    {
+        // for now AUTO means webP, or ...
+        if($this->isWebPBrowserSupported()) {
+            return self::EXT_WEBP;
+        }
+
+        // fall back to input extension, which fallsback to jpg
+        return $this->getInputImageExtension();
+    }
+
+    /**
+     * get the extension of the input image asociated with this entity
+     * @return string   defaults to `jpg`
+     */
+    protected function getInputImageExtension(): string
+    {
+        $resolvedExtension = $this->getExtensionByMimeType($this->inputImage->getSourceImageMimeType());
+        return $resolvedExtension ? $resolvedExtension : self::EXT_JPG;
+    }
+
+    /**
+     * given a mime-type this returns the extension associated to it
+     * @param  string $mimeType mime-type
+     * @return string           extension OR empty string
+     */
+    protected function getExtensionByMimeType(string $mimeType): string
+    {
+        $mimeToExtensions = [
+            self::PNG_MIME_TYPE => self::EXT_PNG,
+            self::WEBP_MIME_TYPE => self::EXT_WEBP,
+            self::JPEG_MIME_TYPE => self::EXT_JPG,
+            self::GIF_MIME_TYPE => self::EXT_GIF
+        ];
+        return array_key_exists($mimeType, $mimeToExtensions) ? $mimeToExtensions[$mimeType] : '';
     }
 
     /**
@@ -206,16 +257,31 @@ class OutputImage
      *
      * @return bool
      */
-    public function isWebPSupport(): bool
+    public function isOutputWebP(): bool
     {
-        return $this->outputImageExtension == self::EXT_WEBP
-            || (in_array(self::WEBP_MIME_TYPE, Request::createFromGlobals()->getAcceptableContentTypes()));
+        return $this->outputImageExtension == self::EXT_WEBP;
     }
 
     /**
      * @return bool
      */
-    public function isGifSupport(): bool
+    public function isOutputGif(): bool
+    {
+        return $this->outputImageExtension == self::EXT_GIF;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOutputPng(): bool
+    {
+        return $this->outputImageExtension == self::EXT_PNG;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isInputGif(): bool
     {
         return $this->inputImage->getSourceImageMimeType() == self::GIF_MIME_TYPE;
     }
@@ -223,19 +289,19 @@ class OutputImage
     /**
      * @return bool
      */
-    public function isPngSupport(): bool
+    public function isOutputMozJpeg(): bool
     {
-        return $this->inputImage->getSourceImageMimeType() == self::PNG_MIME_TYPE;
+        return $this->extract('mozjpeg') == 1 &&
+            (!$this->isOutputPng() || $this->outputImageExtension == self::EXT_JPG) &&
+            (!$this->isOutputGif());
     }
 
     /**
-     * @return bool
+     * This just checks if the browser requesting the asset explicitly supports WebP
+     * @return boolean
      */
-    public function isMozJpegSupport(): bool
+    public function isWebPBrowserSupported(): bool
     {
-        return $this->extract('mozjpeg') == 1 &&
-            (!$this->isPngSupport() || $this->outputImageExtension == self::EXT_JPG) &&
-            (!$this->isGifSupport()) &&
-            ($this->getOutputImageExtension() != self::EXT_GIF);
+        return in_array(self::WEBP_MIME_TYPE, Request::createFromGlobals()->getAcceptableContentTypes());
     }
 }

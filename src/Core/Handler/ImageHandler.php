@@ -119,11 +119,11 @@ class ImageHandler
         $faceCropPosition = $outputImage->extract('face-crop-position');
         $faceBlur = $outputImage->extract('face-blur');
 
-        if ($faceBlur && !$outputImage->isGifSupport()) {
+        if ($faceBlur && !$outputImage->isOutputGif()) {
             $this->faceDetectProcessor->blurFaces($outputImage->getInputImage());
         }
 
-        if ($faceCrop && !$outputImage->isGifSupport()) {
+        if ($faceCrop && !$outputImage->isOutputGif()) {
             $this->faceDetectProcessor->cropFaces($outputImage->getInputImage(), $faceCropPosition);
         }
     }
