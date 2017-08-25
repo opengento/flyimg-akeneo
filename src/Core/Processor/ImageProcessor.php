@@ -46,17 +46,17 @@ class ImageProcessor extends Processor
         $command[] = self::IM_CONVERT_COMMAND;
         $tmpFileName = $outputImage->getInputImage()->getSourceImagePath();
 
-        //Check the image is gif
-        if ($outputImage->isGifSupport()) {
+        //Check the source image is gif
+        if ($outputImage->isInputGif()) {
             $command[] = '-coalesce';
             if ($outputImage->getOutputImageExtension() != OutputImage::EXT_GIF) {
                 $tmpFileName .= '['.escapeshellarg($frame).']';
             }
         }
 
-        $command[] = " ".$tmpFileName;
-        $command[] = ' -'.$resizeOperator.' '.
-            $size.$gravity.$extent.
+        $command[] = " " . $tmpFileName;
+        $command[] = ' -' . $resizeOperator . ' ' .
+            $size . $gravity . $extent .
             ' -colorspace sRGB';
 
         foreach ($outputImage->getInputImage()->getOptions() as $key => $value) {
@@ -92,12 +92,12 @@ class ImageProcessor extends Processor
     {
         $quality = $outputImage->extract('quality');
         /** WebP format */
-        if (is_executable(self::CWEBP_COMMAND) && $outputImage->isWebPSupport()) {
+        if (is_executable(self::CWEBP_COMMAND) && $outputImage->isOutputWebP()) {
             $lossLess = $outputImage->extract('webp-lossless') ? 'true' : 'false';
             $command[] = "-quality ".escapeshellarg($quality).
                 " -define webp:lossless=".$lossLess." ".escapeshellarg($outputImage->getOutputImagePath());
         } /** MozJpeg compression */
-        elseif (is_executable(self::MOZJPEG_COMMAND) && $outputImage->isMozJpegSupport()) {
+        elseif (is_executable(self::MOZJPEG_COMMAND) && $outputImage->isOutputMozJpeg()) {
             $command[] = "TGA:- | ".escapeshellarg(self::MOZJPEG_COMMAND)
                 ." -quality ".escapeshellarg($quality)
                 ." -outfile ".escapeshellarg($outputImage->getOutputImagePath())
@@ -157,7 +157,7 @@ class ImageProcessor extends Processor
             $gravity = '';
         }
         //In cas on png format, remove extent option
-        if ($outputImage->isPngSupport()) {
+        if ($outputImage->isOutputPng()) {
             $extent = '';
         }
 
