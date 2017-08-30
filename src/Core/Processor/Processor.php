@@ -34,7 +34,7 @@ class Processor
      * @return array
      * @throws \Exception
      */
-    public function execute(string $commandStr): array
+    public static function execute(string $commandStr): array
     {
         exec($commandStr, $output, $code);
         if (count($output) === 0) {
