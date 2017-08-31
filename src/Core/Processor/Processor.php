@@ -2,7 +2,7 @@
 
 namespace Core\Processor;
 
-use Core\Entity\OutputImage;
+use Core\Entity\Image\OutputImage;
 use Core\Exception\ExecFailedException;
 
 /**

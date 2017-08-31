@@ -2,7 +2,7 @@
 
 namespace Core\Processor;
 
-use Core\Entity\OutputImage;
+use Core\Entity\Image\OutputImage;
 
 /**
  * Class ImageProcessor
@@ -59,7 +59,7 @@ class ImageProcessor extends Processor
             $size . $gravity . $extent .
             ' -colorspace sRGB';
 
-        foreach ($outputImage->getInputImage()->getOptions() as $key => $value) {
+        foreach ($outputImage->getInputImage()->getOptionsBag() as $key => $value) {
             if (!empty($value) && !in_array($key, self::EXCLUDED_IM_OPTIONS)) {
                 $command[] = "-{$key} ".escapeshellarg($value);
             }

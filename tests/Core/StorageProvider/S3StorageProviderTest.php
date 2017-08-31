@@ -19,15 +19,16 @@ class S3StorageProviderTest extends BaseTest
 
         unset($this->app['flysystems']);
         unset($this->app['image.handler']);
-        $awsS3 = [
-            'aws_s3' => [
+        $this->app['params']->set(
+            'aws_s3',
+            [
                 'access_id' => 'xxxxx',
                 'secret_key' => 'xxxxx',
                 'region' => 'xxxxx',
                 'bucket_name' => 'xxxxx',
-            ],
-        ];
-        $this->app['params'] = array_merge($this->app['params'], $awsS3);
+            ]
+        );
+
         $this->app->register(new S3StorageProvider());
         /** Core Manager Service */
         $this->ImageHandler =
@@ -44,15 +45,15 @@ class S3StorageProviderTest extends BaseTest
     public function testUploadActionWithS3StorageException()
     {
         $this->expectException(MissingParamsException::class);
-        $awsS3 = [
-            'aws_s3' => [
+        $this->app['params']->set(
+            'aws_s3',
+            [
                 'access_id' => 'xxxxx',
                 'secret_key' => '',
                 'region' => '',
                 'bucket_name' => '',
-            ],
-        ];
-        $this->app['params'] = array_merge($this->app['params'], $awsS3);
+            ]
+        );
         $this->app->register(new S3StorageProvider());
     }
 }

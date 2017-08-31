@@ -1,10 +1,10 @@
 <?php
 
-namespace Tests\Core\Entity;
+namespace Tests\Core\Entity\Image;
 
-use Core\Entity\InputImage;
-use Core\Entity\OutputImage;
-use Core\Exception\ReadFileException;
+use Core\Entity\Image\InputImage;
+use Core\Entity\Image\OutputImage;
+use Core\Entity\OptionsBag;
 use Tests\Core\BaseTest;
 
 /**
@@ -49,10 +49,10 @@ class OutputImageTest extends BaseTest
             'extract-bottom-y' => null,
             'thread' => 1,
         ];
-        $parsedOptions = $this->ImageHandler->parseOptions(self::OPTION_URL);
-        $inputImage = new InputImage($parsedOptions, self::JPG_TEST_IMAGE);
+        $optionsBag = new OptionsBag($this->ImageHandler->getAppParameters(), self::OPTION_URL);
+        $inputImage = new InputImage($optionsBag, self::JPG_TEST_IMAGE);
 
-        $this->assertEquals($inputImage->getOptions(), $expectedParseArray);
+        $this->assertEquals($inputImage->getOptionsBag()->asArray(), $expectedParseArray);
     }
 
     /**
@@ -60,8 +60,8 @@ class OutputImageTest extends BaseTest
      */
     public function testSaveToTemporaryFile()
     {
-        $parsedOptions = $this->ImageHandler->parseOptions(self::OPTION_URL);
-        $inputImage = new InputImage($parsedOptions, self::JPG_TEST_IMAGE);
+        $optionsBag = new OptionsBag($this->ImageHandler->getAppParameters(), self::OPTION_URL);
+        $inputImage = new InputImage($optionsBag, self::JPG_TEST_IMAGE);
         $image = new OutputImage($inputImage);
         $this->generatedImage[] = $image;
 
@@ -73,13 +73,13 @@ class OutputImageTest extends BaseTest
      */
     public function testGenerateFilesName()
     {
-        $parsedOptions = $this->ImageHandler->parseOptions(self::OPTION_URL);
-        $inputImage = new InputImage($parsedOptions, self::JPG_TEST_IMAGE);
+        $optionsBag = new OptionsBag($this->ImageHandler->getAppParameters(), self::OPTION_URL);
+        $inputImage = new InputImage($optionsBag, self::JPG_TEST_IMAGE);
         $image = new OutputImage($inputImage);
-        $parsedOptions = $this->ImageHandler->parseOptions(self::OPTION_URL);
 
-        $inputImage = new InputImage($parsedOptions, self::JPG_TEST_IMAGE);
-        $image2 = new OutputImage($inputImage);
+        $optionsBag2 = new OptionsBag($this->ImageHandler->getAppParameters(), self::OPTION_URL);
+        $inputImage2 = new InputImage($optionsBag2, self::JPG_TEST_IMAGE);
+        $image2 = new OutputImage($inputImage2);
 
         $this->generatedImage[] = $image2;
         $this->generatedImage[] = $image;
@@ -93,12 +93,12 @@ class OutputImageTest extends BaseTest
      */
     public function testExtractByKey()
     {
-        $parsedOptions = $this->ImageHandler->parseOptions(self::OPTION_URL);
-        $inputImage = new InputImage($parsedOptions, self::JPG_TEST_IMAGE);
+        $optionsBag = new OptionsBag($this->ImageHandler->getAppParameters(), self::OPTION_URL);
+        $inputImage = new InputImage($optionsBag, self::JPG_TEST_IMAGE);
         $image = new OutputImage($inputImage);
 
         $image->extract('width');
         $this->generatedImage[] = $image;
-        $this->assertFalse(array_key_exists('width', $image->getInputImage()->getOptions()));
+        $this->assertFalse(array_key_exists('width', $image->getInputImage()->getOptionsBag()->asArray()));
     }
 }

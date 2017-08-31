@@ -2,7 +2,7 @@
 
 namespace Tests\Core;
 
-use Core\Entity\OutputImage;
+use Core\Entity\Image\OutputImage;
 use Core\Handler\ImageHandler;
 use Silex\Application;
 

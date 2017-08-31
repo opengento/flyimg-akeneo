@@ -2,7 +2,7 @@
 
 namespace Core\Controller;
 
-use Core\Entity\OutputImage;
+use Core\Entity\Image\OutputImage;
 use Core\Handler\ImageHandler;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Response;
@@ -90,13 +90,13 @@ class CoreController
         $expireDate = new \DateTime();
         $expireDate->add(new \DateInterval('P1Y'));
         $response->setExpires($expireDate);
-        $longCacheTime = 3600 * 24 * ((int)$this->app['params']['header_cache_days']);
+        $longCacheTime = 3600 * 24 * ((int)$this->app['params']->get('header_cache_days'));
 
         $response->setMaxAge($longCacheTime);
         $response->setSharedMaxAge($longCacheTime);
         $response->setPublic();
 
-        if ($image->getInputImage()->getOptions()['refresh']) {
+        if ($image->getInputImage()->getOptionsBag()->get('refresh')) {
             $response->headers->set('Cache-Control', 'no-cache, private');
             $response->setExpires(null)->expire();
 
