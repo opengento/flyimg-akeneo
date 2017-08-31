@@ -1,6 +1,6 @@
 <?php
 
-namespace Core\Entity;
+namespace Core\Entity\Image;
 
 use Core\Exception\InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Request;
@@ -159,12 +159,14 @@ class OutputImage
      */
     protected function generateFilesName()
     {
-        $hashedOptions = $this->inputImage->getOptions();
-        unset($hashedOptions['refresh']);
-        $this->outputImageName = md5(implode('.', $hashedOptions).$this->inputImage->getSourceImageUrl());
+        $hashedOptions = clone $this->inputImage->getOptionsBag();
+        $hashedOptions->remove('refresh');
+        $this->outputImageName = md5(
+            implode('.', $hashedOptions->asArray()).$this->inputImage->getSourceImageUrl()
+        );
         $this->outputImagePath = TMP_DIR.$this->outputImageName;
 
-        if ($this->inputImage->getOptions()['refresh']) {
+        if ($this->inputImage->getOptionsBag()->get('refresh')) {
             $this->outputImagePath .= uniqid("-", true);
         }
     }
@@ -182,8 +184,11 @@ class OutputImage
 
     /**
      * Given a certain output expected this method will resolve the extension
-     * @param  string $requestedOutput      file type extension, or behaviour like `auto` or `input`
-     * @return string                       The extension to generate given all the configs and conditions present.
+     *
+     * @param  string $requestedOutput file type extension, or behaviour like `auto` or `input`
+     *
+     * @return string The extension to generate given all the configs and conditions present.
+     * @throws InvalidArgumentException
      */
     protected function resolveOutputImageExtension(string $requestedOutput): string
     {
@@ -200,8 +205,10 @@ class OutputImage
             }
             $resolvedExtension = $requestedOutput;
         }
+
         return $resolvedExtension;
     }
+
     /**
      * This method defines what extension / format to use in the output image, using the following criteria:
      *   1. Optimal image format for the requesting browser
@@ -217,7 +224,7 @@ class OutputImage
             return self::EXT_WEBP;
         }
 
-        // fall back to input extension, which fallsback to jpg
+        // fall back to input extension, which falls back to jpg
         return $this->getInputImageExtension();
     }
 
@@ -228,12 +235,15 @@ class OutputImage
     protected function getInputImageExtension(): string
     {
         $resolvedExtension = $this->getExtensionByMimeType($this->inputImage->getSourceImageMimeType());
+
         return $resolvedExtension ? $resolvedExtension : self::EXT_JPG;
     }
 
     /**
      * given a mime-type this returns the extension associated to it
+     *
      * @param  string $mimeType mime-type
+     *
      * @return string           extension OR empty string
      */
     protected function getExtensionByMimeType(string $mimeType): string
@@ -242,8 +252,9 @@ class OutputImage
             self::PNG_MIME_TYPE => self::EXT_PNG,
             self::WEBP_MIME_TYPE => self::EXT_WEBP,
             self::JPEG_MIME_TYPE => self::EXT_JPG,
-            self::GIF_MIME_TYPE => self::EXT_GIF
+            self::GIF_MIME_TYPE => self::EXT_GIF,
         ];
+
         return array_key_exists($mimeType, $mimeToExtensions) ? $mimeToExtensions[$mimeType] : '';
     }
 

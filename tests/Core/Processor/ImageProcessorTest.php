@@ -3,7 +3,7 @@
 namespace Tests\Core\Processor;
 
 use Core\Processor\ImageProcessor;
-use Core\Entity\OutputImage;
+use Core\Entity\Image\OutputImage;
 use Tests\Core\BaseTest;
 
 /**

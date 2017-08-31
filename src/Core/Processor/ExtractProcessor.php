@@ -2,7 +2,7 @@
 
 namespace Core\Processor;
 
-use Core\Entity\InputImage;
+use Core\Entity\Image\InputImage;
 
 /**
  * Class ExtractProcessor

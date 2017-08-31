@@ -24,7 +24,7 @@ class S3StorageProvider implements ServiceProviderInterface
      */
     public function register(Container $app)
     {
-        $s3Params = $app['params']['aws_s3'];
+        $s3Params = $app['params']->get('aws_s3');
         if (in_array("", $s3Params)) {
             throw new MissingParamsException("One of AWS S3 parameters in empty ! ");
         }

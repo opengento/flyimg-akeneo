@@ -2,8 +2,10 @@
 
 namespace Core\Handler;
 
-use Core\Entity\InputImage;
-use Core\Entity\OutputImage;
+use Core\Entity\AppParameters;
+use Core\Entity\Image\InputImage;
+use Core\Entity\OptionsBag;
+use Core\Entity\Image\OutputImage;
 use Core\Processor\ExtractProcessor;
 use Core\Processor\FaceDetectProcessor;
 use Core\Processor\ImageProcessor;
@@ -30,24 +32,24 @@ class ImageHandler
     /** @var Filesystem */
     protected $filesystem;
 
-    /** @var array */
-    protected $defaultParams;
+    /** @var AppParameters */
+    protected $appParameters;
 
     /**
      * ImageHandler constructor.
      *
-     * @param Filesystem $filesystem
-     * @param array      $defaultParams
+     * @param Filesystem    $filesystem
+     * @param AppParameters $appParameters
      */
-    public function __construct(Filesystem $filesystem, array $defaultParams)
+    public function __construct(Filesystem $filesystem, AppParameters $appParameters)
     {
         $this->filesystem = $filesystem;
-        $this->defaultParams = $defaultParams;
+        $this->appParameters = $appParameters;
 
         $this->imageProcessor = new ImageProcessor();
         $this->faceDetectProcessor = new FaceDetectProcessor();
         $this->extractProcessor = new ExtractProcessor();
-        $this->securityHandler = new SecurityHandler($defaultParams);
+        $this->securityHandler = new SecurityHandler($appParameters);
     }
 
     /**
@@ -59,11 +61,11 @@ class ImageHandler
     }
 
     /**
-     * @return array
+     * @return AppParameters
      */
-    public function getDefaultParams(): array
+    public function getAppParameters(): AppParameters
     {
-        return $this->defaultParams;
+        return $this->appParameters;
     }
 
     /**
@@ -87,13 +89,13 @@ class ImageHandler
         list($options, $imageSrc) = $this->securityHandler->checkSecurityHash($options, $imageSrc);
         $this->securityHandler->checkRestrictedDomains($imageSrc);
 
-        $parsedOptions = $this->parseOptions($options);
 
-        $inputImage = new InputImage($parsedOptions, $imageSrc);
+        $optionsBag = new OptionsBag($this->appParameters, $options);
+        $inputImage = new InputImage($optionsBag, $imageSrc);
         $outputImage = new OutputImage($inputImage);
 
         try {
-            if ($this->filesystem->has($outputImage->getOutputImageName()) && $parsedOptions['refresh']) {
+            if ($this->filesystem->has($outputImage->getOutputImageName()) && $optionsBag->get('refresh')) {
                 $this->filesystem->delete($outputImage->getOutputImageName());
             }
 
@@ -155,10 +157,9 @@ class ImageHandler
      */
     protected function extractProcess(OutputImage $outputImage): void
     {
-
-        $extract      = $outputImage->extract('extract');
-        $topLeftX     = $outputImage->extract('extract-top-x');
-        $topLeftY     = $outputImage->extract('extract-top-y');
+        $extract = $outputImage->extract('extract');
+        $topLeftX = $outputImage->extract('extract-top-x');
+        $topLeftY = $outputImage->extract('extract-top-y');
         $bottomRightX = $outputImage->extract('extract-bottom-x');
         $bottomRightY = $outputImage->extract('extract-bottom-y');
 
@@ -191,30 +192,5 @@ class ImageHandler
         }
 
         return OutputImage::JPEG_MIME_TYPE;
-    }
-
-    /**
-     * Parse options: match options keys and merge default options with given ones
-     *
-     * @param string $options
-     *
-     * @return array
-     */
-    public function parseOptions(string $options): array
-    {
-        $defaultOptions = $this->defaultParams['default_options'];
-        $optionsKeys = $this->defaultParams['options_keys'];
-        $optionsSeparator = !empty($this->defaultParams['options_separator']) ?
-            $this->defaultParams['options_separator'] : ',';
-        $optionsUrl = explode($optionsSeparator, $options);
-        $options = [];
-        foreach ($optionsUrl as $option) {
-            $optArray = explode('_', $option);
-            if (key_exists($optArray[0], $optionsKeys) && !empty($optionsKeys[$optArray[0]])) {
-                $options[$optionsKeys[$optArray[0]]] = $optArray[1];
-            }
-        }
-
-        return array_merge($defaultOptions, $options);
     }
 }

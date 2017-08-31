@@ -8,10 +8,8 @@ use Symfony\Component\Routing\RouteCollection;
 
 $app = new Silex\Application();
 
-/**
- * Application parameters
- */
-$app['params'] = yaml_parse(file_get_contents(__DIR__.'/config/parameters.yml'));
+/** @var \Core\Entity\AppParameters $app['params'] */
+$app['params'] = new \Core\Entity\AppParameters(__DIR__.'/config/parameters.yml');
 
 
 $app['env'] = $_ENV['env'] ?: 'dev';
@@ -25,7 +23,7 @@ $exceptionHandlerFunction = function (\Exception $e) {
 };
 
 ErrorHandler::register();
-$exceptionHandler = ExceptionHandler::register($app['params']['debug']);
+$exceptionHandler = ExceptionHandler::register($app['params']->get('debug'));
 $exceptionHandler->setHandler($exceptionHandlerFunction);
 
 if ('test' !== $app['env']) {
@@ -60,7 +58,7 @@ $app['routes'] = $app->extend(
 
 /** Register Storage provider */
 
-switch ($app['params']['storage_system']) {
+switch ($app['params']->get('storage_system')) {
     case 's3':
         $app->register(new \Core\StorageProvider\S3StorageProvider());
         break;
@@ -105,5 +103,6 @@ if (!empty($argv[1]) && !empty($argv[2]) && $argv[1] == 'encrypt') {
 }
 
 /** debug conf */
-$app['debug'] = $app['params']['debug'];
+$app['debug'] = $app['params']->get('debug');
+
 return $app;

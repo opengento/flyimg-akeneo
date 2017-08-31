@@ -1,8 +1,9 @@
 <?php
 
-namespace Tests\Core\Entity;
+namespace Tests\Core\Entity\Image;
 
-use Core\Entity\InputImage;
+use Core\Entity\Image\InputImage;
+use Core\Entity\OptionsBag;
 use Core\Exception\ReadFileException;
 use Tests\Core\BaseTest;
 
@@ -18,7 +19,8 @@ class InputImageTest extends BaseTest
     public function testSaveToTemporaryFileException()
     {
         $this->expectException(ReadFileException::class);
+        $optionsBag = new OptionsBag($this->ImageHandler->getAppParameters(), 'o_jpg');
 
-        new InputImage(['output' => 'jpg'], parent::JPG_TEST_IMAGE.'--fail');
+        new InputImage($optionsBag, parent::JPG_TEST_IMAGE.'--fail');
     }
 }
