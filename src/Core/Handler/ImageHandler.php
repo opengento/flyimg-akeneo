@@ -193,5 +193,4 @@ class ImageHandler
 
         return OutputImage::JPEG_MIME_TYPE;
     }
-
 }

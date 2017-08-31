@@ -2,7 +2,6 @@
 
 namespace Tests\Core\Service;
 
-use Core\Entity\AppParameters;
 use Core\Exception\SecurityException;
 use Core\Handler\SecurityHandler;
 use Tests\Core\BaseTest;
@@ -16,9 +15,8 @@ class SecurityHandlerTest extends BaseTest
     {
         $this->expectException(SecurityException::class);
         $this->expectExceptionMessage("Restricted domains enabled, the domain your fetching from is not allowed:");
-        $appParameters = clone $this->app['params'];
-        $appParameters->set('restricted_domains', true);
-        $securityHandler = new SecurityHandler($appParameters);
+        $this->app['params']->set('restricted_domains', true);
+        $securityHandler = new SecurityHandler($this->app['params']);
 
         $securityHandler->checkRestrictedDomains(parent::PNG_TEST_IMAGE);
     }
@@ -32,10 +30,9 @@ class SecurityHandlerTest extends BaseTest
         $this->expectExceptionMessage(
             "Security Key enabled: Requested URL doesn't match with the hashed Security key !"
         );
-        $appParameters = clone $this->app['params'];
-        $appParameters->set('security_key', 'TestSecurityKey');
-        $appParameters->set('security_iv', 'TestSecurityIVXXXX');
-        $securityHandler = new SecurityHandler($appParameters);
+        $this->app['params']->set('security_key', 'TestSecurityKey');
+        $this->app['params']->set('security_iv', 'TestSecurityIVXXXX');
+        $securityHandler = new SecurityHandler($this->app['params']);
         $options = parent::OPTION_URL;
         $imageSrc = parent::JPG_TEST_IMAGE;
         $securityHandler->checkSecurityHash($options, $imageSrc);
@@ -50,10 +47,9 @@ class SecurityHandlerTest extends BaseTest
         $this->expectExceptionMessage(
             "security_key in empty im parameters.yml!"
         );
-        $appParameters = clone $this->app['params'];
-        $appParameters->set('security_key', '');
-        $securityHandler = new SecurityHandler($appParameters);
-        $hash = $securityHandler->encrypt( parent::OPTION_URL.'/'. parent::JPG_TEST_IMAGE);
+        $this->app['params']->set('security_key', '');
+        $securityHandler = new SecurityHandler($this->app['params']);
+        $securityHandler->encrypt(parent::OPTION_URL.'/'.parent::JPG_TEST_IMAGE);
     }
 
     /**
@@ -63,10 +59,9 @@ class SecurityHandlerTest extends BaseTest
     {
         $this->expectException(SecurityException::class);
         $this->expectExceptionMessage("Security iv is not set in parameters.yml (security_iv)");
-        $appParameters = clone $this->app['params'];
-        $appParameters->set('security_key', 'TestSecurityKey');
-        $appParameters->set('security_iv', '');
-        $securityHandler = new SecurityHandler($appParameters);
+        $this->app['params']->set('security_key', 'TestSecurityKeyXX');
+        $this->app['params']->set('security_iv', '');
+        $securityHandler = new SecurityHandler($this->app['params']);
         $options = parent::OPTION_URL;
         $imageSrc = parent::JPG_TEST_IMAGE;
         $securityHandler->checkSecurityHash($options, $imageSrc);
@@ -77,10 +72,9 @@ class SecurityHandlerTest extends BaseTest
      */
     public function testCheckSecurityHashSuccess()
     {
-        $appParameters = clone $this->app['params'];
-        $appParameters->set('security_key', 'TestSecurityKey');
-        $appParameters->set('security_iv', 'TestSecurityIVXXXX');
-        $securityHandler = new SecurityHandler($appParameters);
+        $this->app['params']->set('security_key', 'TestSecurityKey');
+        $this->app['params']->set('security_iv', 'TestSecurityIVXXXX');
+        $securityHandler = new SecurityHandler($this->app['params']);
         $options = parent::OPTION_URL;
         $imageSrc = parent::JPG_TEST_IMAGE;
         $hash = $securityHandler->encrypt($options.'/'.$imageSrc);
@@ -94,11 +88,10 @@ class SecurityHandlerTest extends BaseTest
      */
     public function testEncryptionDecryption()
     {
-        $appParameters = clone $this->app['params'];
-        $appParameters->set('security_key', 'TestSecurityKey');
-        $appParameters->set('security_iv', 'TestSecurityIVXXXX');
+        $this->app['params']->set('security_key', 'TestSecurityKey');
+        $this->app['params']->set('security_iv', 'TestSecurityIVXXXX');
 
-        $securityHandler = new SecurityHandler($appParameters);
+        $securityHandler = new SecurityHandler($this->app['params']);
         $randomString = str_shuffle('AKALEOCJCNXMSOLWO5#KXMw');
         $hashedString = $securityHandler->encrypt($randomString);
         $decryptedString = $securityHandler->decrypt($hashedString);

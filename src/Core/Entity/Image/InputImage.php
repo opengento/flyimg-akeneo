@@ -30,11 +30,17 @@ class InputImage
         $this->optionsBag = $optionsBag;
         $this->sourceImageUrl = $sourceImageUrl;
 
-        $this->sourceImagePath = TMP_DIR.'original-'.(md5(
-                $optionsBag->get('face-crop-position').$this->sourceImageUrl
+        $this->sourceImagePath = TMP_DIR.'original-'.
+            (md5(
+                $optionsBag->get('face-crop-position').
+                $this->sourceImageUrl
             ));
         $this->saveToTemporaryFile();
-        $this->sourceImageMimeType = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $this->sourceImagePath);
+
+        $this->sourceImageMimeType = finfo_file(
+            finfo_open(FILEINFO_MIME_TYPE),
+            $this->sourceImagePath
+        );
     }
 
     /**
