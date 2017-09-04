@@ -67,42 +67,4 @@ class Processor
 
         return !empty($output[0]) ? $output[0] : "";
     }
-
-    /**
-     * Get the image Identity information
-     *
-     * @param OutputImage $image
-     *
-     * @return string
-     */
-    public function getSourceImageInfo(OutputImage $image): string
-    {
-        $output = $this->execute(self::IM_IDENTITY_COMMAND." ".$image->getOutputImagePath());
-
-        return !empty($output[0]) ? $output[0] : "";
-    }
-
-    /**
-     * Parses the default output of imagemagik identify command
-     * @param  array $output the STDOUT from executing an identify command
-     * @return array         associative array with the info in there
-     */
-    protected function parseImageInfoResponse($output): array
-    {
-        if (!is_array($output) || empty($output)) {
-            throw new Exception("Image identify failed", 1);
-            return [];
-        }
-
-        $output = explode(' ', $output[0]);
-        return [
-            'filePath'     => $output[0],
-            'format'       => $output[1],
-            'dimensions'   => $output[2],
-            'canvas'       => $output[3],
-            'colorDepth'   => $output[4],
-            'colorProfile' => $output[5],
-            'weight'       => $output[6],
-        ];
-    }
 }
