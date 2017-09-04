@@ -99,7 +99,7 @@ $app['image.handler'] = function (\Silex\Application $app) {
  */
 if (!empty($argv[1]) && !empty($argv[2]) && $argv[1] == 'encrypt') {
     printf("Hashed request: %s\n", $app['image.handler']->getSecurityHandler()->encrypt($argv[2]));
-    exit;
+    return;
 }
 
 /** debug conf */

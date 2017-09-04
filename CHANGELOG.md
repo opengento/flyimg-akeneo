@@ -28,7 +28,8 @@
 - [#77](https://github.com/flyimg/flyimg/pull/77) Update composer [phpunittest] (@sadok-f)
 - [#73](https://github.com/flyimg/flyimg/pull/73) Increase code coverage unit test + Update readme (@sadok-f)
 - [#72](https://github.com/flyimg/flyimg/pull/72) Add more UnitTest in order to increase the code coverage (@sadok-f)
-- [#71](https://github.com/flyimg/flyimg/pull/71) Add More Unit test cover WebTestCases #42 (@sadok-f)
+- [#71](https://github.com/flyimg/flyimg/pull/71) Add More Unit test cover WebTestCases
+ #42 (@sadok-f)
 
 ### 1.0.0 (2017/06/30 16:12 +00:00)
 - [#70](https://github.com/flyimg/flyimg/pull/70) Optimization part 1 (@sadok-f)
@@ -49,7 +50,9 @@
 - [#60](https://github.com/flyimg/flyimg/pull/60) Activating Open Collective (@xdamman)
 
 ### 0.1.6 (2017/03/28 05:56 +00:00)
-- [#57](https://github.com/flyimg/flyimg/pull/57) Allow to serve WebP if explicitly requested  I need this to keep working on other branch, so I'll be a dick and just merge it without approval. If there is anything you don't like we can revert, no problem. (@baamenabar)
+- [#57](https://github.com/flyimg/flyimg/pull/57) Allow to serve WebP if explicitly requested
+ 
+ I need this to keep working on other branch, so I'll be a dick and just merge it without approval. If there is anything you don't like we can revert, no problem. (@baamenabar)
 - [#56](https://github.com/flyimg/flyimg/pull/56) Update docs (@sadok-f)
 - [#55](https://github.com/flyimg/flyimg/pull/55) Move phpunit to require-dev section (@sadok-f)
 - [#53](https://github.com/flyimg/flyimg/pull/53) Remove Twig from the repo. Clean clean clean! (@sadok-f)
