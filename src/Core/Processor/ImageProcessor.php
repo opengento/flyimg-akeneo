@@ -11,6 +11,18 @@ use Core\Entity\Image\OutputImage;
 class ImageProcessor extends Processor
 {
     /**
+     * This holds the width and height dimensions in pixels of the source image
+     * @var array
+     */
+    protected $sourceDimensions = [];
+
+    /**
+     * Basic source image info parsed from IM identify command
+     * @var array
+     */
+    protected $sourceInfo = [];
+
+    /**
      * Save new FileName based on source file and list of options
      *
      * @param OutputImage $outputImage
@@ -137,6 +149,9 @@ class ImageProcessor extends Processor
         $preserveAspectRatio = $outputImage->extract('preserve-aspect-ratio');
 
         if ($targetWidth && $targetHeight) {
+            if ($preserveNaturalSize) {
+                // here we will compare source image dimensions to target dimensions and adjust
+            }
             $extent = ' -extent '.$size;
             $gravity = ' -gravity '.escapeshellarg($outputImage->extract('gravity'));
             $resizingConstraints = '';
@@ -156,11 +171,27 @@ class ImageProcessor extends Processor
             $size .= $preserveNaturalSize ? '\>' : '';
             $gravity = '';
         }
-        //In cas on png format, remove extent option
-        if ($outputImage->isOutputPng()) {
-            $extent = '';
-        }
 
         return [$size, $extent, $gravity];
+    }
+
+    protected function getSourceImageDimensions()
+    {
+        if(!empty($this->sourceDimensions)) {
+            return $this->sourceDimensions;
+        }
+
+        $this->sourceDimensions = $outputImage->getInputImage()->getImageDimensions();
+
+    }
+
+    protected function getSourceImageInfo()
+    {
+        if(!empty($this->sourceInfo)) {
+            return $this->sourceInfo;
+        }
+
+        $this->sourceInfo = $outputImage->getInputImage()->getImageInfo();
+
     }
 }
