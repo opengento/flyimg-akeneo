@@ -34,16 +34,16 @@ You pass the image URL and a set of keys with options, like size or compression.
 * Height: 250
 * Crop if necesary: `c_1`
 
-http://oi.flyimg.io/upload/w_300,h_250,c_1/https://m0.cl/t/resize-test_1920.jpg
+https://oi.flyimg.io/upload/w_300,h_250,c_1/https://m0.cl/t/resize-test_1920.jpg
 
-![lago_ranco](http://oi.flyimg.io/upload/w_300,h_250,c_1/https://m0.cl/t/resize-test_1920.jpg)
+![lago_ranco](https://oi.flyimg.io/upload/w_300,h_250,c_1/https://m0.cl/t/resize-test_1920.jpg)
 
 This will serve the image.
 
 ## Get the path to the generated image instead of serving it
 Change the first part of the path from `upload` to `path`, like so:
 
-http://oi.flyimg.io/path/w_300,h_250,c_1/https://m0.cl/t/resize-test_1920.jpg will output in the body of the response:
+https://oi.flyimg.io/path/w_300,h_250,c_1/https://m0.cl/t/resize-test_1920.jpg will output in the body of the response:
 
 
 ```
@@ -56,9 +56,9 @@ http://localhost:8080/uploads/752d2124eef87b3112779618c96468da.jpg
 * Height: 250
 * Note that we ommit the crop parameter
 
-http://oi.flyimg.io/upload/w_300,h_250/https://m0.cl/t/resize-test_1920.jpg
+https://oi.flyimg.io/upload/w_300,h_250/https://m0.cl/t/resize-test_1920.jpg
 
-![lago_ranco](http://oi.flyimg.io/upload/w_300,h_250/https://m0.cl/t/resize-test_1920.jpg)
+![lago_ranco](https://oi.flyimg.io/upload/w_300,h_250/https://m0.cl/t/resize-test_1920.jpg)
 
 ## Crop to a square and rotate 90 degrees clockwise
 * Image: `https://m0.cl/t/resize-test_1920.jpg` 
@@ -67,9 +67,9 @@ http://oi.flyimg.io/upload/w_300,h_250/https://m0.cl/t/resize-test_1920.jpg
 * Crop: `c_1`
 * Rotate: 90
 
-http://oi.flyimg.io/upload/w_200,h_200,c_1,r_90/https://m0.cl/t/resize-test_1920.jpg
+https://oi.flyimg.io/upload/w_200,h_200,c_1,r_90/https://m0.cl/t/resize-test_1920.jpg
 
-![lago_ranco](http://oi.flyimg.io/upload/w_200,h_200,c_1,r_90/https://m0.cl/t/resize-test_1920.jpg)
+![lago_ranco](https://oi.flyimg.io/upload/w_200,h_200,c_1,r_90/https://m0.cl/t/resize-test_1920.jpg)
 
 ## Get an image with exact dimensions and low quality
 * Image: `https://m0.cl/t/resize-test_1920.jpg` 
@@ -78,9 +78,9 @@ http://oi.flyimg.io/upload/w_200,h_200,c_1,r_90/https://m0.cl/t/resize-test_1920
 * Crop: `c_1`
 * Quality: 30
 
-http://oi.flyimg.io/upload/w_200,h_200,c_1,q_30/https://m0.cl/t/resize-test_1920.jpg
+https://oi.flyimg.io/upload/w_200,h_200,c_1,q_30/https://m0.cl/t/resize-test_1920.jpg
 
-![lago_ranco](http://oi.flyimg.io/upload/w_200,h_200,c_1,q_30/https://m0.cl/t/resize-test_1920.jpg)
+![lago_ranco](https://oi.flyimg.io/upload/w_200,h_200,c_1,q_30/https://m0.cl/t/resize-test_1920.jpg)
 
 
 # Table of Contents
@@ -186,7 +186,7 @@ You can navigate to your machine's IP in port 8080 (ex: http://127.0.0.1:8080/ )
 
 You can test your image resizing service by navigating to: http://127.0.0.1:8080/upload/w_130,h_113,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg
 
-![ff-logo](http://oi.flyimg.io/upload/w_130,h_113,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg)
+![ff-logo](https://oi.flyimg.io/upload/w_130,h_113,q_90/https://www.mozilla.org/media/img/firefox/firefox-256.e2c1fc556816.jpg)
 
 **It's working!**
 
@@ -217,7 +217,7 @@ The most common URL options are:
 
 **example:`w_100`** 
 
-`w_100` :   `http://oi.flyimg.io/upload/w_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg`
+`w_100` :   `https://oi.flyimg.io/upload/w_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg`
 
 ### `h` : height
 `int`  
@@ -226,7 +226,7 @@ The most common URL options are:
 
 **example:`h_100`** 
 
-`h_100`  : `http://oi.flyimg.io/upload/h_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg`
+`h_100`  : `https://oi.flyimg.io/upload/h_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg`
 
 ### Using width AND height
 
@@ -235,7 +235,7 @@ By default setting width and height together, works like defining a rectangle th
 
 By default; width, height, or both will **not scale up** an image that is smaller than the defined dimensions.
 
-`h_300,w_300` : `http://oi.flyimg.io/upload/h_300,w_300/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg`
+`h_300,w_300` : `https://oi.flyimg.io/upload/h_300,w_300/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg`
 
 
 ### `c` : crop
@@ -245,7 +245,7 @@ By default; width, height, or both will **not scale up** an image that is smalle
 
 **example:`c_1`** 
 
-`c_1,h_400,w_400` : `http://oi.flyimg.io/upload/c_1,h_400,w_400/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg`
+`c_1,h_400,w_400` : `https://oi.flyimg.io/upload/c_1,h_400,w_400/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg`
 
 ### `g` : gravity
 `string`  
@@ -262,7 +262,7 @@ The basic options are: `NorthWest`, `North`, `NorthEast`, `West`, `Center`, `Eas
 
 **example: `r_90`, `r_-180`,...**
 
-`r_45` :  `http://oi.flyimg.io/upload/r_-45,w_400,h_400/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg`
+`r_45` :  `https://oi.flyimg.io/upload/r_-45,w_400,h_400/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg`
 
 ### `o` : output
 `string`  
@@ -278,10 +278,10 @@ The basic options are: `NorthWest`, `North`, `NorthEast`, `West`, `Center`, `Eas
 
 **example:`q_100`,`q_75`,...** 
 
-`q_30`  :  `http://oi.flyimg.io/upload/q_30/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg` 
+`q_30`  :  `https://oi.flyimg.io/upload/q_30/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg` 
 
 
-`q_100`  :  `http://oi.flyimg.io/upload/q_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg`
+`q_100`  :  `https://oi.flyimg.io/upload/q_100/https://raw.githubusercontent.com/flyimg/flyimg/master/web/Rovinj-Croatia.jpg`
 
 ### Refresh or re-fetch source image
 `rf` : refresh  
@@ -412,9 +412,9 @@ Status Codes  [code:count]             200:500
 
 # Demo Application running
 
-[http://oi.flyimg.io](http://oi.flyimg.io)
+[https://oi.flyimg.io](https://oi.flyimg.io)
 
-![resize-test](http://oi.flyimg.io/upload/w_300,h_250,c_1/https://m0.cl/t/resize-test_1920.jpg)
+![resize-test](https://oi.flyimg.io/upload/w_300,h_250,c_1/https://m0.cl/t/resize-test_1920.jpg)
 
 
 # Roadmap
