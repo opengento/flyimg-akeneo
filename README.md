@@ -106,6 +106,7 @@ http://oi.flyimg.io/upload/w_200,h_200,c_1,q_30/https://m0.cl/t/resize-test_1920
    * [Demo Application running](#demo-application-running)
    * [Roadmap](#roadmap)
    * [Contributors](#contributors)
+   * [Community](#community)
    * [Backers](#backers)
    * [Sponsors](#sponsors)
    
@@ -431,6 +432,11 @@ This project exists thanks to all the people who contribute.
 <a href="https://github.com/flyimg/flyimg/graphs/contributors"><img src="https://opencollective.com/flyimg/contributors.svg?width=890" /></a>
 
 
+# Community
+
+This project exists thanks to all the people who contribute.
+* Follow us on [GitHub][1] and [Twitter][2].
+
 # Backers
 
 Thank you to all our backers! [[Become a backer](https://opencollective.com/flyimg#backer)]
@@ -459,3 +465,6 @@ Licence: MIT
 
 
 Enjoy your Flyimaging!
+
+[1]: https://github.com/flyimg
+[2]: https://twitter.com/flyimg_
