@@ -105,6 +105,7 @@ http://oi.flyimg.io/upload/w_200,h_200,c_1,q_30/https://m0.cl/t/resize-test_1920
    * [Enable Xdebug](https://github.com/flyimg/flyimg/blob/master/docs/enabling-xdebug.md)
    * [Demo Application running](#demo-application-running)
    * [Roadmap](#roadmap)
+   * [Community](#community)
    * [Contributors](#contributors)
    * [Backers](#backers)
    * [Sponsors](#sponsors)
@@ -425,6 +426,12 @@ Status Codes  [code:count]             200:500
 - [ ] Storage auto-mapping
 - [ ] Add support for FLIFF, BPG and JPEG2000
 
+
+# Community
+
+* Follow us on [GitHub][1] and [Twitter][2].
+
+
 # Contributors
 
 This project exists thanks to all the people who contribute.
@@ -459,3 +466,6 @@ Licence: MIT
 
 
 Enjoy your Flyimaging!
+
+[1]: https://github.com/flyimg
+[2]: https://twitter.com/flyimg_
