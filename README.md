@@ -434,7 +434,6 @@ This project exists thanks to all the people who contribute.
 
 # Community
 
-This project exists thanks to all the people who contribute.
 * Follow us on [GitHub][1] and [Twitter][2].
 
 # Backers
