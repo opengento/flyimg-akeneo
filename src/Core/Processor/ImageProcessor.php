@@ -152,18 +152,18 @@ class ImageProcessor extends Processor
             if ($preserveNaturalSize) {
                 // here we will compare source image dimensions to target dimensions and adjust
             }
-            $extent = ' -extent '.$size;
             $gravity = ' -gravity '.escapeshellarg($outputImage->extract('gravity'));
             $resizingConstraints = '';
             if ($outputImage->extract('crop')) {
                 $resizingConstraints .= '^';
+                $extent = ' -extent '.$size;
                 /**
                  * still need to solve the combination of ^
                  * -extent and +repage . Will need to do calculations with the
                  * original image dimensions vs. the target dimensions.
                  */
             } else {
-                $extent .= '+repage ';
+                $extent .= ' +repage ';
             }
             $resizingConstraints .= $preserveAspectRatio ? '' : '!';
             $size .= $resizingConstraints;
@@ -189,7 +189,7 @@ class ImageProcessor extends Processor
     }
 
     /**
-     * @return array Associative array with basic image info
+     * @return array Associative array with basic image
      */
     protected function getSourceImageInfo()
     {
