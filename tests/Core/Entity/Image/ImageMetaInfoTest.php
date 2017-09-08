@@ -48,7 +48,7 @@ class ImageMetaInfoTest extends BaseTest
         string $testImagePath,
         string $expectedFormat,
         string $expectedCanvas,
-        string $expectedColorBitDepth,
+        string $expectedBitDepth,
         string $expectedColorProfile,
         string $expectedFileWeight,
         array  $expectedDimensions
@@ -56,7 +56,7 @@ class ImageMetaInfoTest extends BaseTest
         $image = new ImageMetaInfo($testImagePath);
         $this->assertEquals($expectedFormat, $image->getFormat());
         $this->assertEquals($expectedCanvas, $image->getCanvas());
-        $this->assertEquals($expectedColorBitDepth, $image->getColorBitDepth());
+        $this->assertEquals($expectedBitDepth, $image->getColorBitDepth());
         $this->assertEquals($expectedColorProfile, $image->getColorProfile());
         $this->assertEquals($expectedFileWeight, $image->getFileWeight());
         $imageDimensions = $image->getDimensions();

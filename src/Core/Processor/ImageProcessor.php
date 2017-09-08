@@ -174,30 +174,4 @@ class ImageProcessor extends Processor
 
         return [$size, $extent, $gravity];
     }
-
-    /**
-     * @return array
-     */
-    protected function getSourceImageDimensions()
-    {
-        if (!empty($this->sourceDimensions)) {
-            return $this->sourceDimensions;
-        }
-
-        $this->sourceDimensions = $outputImage->getInputImage()->getImageDimensions();
-        return $this->sourceDimensions;
-    }
-
-    /**
-     * @return array Associative array with basic image
-     */
-    protected function getSourceImageInfo()
-    {
-        if (!empty($this->sourceInfo)) {
-            return $this->sourceInfo;
-        }
-
-        $this->sourceInfo = $outputImage->getInputImage()->getImageInfo();
-        return $this->sourceInfo;
-    }
 }
