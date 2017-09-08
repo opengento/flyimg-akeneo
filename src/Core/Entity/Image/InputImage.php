@@ -4,6 +4,7 @@ namespace Core\Entity\Image;
 
 use Core\Entity\OptionsBag;
 use Core\Exception\ReadFileException;
+use Core\Entity\Image\ImageMetaInfo;
 
 class InputImage
 {
@@ -18,6 +19,9 @@ class InputImage
 
     /** @var string */
     protected $sourceImageMimeType;
+
+    /** @var \ImageMetaInfo */
+    protected $sourceImageInfo;
 
     /**
      * OutputImage constructor.
@@ -36,11 +40,7 @@ class InputImage
                 $this->sourceImageUrl
             ));
         $this->saveToTemporaryFile();
-
-        $this->sourceImageMimeType = finfo_file(
-            finfo_open(FILEINFO_MIME_TYPE),
-            $this->sourceImagePath
-        );
+        $this->sourceImageInfo = new ImageMetaInfo($this->sourceImagePath);
     }
 
     /**
@@ -130,6 +130,11 @@ class InputImage
      */
     public function getSourceImageMimeType(): string
     {
+        if (isset($this->sourceImageMimeType)) {
+            return $this->sourceImageMimeType;
+        }
+
+        $this->sourceImageMimeType = $this->sourceImageInfo->getMimeType();
         return $this->sourceImageMimeType;
     }
 }

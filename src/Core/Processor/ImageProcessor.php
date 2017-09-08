@@ -11,6 +11,18 @@ use Core\Entity\Image\OutputImage;
 class ImageProcessor extends Processor
 {
     /**
+     * This holds the width and height dimensions in pixels of the source image
+     * @var array
+     */
+    protected $sourceDimensions = [];
+
+    /**
+     * Basic source image info parsed from IM identify command
+     * @var array
+     */
+    protected $sourceInfo = [];
+
+    /**
      * Save new FileName based on source file and list of options
      *
      * @param OutputImage $outputImage
@@ -137,28 +149,27 @@ class ImageProcessor extends Processor
         $preserveAspectRatio = $outputImage->extract('preserve-aspect-ratio');
 
         if ($targetWidth && $targetHeight) {
-            $extent = ' -extent '.$size;
+            if ($preserveNaturalSize) {
+                // here we will compare source image dimensions to target dimensions and adjust
+            }
             $gravity = ' -gravity '.escapeshellarg($outputImage->extract('gravity'));
             $resizingConstraints = '';
             if ($outputImage->extract('crop')) {
                 $resizingConstraints .= '^';
+                $extent = ' -extent '.$size;
                 /**
                  * still need to solve the combination of ^
                  * -extent and +repage . Will need to do calculations with the
                  * original image dimensions vs. the target dimensions.
                  */
             } else {
-                $extent .= '+repage ';
+                $extent .= ' +repage ';
             }
             $resizingConstraints .= $preserveAspectRatio ? '' : '!';
             $size .= $resizingConstraints;
         } else {
             $size .= $preserveNaturalSize ? '\>' : '';
             $gravity = '';
-        }
-        //In cas on png format, remove extent option
-        if ($outputImage->isOutputPng()) {
-            $extent = '';
         }
 
         return [$size, $extent, $gravity];

@@ -15,16 +15,19 @@ security_key: ""
 # secret Initialization vector(IV)
 security_iv: ""
 
-#restrict domains, false by default
+# restrict domains, false by default
 restricted_domains: false
 
-#if restricted_domains is enabled, put whitelist domains here
+# if restricted_domains is enabled, put whitelist domains here
 whitelist_domains:
     - domain-1.com
     - domain-2.com
 
-#Default storage system is local, to use use AWS S3, change this param to s3
+# Default storage system is local, to use use AWS S3, change this param to s3
 storage_system: local
+
+# Number of threads for Imagemagick to use
+thread: 1
 
 #In case storage_system: s3, you need to add those AWS S3 parameters:
 aws_s3:
@@ -96,5 +99,3 @@ default_options:
   extract-top-y: null
   extract-bottom-x: null
   extract-bottom-y: null
-  # private options set here
-  thread: 1
