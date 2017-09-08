@@ -180,7 +180,7 @@ class ImageProcessor extends Processor
      */
     protected function getSourceImageDimensions()
     {
-        if(!empty($this->sourceDimensions)) {
+        if (!empty($this->sourceDimensions)) {
             return $this->sourceDimensions;
         }
 
@@ -193,7 +193,7 @@ class ImageProcessor extends Processor
      */
     protected function getSourceImageInfo()
     {
-        if(!empty($this->sourceInfo)) {
+        if (!empty($this->sourceInfo)) {
             return $this->sourceInfo;
         }
 

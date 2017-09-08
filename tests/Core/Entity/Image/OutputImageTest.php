@@ -17,6 +17,10 @@ class OutputImageTest extends BaseTest
      */
     public function testParseOptions()
     {
+        /**
+         * This array needs to be updated every time we
+         * add or remove a URL option in the config/parametesr.yml file.
+         */
         $expectedParseArray = [
             'mozjpeg' => 1,
             'quality' => 90,
@@ -47,7 +51,6 @@ class OutputImageTest extends BaseTest
             'extract-top-y' => null,
             'extract-bottom-x' => null,
             'extract-bottom-y' => null,
-            'thread' => 1,
         ];
         $optionsBag = new OptionsBag($this->ImageHandler->getAppParameters(), self::OPTION_URL);
         $inputImage = new InputImage($optionsBag, self::JPG_TEST_IMAGE);

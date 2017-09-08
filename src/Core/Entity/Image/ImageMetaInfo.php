@@ -122,7 +122,7 @@ class ImageMetaInfo
      */
     public function getInfo(): array
     {
-        if(!empty($this->imageInfo)) {
+        if (!empty($this->imageInfo)) {
             return $this->imageInfo;
         }
 
@@ -133,12 +133,13 @@ class ImageMetaInfo
     /**
      * Returns an associative array with the info of this image's path.
      * In the future exec functionality to an \Core\Processor\Execution class
+     * To figure out: What does the ` 2>&1` part do. Without it, WebP identification just breaks.
      * @return array
      * @throws \Exception
      */
     protected function getImageImIdentify(): array
     {
-        exec('/usr/bin/identify ' . $this->getPath(), $output, $code);
+        exec('/usr/bin/identify ' . $this->getPath() .' 2>&1', $output, $code);
         if (count($output) === 0) {
             $outputError = $code;
         } else {
@@ -153,12 +154,34 @@ class ImageMetaInfo
             );
         }
 
+        $output = $this->sanitizeWebPOutput($output);
+
         $imageDetails = $this->parseImageInfoResponse($output);
         return $imageDetails;
     }
 
     /**
+     * Imagemagick identify will first parse and store an internal copy of WebP files, outputting that process first.
+     * For example:
+     *     * Decoded /tmp/magick-19757aUG67rpqXgFy. Dimensions: 100 x 100 . Format: lossy. Now saving...
+     *     * Saved file /tmp/magick-19757d1r0Kuo4UPCV
+     *     * tests/testImages/square.webp PAM 100x100 100x100+0+0 8-bit TrueColor sRGB 40.1KB 0.000u 0:00.000
+     * This mmethod takes care of the extra output
+     * @param  array  $output CLI exec output array
+     * @return array         The expected array with the identify string at position 0.
+     */
+    protected function sanitizeWebPOutput(array $output):array
+    {
+        if (strpos($output[0], 'Decoded /tmp/magick-') !== 0) {
+            return $output;
+        }
+
+        return [$output[2]];
+    }
+
+    /**
      * Parses the default output of imagemagik identify command
+     * To fix in the near future: currently the bit depth is incomplete for WebP and color profile for GIF
      * @param  array $output the STDOUT from executing an identify command
      * @return array         associative array with the info in there
      * @throws \Exception
