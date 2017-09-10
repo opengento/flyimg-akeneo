@@ -184,15 +184,9 @@ class ImageMetaInfo
      * To fix in the near future: currently the bit depth is incomplete for WebP and color profile for GIF
      * @param  array $output the STDOUT from executing an identify command
      * @return array         associative array with the info in there
-     * @throws \Exception
      */
     protected function parseImageInfoResponse($output): array
     {
-        if (!is_array($output) || empty($output)) {
-            throw new Exception("Image identify failed", 1);
-            return [];
-        }
-
         $output = explode(' ', $output[0]);
         return [
             self::IMAGE_PROP_FILE_FORMAT   => $output[1],
