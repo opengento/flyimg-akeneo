@@ -4,6 +4,7 @@ namespace Tests\Core\Entity\Image;
 
 use Core\Entity\Image\ImageMetaInfo;
 use Core\Entity\Image\OutputImage;
+use Core\Exception\ExecFailedException;
 use Tests\Core\BaseTest;
 
 /**
@@ -28,6 +29,14 @@ class ImageMetaInfoTest extends BaseTest
             [self::PNG_TEST_IMAGE, OutputImage::PNG_MIME_TYPE],
             [self::WEBP_TEST_IMAGE, OutputImage::WEBP_MIME_TYPE],
         ];
+    }
+
+
+    public function testGetMimeTypeCached() {
+        $testImagePath = self::JPG_TEST_IMAGE;
+        $image = new ImageMetaInfo($testImagePath);
+        $this->assertEquals(OutputImage::JPEG_MIME_TYPE, $image->getMimeType());
+        $this->assertEquals(OutputImage::JPEG_MIME_TYPE, $image->getMimeType());
     }
 
     /**
@@ -64,6 +73,13 @@ class ImageMetaInfoTest extends BaseTest
         $this->assertEquals(2, count($imageDimensions));
         $this->assertEquals($expectedDimensions['width'], $imageDimensions['width']);
         $this->assertEquals($expectedDimensions['height'], $imageDimensions['height']);
+    }
+
+    public function testFileReadException()
+    {
+        $this->expectException(ExecFailedException::class);
+        $image = new ImageMetaInfo(self::PNG_TEST_IMAGE.'--fail');
+        $image->getColorBitDepth();
     }
 
     public function fileInfoProvider(): array
