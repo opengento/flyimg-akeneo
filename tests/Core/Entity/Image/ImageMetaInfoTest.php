@@ -31,8 +31,8 @@ class ImageMetaInfoTest extends BaseTest
         ];
     }
 
-
-    public function testGetMimeTypeCached() {
+    public function testGetMimeTypeCached()
+    {
         $testImagePath = self::JPG_TEST_IMAGE;
         $image = new ImageMetaInfo($testImagePath);
         $this->assertEquals(OutputImage::JPEG_MIME_TYPE, $image->getMimeType());

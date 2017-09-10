@@ -43,6 +43,18 @@ class ImageProcessorTest extends BaseTest
         $this->assertEquals($expectedSize, $imageDimensions);
     }
 
+    /**
+     * @dataProvider expandProvider
+     */
+    public function testExpandSuccess(string $options, string $expectedSize, string $sourceImage)
+    {
+        $image = $this->ImageHandler->processImage($options . ',o_png', $sourceImage);
+        $this->generatedImage[] = $image;
+        $this->assertFileExists($image->getOutputImagePath());
+        $imageDimensions = $this->getImageInfo($image->getOutputImagePath())['dimensions'];
+        $this->assertEquals($expectedSize, $imageDimensions);
+    }
+
     public function shrinkProvider(): array
     {
         $resizingTests = [
@@ -103,9 +115,81 @@ class ImageProcessorTest extends BaseTest
             ['w_300,h_150,c_1', '300x150', self::PNG_TEST_PORTRAIT_IMAGE],
         ];
 
+        return $this->addOutputExtensionsToTests($resizingTests);
+    }
+
+    /**
+     * defines tests to check images don't expand by default
+     * @return array Data provider array
+     */
+    public function expandProvider(): array
+    {
+        $resizingTests = [
+        /*   Test name                      url option, out size, source image */
+            'Resize to width square' =>
+            ['w_400', '200x200', self::PNG_TEST_SMALL_SQUARE_IMAGE],
+            'Resize to width landscape' =>
+            ['w_400', '300x200', self::PNG_TEST_SMALL_LANDSCAPE_IMAGE],
+            'Resize to width portrait' =>
+            ['w_400', '200x300', self::PNG_TEST_SMALL_PORTRAIT_IMAGE],
+            'Resize to height square' =>
+            ['h_400', '200x200', self::PNG_TEST_SMALL_SQUARE_IMAGE],
+            'Resize to height landscape' =>
+            ['h_400', '300x200', self::PNG_TEST_SMALL_LANDSCAPE_IMAGE],
+            'Resize to height portrait' =>
+            ['h_400', '200x300', self::PNG_TEST_SMALL_PORTRAIT_IMAGE],
+            'Resize to width and height (landscape) square' =>
+            ['w_400,h_150', '150x150', self::PNG_TEST_SMALL_SQUARE_IMAGE],
+            'Resize to width and height (landscape) landscape' =>
+            ['w_400,h_150', '225x150', self::PNG_TEST_SMALL_LANDSCAPE_IMAGE],
+            'Resize to width and height (landscape) portrait' =>
+            ['w_400,h_150', '100x150', self::PNG_TEST_SMALL_PORTRAIT_IMAGE],
+            'Resize to width and height (portrait) square' =>
+            ['w_150,h_400', '150x150', self::PNG_TEST_SMALL_SQUARE_IMAGE],
+            'Resize to width and height (portrait) landscape' =>
+            ['w_150,h_400', '150x100', self::PNG_TEST_SMALL_LANDSCAPE_IMAGE],
+            'Resize to width and height (portrait) portrait' =>
+            ['w_150,h_400', '150x225', self::PNG_TEST_SMALL_PORTRAIT_IMAGE],
+            'Resize and Crop to square a square' =>
+            ['w_400,h_400,c_1', '200x200', self::PNG_TEST_SMALL_SQUARE_IMAGE],
+            'Resize and Crop to square a landscape' =>
+            ['w_400,h_400,c_1', '200x200', self::PNG_TEST_SMALL_LANDSCAPE_IMAGE],
+            'Resize and Crop to square a portrait' =>
+            ['w_400,h_400,c_1', '200x200', self::PNG_TEST_SMALL_PORTRAIT_IMAGE],
+            'Resize and Crop to portrait (wider than portrait) square' =>
+            ['w_250,h_400,c_1', '250x300', self::PNG_TEST_SMALL_SQUARE_IMAGE],
+            'Resize and Crop to portrait (wider than portrait) landscape' =>
+            ['w_250,h_400,c_1', '250x300', self::PNG_TEST_SMALL_LANDSCAPE_IMAGE],
+            'Resize and Crop to portrait (wider than portrait) portrait' =>
+            ['w_250,h_400,c_1', '250x300', self::PNG_TEST_SMALL_PORTRAIT_IMAGE],
+            'Resize and Crop to portrait (narrower than portrait) square' =>
+            ['w_150,h_400,c_1', '150x300', self::PNG_TEST_SMALL_SQUARE_IMAGE],
+            'Resize and Crop to portrait (narrower than portrait) landscape' =>
+            ['w_150,h_400,c_1', '150x300', self::PNG_TEST_SMALL_LANDSCAPE_IMAGE],
+            'Resize and Crop to portrait (narrower than portrait) portrait' =>
+            ['w_150,h_400,c_1', '150x300', self::PNG_TEST_SMALL_PORTRAIT_IMAGE],
+            'Resize and Crop to landscape (taller than landscape) square' =>
+            ['w_400,h_250,c_1', '300x250', self::PNG_TEST_SMALL_SQUARE_IMAGE],
+            'Resize and Crop to landscape (taller than landscape) landscape' =>
+            ['w_400,h_250,c_1', '300x250', self::PNG_TEST_SMALL_LANDSCAPE_IMAGE],
+            'Resize and Crop to landscape (taller than landscape) portrait' =>
+            ['w_400,h_250,c_1', '300x250', self::PNG_TEST_SMALL_PORTRAIT_IMAGE],
+            'Resize and Crop to landscape (shorter than landscape) square' =>
+            ['w_400,h_150,c_1', '300x150', self::PNG_TEST_SMALL_SQUARE_IMAGE],
+            'Resize and Crop to landscape (shorter than landscape) landscape' =>
+            ['w_400,h_150,c_1', '300x150', self::PNG_TEST_SMALL_LANDSCAPE_IMAGE],
+            'Resize and Crop to landscape (shorter than landscape) portrait' =>
+            ['w_400,h_150,c_1', '300x150', self::PNG_TEST_SMALL_PORTRAIT_IMAGE],
+        ];
+
+        return $this->addOutputExtensionsToTests($resizingTests);
+    }
+
+    protected function addOutputExtensionsToTests(array $transformationsList): array
+    {
         $tests = [];
 
-        foreach ($resizingTests as $key => $test) {
+        foreach ($transformationsList as $key => $test) {
             foreach (self::OUTPUT_EXTENSIONS as $extension) {
                 $test[0] = $test[0].',o_'.$extension;
                 $tests[$key . ' with ' . $extension] = $test;

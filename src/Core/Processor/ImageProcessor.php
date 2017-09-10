@@ -7,6 +7,15 @@ use Core\Entity\Image\OutputImage;
 /**
  * Class ImageProcessor
  * @package Core\Service
+ * Is the above line still valid??
+ *
+ * In this class we separate requests in 3 types
+ *  - Simple resize geometry, resolved with -thumbnail
+ *      -- Only width or height
+ *      -- Only width and height
+ *  - Cropping
+ *
+ *  - Advanced requests
  */
 class ImageProcessor extends Processor
 {
@@ -23,6 +32,12 @@ class ImageProcessor extends Processor
     protected $sourceInfo = [];
 
     /**
+     * OptionsBag from the request
+     * @var Core\Entity\OptionsBag
+     */
+    protected $options;
+
+    /**
      * Save new FileName based on source file and list of options
      *
      * @param OutputImage $outputImage
@@ -32,6 +47,7 @@ class ImageProcessor extends Processor
      */
     public function processNewImage(OutputImage $outputImage): OutputImage
     {
+        $this->options = $outputImage->getInputImage()->getOptionsBag();
         $this->generateCmdString($outputImage);
         $this->execute($outputImage->getCommandString());
 
@@ -173,5 +189,31 @@ class ImageProcessor extends Processor
         }
 
         return [$size, $extent, $gravity];
+    }
+
+    /**
+     * @return array
+     */
+    protected function getSourceImageDimensions()
+    {
+        if (!empty($this->sourceDimensions)) {
+            return $this->sourceDimensions;
+        }
+
+        $this->sourceDimensions = $outputImage->getInputImage()->getImageDimensions();
+        return $this->sourceDimensions;
+    }
+
+    /**
+     * @return array Associative array with basic image
+     */
+    protected function getSourceImageInfo()
+    {
+        if (!empty($this->sourceInfo)) {
+            return $this->sourceInfo;
+        }
+
+        $this->sourceInfo = $outputImage->getInputImage()->getImageInfo();
+        return $this->sourceInfo;
     }
 }
