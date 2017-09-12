@@ -110,4 +110,18 @@ class OptionsBag
     {
         return array_key_exists($key, $this->optionsCollection) ? $this->optionsCollection[$key] : '';
     }
+
+    /**
+     * Update a parameter by name.
+     * These options will not update the main options list.
+     *
+     * @param string $key
+     * @param string $value
+     * @return OptionsBag
+     */
+    public function setOption(string $key, string $value)
+    {
+        $this->optionsCollection[$key] = $value;
+        return $this;
+    }
 }

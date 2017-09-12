@@ -49,6 +49,7 @@ class ImageProcessor extends Processor
      */
     public function processNewImage(OutputImage $outputImage): OutputImage
     {
+        $this->outputImage = $outputImage;
         $this->options = $outputImage->getInputImage()->getOptionsBag();
         $this->generateCmdString($outputImage);
         $this->execute($outputImage->getCommandString());
@@ -162,15 +163,24 @@ class ImageProcessor extends Processor
     /**
      * IF we crop we need to know if the source image is bigger or smaller than the target size.
      * @return string command section for the resizing.
+     *
+     * 👉 docker exec -it flyimg /usr/bin/convert web/landscape-color-squares-300x200.png -resize 400x50^ -gravity center -extent 400x50 100_t15.png
+     * identify: ./100_t15.png PNG 400x50 400x50+0+0 8-bit sRGB 6.43KB 0.000u 0:00.000
+     * 
+     * 👉 docker exec -it flyimg /usr/bin/convert web/landscape-color-squares-300x200.png -resize 400x50^\> -gravity center -extent 400x50 100_t16.png
+     *  identify: ./100_t16.png PNG 400x50 400x50+0+0 8-bit sRGB 5.63KB 0.010u 0:00.009
+     *
+     *  The shorthand version of resize to fill space will always fill the space even if image is bigger
      */
     protected function generateCropSize(): string
     {
+        $this->updateTargetDimensions();
         $command = [];
-
-        $gravity = $this->options->getOption('gravity');
-        $command[] = '-gravity ' . $gravity;
-        $command[] = '-crop ' . $this->options->getOption('width') . 'x' .$this->options->getOption('height') . '+0+0';
-
+        $command[] = $this->getResizeOperator();
+        $command[] = $this->getDimensions() . '^';
+        $command[] = '-gravity ' . $this->options->getOption('gravity');
+        $command[] = '-extent ' . $this->getDimensions();
+        return implode(' ', $command);
     }
 
     /**
@@ -223,6 +233,26 @@ class ImageProcessor extends Processor
         return $this->getGeometry('resizeOperator', function () {
             return $this->options->getOption('resize') ? '-resize' : '-thumbnail';
         });
+    }
+
+    protected function updateTargetDimensions()
+    {
+        if (!$this->options->getOption('preserve-natural-size')) {
+            return;
+        }
+
+        $targetWidth = $this->options->getOption('width');
+        $targetHeight = $this->options->getOption('height');
+        $originalWidth = $this->getSourceImageDimensions()['width'];
+        $originalHeight = $this->getSourceImageDimensions()['height'];
+        
+        if ($originalWidth < $targetWidth) {
+            $this->options->setOption('width', $originalWidth);
+        }
+
+        if ($originalHeight < $targetHeight) {
+            $this->options->setOption('height', $originalHeight);
+        }
     }
 
     /**
@@ -286,7 +316,7 @@ class ImageProcessor extends Processor
             return $this->sourceDimensions;
         }
 
-        $this->sourceDimensions = $outputImage->getInputImage()->getImageDimensions();
+        $this->sourceDimensions = $this->outputImage->getInputImage()->getSourceImageInfo()->getDimensions();
         return $this->sourceDimensions;
     }
 
@@ -299,7 +329,7 @@ class ImageProcessor extends Processor
             return $this->sourceInfo;
         }
 
-        $this->sourceInfo = $outputImage->getInputImage()->getImageInfo();
+        $this->sourceInfo = $this->outputImage->getInputImage()->getSourceImageInfo()->getInfo();
         return $this->sourceInfo;
     }
 }

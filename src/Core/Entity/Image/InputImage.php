@@ -137,4 +137,9 @@ class InputImage
         $this->sourceImageMimeType = $this->sourceImageInfo->getMimeType();
         return $this->sourceImageMimeType;
     }
+
+    public function getSourceImageInfo()
+    {
+        return $this->sourceImageInfo;
+    }
 }
