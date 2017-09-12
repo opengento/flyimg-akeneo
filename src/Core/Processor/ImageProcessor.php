@@ -181,7 +181,7 @@ class ImageProcessor extends Processor
     {
         $command = [];
         $command[] = $this->getResizeOperator();
-        $command[] = $this->getDimensions();
+        $command[] = $this->getDimensions() . ($this->options->getOption('preserve-natural-size') ? escapeshellarg('>') : '');
         return implode(' ', $command);
     }
 
