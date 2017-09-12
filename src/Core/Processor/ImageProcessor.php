@@ -37,6 +37,8 @@ class ImageProcessor extends Processor
      */
     protected $options;
 
+    protected $geometry;
+
     /**
      * Save new FileName based on source file and list of options
      *
@@ -61,17 +63,34 @@ class ImageProcessor extends Processor
      */
     public function generateCmdString(OutputImage $outputImage)
     {
+        // we will categorize the operation in this method and call the adecuate functions depending on the parameters
+        // 
+        // first we get the data we need
+        $width = $this->options->getOption('width');
+        $height = $this->options->getOption('height');
+        $crop = $this->options->getOption('crop');
+
+        $command = [];
+        $command[] = self::IM_CONVERT_COMMAND;
+
+        // if width AND height AND crop are defined we need to do further checks to define the type of operation we will do
+        if ($width && $height &&  $crop) {
+            $size = $this->generateCropSize();
+        } else if($width || $height) {
+            $size = $this->generateSimpleSize();
+        }
+        
+        
         $strip = $outputImage->extract('strip');
         $thread = $outputImage->extract('thread');
         $resize = $outputImage->extract('resize');
         $frame = $outputImage->extract('gif-frame');
 
-        list($size, $extent, $gravity) = $this->generateSize($outputImage);
+        //list($size, $extent, $gravity) = $this->generateSize($outputImage);
 
         // we default to thumbnail
-        $resizeOperator = $resize ? 'resize' : 'thumbnail';
-        $command = [];
-        $command[] = self::IM_CONVERT_COMMAND;
+        //$resizeOperator = $resize ? 'resize' : 'thumbnail';
+        
         $tmpFileName = $outputImage->getInputImage()->getSourceImagePath();
 
         //Check the source image is gif
@@ -83,13 +102,12 @@ class ImageProcessor extends Processor
         }
 
         $command[] = " " . $tmpFileName;
-        $command[] = ' -' . $resizeOperator . ' ' .
-            $size . $gravity . $extent .
-            ' -colorspace sRGB';
+        $command[] = $size;
+        $command[] = ' -colorspace sRGB';
 
         foreach ($outputImage->getInputImage()->getOptionsBag() as $key => $value) {
             if (!empty($value) && !in_array($key, self::EXCLUDED_IM_OPTIONS)) {
-                $command[] = "-{$key} ".escapeshellarg($value);
+                //$command[] = "-{$key} ".escapeshellarg($value);
             }
         }
 
@@ -102,7 +120,7 @@ class ImageProcessor extends Processor
             $command[] = "-limit thread ".escapeshellarg($thread);
         }
 
-        $command = $this->applyQuality($outputImage, $command);
+        $command[] = $this->calculateQuality($outputImage);
 
         $commandStr = implode(' ', $command);
         $outputImage->setCommandString($commandStr);
@@ -116,27 +134,95 @@ class ImageProcessor extends Processor
      *
      * @return array
      */
-    protected function applyQuality(OutputImage $outputImage, array $command): array
+    protected function calculateQuality(OutputImage $outputImage): string
     {
         $quality = $outputImage->extract('quality');
+        $parameter = '';
+
         /** WebP format */
         if (is_executable(self::CWEBP_COMMAND) && $outputImage->isOutputWebP()) {
             $lossLess = $outputImage->extract('webp-lossless') ? 'true' : 'false';
-            $command[] = "-quality ".escapeshellarg($quality).
+            $parameter = "-quality ".escapeshellarg($quality).
                 " -define webp:lossless=".$lossLess." ".escapeshellarg($outputImage->getOutputImagePath());
         } /** MozJpeg compression */
         elseif (is_executable(self::MOZJPEG_COMMAND) && $outputImage->isOutputMozJpeg()) {
-            $command[] = "TGA:- | ".escapeshellarg(self::MOZJPEG_COMMAND)
+            $parameter = "TGA:- | ".escapeshellarg(self::MOZJPEG_COMMAND)
                 ." -quality ".escapeshellarg($quality)
                 ." -outfile ".escapeshellarg($outputImage->getOutputImagePath())
                 ." -targa";
         } /** default ImageMagick compression */
         else {
-            $command[] = "-quality ".escapeshellarg($quality).
+            $parameter = "-quality ".escapeshellarg($quality).
                 " ".escapeshellarg($outputImage->getOutputImagePath());
         }
 
-        return $command;
+        return $parameter;
+    }
+
+    /**
+     * IF we crop we need to know if the source image is bigger or smaller than the target size.
+     * @return string command section for the resizing.
+     */
+    protected function generateCropSize(): string
+    {
+        $command = [];
+
+        $gravity = $this->options->getOption('gravity');
+        $command[] = '-gravity ' . $gravity;
+        $command[] = '-crop ' . $this->options->getOption('width') . 'x' .$this->options->getOption('height') . '+0+0';
+
+    }
+
+    /**
+     * IF we simply resize we let IM deal with the calculations
+     * @return string command section for the resizing.
+     */
+    protected function generateSimpleSize(): string
+    {
+        $command = [];
+        $command[] = $this->getResizeOperator();
+        $command[] = $this->getDimensions();
+        return implode(' ', $command);
+    }
+
+    /**
+     * This works as a cache for calculations
+     * @param  string $key       the key with wich we store a calculated value
+     * @param  func   $calculate function that returns a calculated value
+     * @return string|mixed
+     */
+    protected function getGeometry($key, $calculate):string
+    {
+        if(isset($this->geometry[$key])) {
+            return $this->geometry[$key];
+        }
+        $this->geometry[$key] = call_user_func($calculate);
+
+        return $this->geometry[$key];
+    }
+
+    protected function getDimensions():string
+    {
+        return $this->getGeometry('dimensions', function () {
+            $targetWidth = $this->options->getOption('width');
+            $targetHeight = $this->options->getOption('height');
+
+            $dimensions = '';
+            if ($targetWidth) {
+                $dimensions .= (string)escapeshellarg($targetWidth);
+            }
+            if ($targetHeight) {
+                $dimensions .= (string)'x'.escapeshellarg($targetHeight);
+            }
+            return $dimensions;
+        });
+    }
+
+    protected function getResizeOperator():string
+    {
+        return $this->getGeometry('resizeOperator', function () {
+            return $this->options->getOption('resize') ? '-resize' : '-thumbnail';
+        });
     }
 
     /**
