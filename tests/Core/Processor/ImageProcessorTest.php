@@ -55,11 +55,15 @@ class ImageProcessorTest extends BaseTest
         $this->assertEquals($expectedSize, $imageDimensions);
     }
 
+    /**
+     * Creates tests for resize to smaller sizes
+     * @return array list of tests
+     * The key is the test name, the items in the array are:
+     * [options, expected output size, source image path]
+     */
     public function shrinkProvider(): array
     {
         $resizingTests = [
-        /*   Test name  =>
-            url option, out size, source image */
             'Resize to width square' =>
             ['w_300', '300x300', self::PNG_TEST_SQUARE_IMAGE],
             'Resize to width landscape' =>
@@ -130,12 +134,13 @@ class ImageProcessorTest extends BaseTest
     /**
      * defines tests to check images don't expand by default
      * @return array Data provider array
+     *
+     * The key is the test name, the items in the array are:
+     * [options, expected output size, source image path]
      */
     public function expandProvider(): array
     {
-        $resizingTests = [
-        /*   Test name   =>
-             url option, out size, source image */
+        $resizingExpandTests = [
             'Expand to width square' =>
             ['w_400', '200x200', self::PNG_TEST_SMALL_SQUARE_IMAGE],
             'Expand to width landscape' =>
@@ -201,7 +206,7 @@ class ImageProcessorTest extends BaseTest
 
         ];
 
-        return $this->addOutputExtensionsToTests(array_merge($resizingTests, $this->partialCropTestProvider()));
+        return $this->addOutputExtensionsToTests(array_merge($resizingExpandTests, $this->partialCropTestProvider()));
     }
 
     protected function partialCropTestProvider(): array
