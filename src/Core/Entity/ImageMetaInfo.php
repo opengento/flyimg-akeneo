@@ -1,6 +1,6 @@
 <?php
 
-namespace Core\Entity\Image;
+namespace Core\Entity;
 
 use Core\Exception\ExecFailedException;
 
