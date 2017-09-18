@@ -4,7 +4,7 @@ namespace Core\Entity\Image;
 
 use Core\Entity\OptionsBag;
 use Core\Exception\ReadFileException;
-use Core\Entity\Image\ImageMetaInfo;
+use Core\Entity\ImageMetaInfo;
 
 class InputImage
 {
@@ -136,5 +136,10 @@ class InputImage
 
         $this->sourceImageMimeType = $this->sourceImageInfo->getMimeType();
         return $this->sourceImageMimeType;
+    }
+
+    public function getSourceImageInfo()
+    {
+        return $this->sourceImageInfo;
     }
 }

@@ -12,6 +12,12 @@ class OptionsBag
     protected $parsedOptions;
 
     /**
+     * @var array (associative)
+     * This options list will keep a copy of the parsed options even if an option get's removed by remove.
+     */
+    protected $optionsCollection;
+
+    /**
      * OptionsBag constructor.
      *
      * @param AppParameters $appParameters
@@ -21,6 +27,7 @@ class OptionsBag
     {
         $this->appParameters = $appParameters;
         $this->parsedOptions = $this->parseOptions($options);
+        $this->optionsCollection = $this->parsedOptions;
     }
 
     /**
@@ -89,5 +96,32 @@ class OptionsBag
     public function asArray(): array
     {
         return $this->parsedOptions;
+    }
+
+    /**
+     * Returns a parameter by name.
+     * These options will not be removed by the extract method.
+     *
+     * @param string $key     The key
+     *
+     * @return mixed
+     */
+    public function getOption($key)
+    {
+        return array_key_exists($key, $this->optionsCollection) ? $this->optionsCollection[$key] : '';
+    }
+
+    /**
+     * Update a parameter by name.
+     * These options will not update the main options list.
+     *
+     * @param string $key
+     * @param string $value
+     * @return OptionsBag
+     */
+    public function setOption(string $key, string $value)
+    {
+        $this->optionsCollection[$key] = $value;
+        return $this;
     }
 }

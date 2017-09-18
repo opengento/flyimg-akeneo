@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\Core\Entity\Image;
+namespace Tests\Core\Entity;
 
-use Core\Entity\Image\ImageMetaInfo;
+use Core\Entity\ImageMetaInfo;
 use Core\Entity\Image\OutputImage;
 use Core\Exception\ExecFailedException;
 use Tests\Core\BaseTest;
@@ -30,7 +30,6 @@ class ImageMetaInfoTest extends BaseTest
             [self::WEBP_TEST_IMAGE, OutputImage::WEBP_MIME_TYPE],
         ];
     }
-
 
     public function testGetMimeTypeCached()
     {
