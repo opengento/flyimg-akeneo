@@ -86,7 +86,7 @@ class ImageHandler
      */
     public function processImage(string $options, string $imageSrc): OutputImage
     {
-        list($options, $imageSrc) = $this->securityHandler->checkSecurityHash($options, $imageSrc);
+        [$options, $imageSrc] = $this->securityHandler->checkSecurityHash($options, $imageSrc);
         $this->securityHandler->checkRestrictedDomains($imageSrc);
 
 
@@ -138,7 +138,9 @@ class ImageHandler
     protected function processNewImage(OutputImage $outputImage): OutputImage
     {
         //Check Extract options
-        $this->extractProcess($outputImage);
+        if ($outputImage->extract('extract')) {
+            $this->extractProcess($outputImage);
+        }
 
         //Check Face Detection options
         $this->faceDetectionProcess($outputImage);
@@ -157,21 +159,18 @@ class ImageHandler
      */
     protected function extractProcess(OutputImage $outputImage): void
     {
-        $extract = $outputImage->extract('extract');
         $topLeftX = $outputImage->extract('extract-top-x');
         $topLeftY = $outputImage->extract('extract-top-y');
         $bottomRightX = $outputImage->extract('extract-bottom-x');
         $bottomRightY = $outputImage->extract('extract-bottom-y');
 
-        if ($extract) {
-            $this->extractProcessor->extract(
-                $outputImage->getInputImage(),
-                $topLeftX,
-                $topLeftY,
-                $bottomRightX,
-                $bottomRightY
-            );
-        }
+        $this->extractProcessor->extract(
+            $outputImage->getInputImage(),
+            $topLeftX,
+            $topLeftY,
+            $bottomRightX,
+            $bottomRightY
+        );
     }
 
     /**
