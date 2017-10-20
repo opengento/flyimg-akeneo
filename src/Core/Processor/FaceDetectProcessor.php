@@ -28,7 +28,7 @@ class FaceDetectProcessor extends Processor
         }
         $geometry = explode(" ", $output[$faceCropPosition]);
         if (count($geometry) == 4) {
-            list($geometryX, $geometryY, $geometryW, $geometryH) = $geometry;
+            [$geometryX, $geometryY, $geometryW, $geometryH] = $geometry;
             $cropCmdStr =
                 self::IM_CONVERT_COMMAND.
                 " '{$inputImage->getSourceImagePath()}' -crop {$geometryW}x{$geometryH}+{$geometryX}+{$geometryY} ".
@@ -55,7 +55,7 @@ class FaceDetectProcessor extends Processor
         foreach ((array)$output as $outputLine) {
             $geometry = explode(" ", $outputLine);
             if (count($geometry) == 4) {
-                list($geometryX, $geometryY, $geometryW, $geometryH) = $geometry;
+                [$geometryX, $geometryY, $geometryW, $geometryH] = $geometry;
                 $cropCmdStr = self::IM_MOGRIFY_COMMAND.
                     " -gravity NorthWest -region {$geometryW}x{$geometryH}+{$geometryX}+{$geometryY} ".
                     "-scale '10%' -scale '1000%' ".

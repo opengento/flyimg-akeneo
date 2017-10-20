@@ -4,10 +4,26 @@ namespace Core\Resolver;
 
 use Core\Controller\CoreController;
 use Core\Exception\InvalidArgumentException;
-use Silex\ControllerResolver as SilexControllerResolver;
+use Silex\Application;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpKernel\Controller\ControllerResolver as BaseControllerResolver;
 
-class ControllerResolver extends SilexControllerResolver
+class ControllerResolver extends BaseControllerResolver
 {
+    protected $app;
+
+    /**
+     * Constructor.
+     *
+     * @param Application     $app    An Application instance
+     * @param LoggerInterface $logger A LoggerInterface instance
+     */
+    public function __construct(Application $app, LoggerInterface $logger = null)
+    {
+        $this->app = $app;
+
+        parent::__construct($logger);
+    }
     /**
      * Returns a callable for the given controller.
      *
@@ -22,7 +38,7 @@ class ControllerResolver extends SilexControllerResolver
             throw new InvalidArgumentException(sprintf('Unable to find controller "%s".', $controller));
         }
 
-        list($class, $method) = explode('::', $controller, 2);
+        [$class, $method] = explode('::', $controller, 2);
 
         if (!class_exists($class)) {
             throw new InvalidArgumentException(sprintf('Class "%s" does not exist.', $class));

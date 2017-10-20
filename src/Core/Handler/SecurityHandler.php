@@ -74,7 +74,7 @@ class SecurityHandler
             );
         };
 
-        list($explodedOptions, $explodedImageSrc) = explode('/', $decryptedHash, 2);
+        [$explodedOptions, $explodedImageSrc] = explode('/', $decryptedHash, 2);
 
         if (empty($explodedImageSrc) || empty($explodedOptions)) {
             throw  new SecurityException(
@@ -93,7 +93,7 @@ class SecurityHandler
      */
     public function encrypt(string $string): string
     {
-        list($secretKey, $secretIv) = $this->createHash();
+        [$secretKey, $secretIv] = $this->createHash();
         $output = base64_encode(openssl_encrypt($string, self::ENCRYPT_METHOD, $secretKey, 0, $secretIv));
 
         return $output;
@@ -106,7 +106,7 @@ class SecurityHandler
      */
     public function decrypt(string $string): string
     {
-        list($secretKey, $secretIv) = $this->createHash();
+        [$secretKey, $secretIv] = $this->createHash();
         $output = openssl_decrypt(base64_decode($string), self::ENCRYPT_METHOD, $secretKey, 0, $secretIv);
 
         return $output;
