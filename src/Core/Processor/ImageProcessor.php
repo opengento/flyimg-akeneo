@@ -49,8 +49,8 @@ class ImageProcessor extends Processor
     {
         $this->sourceImageInfo = $outputImage->inputImage()->sourceImageInfo();
         $this->options = $outputImage->inputImage()->optionsBag();
-        $generatedCommandString = $this->generateCmdString($outputImage);
-        $this->execute($generatedCommandString);
+        $cmdString = $this->generateCmdString($outputImage);
+        $this->execute($cmdString);
 
         return $outputImage;
     }
