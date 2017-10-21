@@ -46,7 +46,7 @@ class ControllerResolver extends BaseControllerResolver
 
         $controller = new $class();
         if ($controller instanceof CoreController) {
-            $controller->setApp($this->app);
+            $controller->application($this->app);
         }
 
         return [$controller, $method];

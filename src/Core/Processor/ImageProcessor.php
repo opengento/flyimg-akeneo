@@ -7,8 +7,7 @@ use Core\Entity\ImageMetaInfo;
 
 /**
  * Class ImageProcessor
- * @package Core\Service
- * Is the above line still valid??
+ * @package Core\Processor
  *
  * In this class we separate requests in 3 types
  *  - Simple resize geometry, resolved with -thumbnail
@@ -28,7 +27,7 @@ class ImageProcessor extends Processor
 
     /**
      * OptionsBag from the request
-     * @var Core\Entity\OptionsBag
+     * @var \Core\Entity\OptionsBag
      */
     protected $options;
 
@@ -48,10 +47,10 @@ class ImageProcessor extends Processor
      */
     public function processNewImage(OutputImage $outputImage): OutputImage
     {
-        $this->sourceImageInfo = $outputImage->getInputImage()->getSourceImageInfo();
-        $this->options = $outputImage->getInputImage()->getOptionsBag();
-        $this->generateCmdString($outputImage);
-        $this->execute($outputImage->getCommandString());
+        $this->sourceImageInfo = $outputImage->inputImage()->sourceImageInfo();
+        $this->options = $outputImage->inputImage()->optionsBag();
+        $generatedCommandString = $this->generateCmdString($outputImage);
+        $this->execute($generatedCommandString);
 
         return $outputImage;
     }
@@ -60,8 +59,10 @@ class ImageProcessor extends Processor
      * Generate Command string bases on options
      *
      * @param OutputImage $outputImage
+     *
+     * @return string
      */
-    public function generateCmdString(OutputImage $outputImage)
+    public function generateCmdString(OutputImage $outputImage): string
     {
         // we will categorize the operation in this method and call the adecuate functions depending on the parameters
         // first we get the data we need
@@ -73,12 +74,12 @@ class ImageProcessor extends Processor
         $command[] = self::IM_CONVERT_COMMAND;
 
         // if width AND height AND crop are defined we need check further to define the type of operation we will do
-        if ($width && $height &&  $crop) {
+        if ($width && $height && $crop) {
             $size = $this->generateCropSize();
         } elseif ($width || $height) {
             $size = $this->generateSimpleSize();
         }
-        
+
         if ($outputImage->isInputGif()) {
             $command[] = '-coalesce';
         }
@@ -88,12 +89,12 @@ class ImageProcessor extends Processor
         $command[] = ' -colorspace sRGB';
 
         // strip is added internally by ImageMagick when using -thumbnail
-        $strip = $outputImage->extract('strip');
+        $strip = $outputImage->extractKey('strip');
         if (!empty($strip)) {
             $command[] = "-strip";
         }
 
-        $thread = $outputImage->extract('thread');
+        $thread = $outputImage->extractKey('thread');
         if (!empty($thread)) {
             $command[] = "-limit thread ".escapeshellarg($thread);
         }
@@ -102,6 +103,8 @@ class ImageProcessor extends Processor
 
         $commandStr = implode(' ', $command);
         $outputImage->setCommandString($commandStr);
+
+        return $commandStr;
     }
 
     /**
@@ -115,9 +118,10 @@ class ImageProcessor extends Processor
         $this->updateTargetDimensions();
         $command = [];
         $command[] = $this->getResizeOperator();
-        $command[] = $this->getDimensions() . '^';
-        $command[] = '-gravity ' . $this->options->getOption('gravity');
-        $command[] = '-extent ' . $this->getDimensions();
+        $command[] = $this->getDimensions().'^';
+        $command[] = '-gravity '.$this->options->getOption('gravity');
+        $command[] = '-extent '.$this->getDimensions();
+
         return implode(' ', $command);
     }
 
@@ -129,26 +133,29 @@ class ImageProcessor extends Processor
     {
         $command = [];
         $command[] = $this->getResizeOperator();
-        $command[] = $this->getDimensions() .
+        $command[] = $this->getDimensions().
             ($this->options->getOption('preserve-natural-size') ? escapeshellarg('>') : '');
+
         return implode(' ', $command);
     }
 
     /**
      * Gets the source image path and adds any extra modifiers to the string
+     *
      * @param  OutputImage $outputImage
+     *
      * @return string                   Path of the source file to be used in the conversion command
      */
     protected function getSourceImagePath(OutputImage $outputImage): string
     {
-        $tmpFileName = $this->sourceImageInfo->getPath();
+        $tmpFileName = $this->sourceImageInfo->path();
 
         //Check the source image is gif
         if ($outputImage->isInputGif()) {
             $frame = $this->options->getOption('gif-frame');
 
             // set the frame if the output image is not gif (to get ony one  frame)
-            if ($outputImage->getOutputImageExtension() !== OutputImage::EXT_GIF) {
+            if ($outputImage->outputImageExtension() !== OutputImage::EXT_GIF) {
                 $tmpFileName .= '['.escapeshellarg($frame).']';
             }
         }
@@ -160,30 +167,29 @@ class ImageProcessor extends Processor
      * Apply the Quality processor based on options
      *
      * @param OutputImage $outputImage
-     * @param array       $command
      *
-     * @return array
+     * @return string
      */
     protected function calculateQuality(OutputImage $outputImage): string
     {
-        $quality = $outputImage->extract('quality');
+        $quality = $outputImage->extractKey('quality');
         $parameter = '';
 
         /** WebP format */
         if (is_executable(self::CWEBP_COMMAND) && $outputImage->isOutputWebP()) {
-            $lossLess = $outputImage->extract('webp-lossless') ? 'true' : 'false';
+            $lossLess = $outputImage->extractKey('webp-lossless') ? 'true' : 'false';
             $parameter = "-quality ".escapeshellarg($quality).
-                " -define webp:lossless=".$lossLess." ".escapeshellarg($outputImage->getOutputImagePath());
+                " -define webp:lossless=".$lossLess." ".escapeshellarg($outputImage->outputImagePath());
         } /** MozJpeg compression */
         elseif (is_executable(self::MOZJPEG_COMMAND) && $outputImage->isOutputMozJpeg()) {
             $parameter = "TGA:- | ".escapeshellarg(self::MOZJPEG_COMMAND)
                 ." -quality ".escapeshellarg($quality)
-                ." -outfile ".escapeshellarg($outputImage->getOutputImagePath())
+                ." -outfile ".escapeshellarg($outputImage->outputImagePath())
                 ." -targa";
         } /** default ImageMagick compression */
         else {
             $parameter = "-quality ".escapeshellarg($quality).
-                " ".escapeshellarg($outputImage->getOutputImagePath());
+                " ".escapeshellarg($outputImage->outputImagePath());
         }
 
         return $parameter;
@@ -191,11 +197,13 @@ class ImageProcessor extends Processor
 
     /**
      * This works as a cache for calculations
-     * @param  string $key       the key with wich we store a calculated value
-     * @param  func   $calculate function that returns a calculated value
+     *
+     * @param  string   $key       the key with wich we store a calculated value
+     * @param  callback $calculate function that returns a calculated value
+     *
      * @return string|mixed
      */
-    protected function getGeometry($key, $calculate):string
+    protected function getGeometry($key, $calculate): string
     {
         if (isset($this->geometry[$key])) {
             return $this->geometry[$key];
@@ -205,31 +213,47 @@ class ImageProcessor extends Processor
         return $this->geometry[$key];
     }
 
-    protected function getDimensions():string
+    /**
+     * @return string
+     */
+    protected function getDimensions(): string
     {
-        return $this->getGeometry('dimensions', function () {
-            $targetWidth = $this->options->getOption('width');
-            $targetHeight = $this->options->getOption('height');
+        return $this->getGeometry(
+            'dimensions',
+            function () {
+                $targetWidth = $this->options->getOption('width');
+                $targetHeight = $this->options->getOption('height');
 
-            $dimensions = '';
-            if ($targetWidth) {
-                $dimensions .= (string)escapeshellarg($targetWidth);
+                $dimensions = '';
+                if ($targetWidth) {
+                    $dimensions .= (string)escapeshellarg($targetWidth);
+                }
+                if ($targetHeight) {
+                    $dimensions .= (string)'x'.escapeshellarg($targetHeight);
+                }
+
+                return $dimensions;
             }
-            if ($targetHeight) {
-                $dimensions .= (string)'x'.escapeshellarg($targetHeight);
-            }
-            return $dimensions;
-        });
+        );
     }
 
-    protected function getResizeOperator():string
+    /**
+     * @return string
+     */
+    protected function getResizeOperator(): string
     {
-        return $this->getGeometry('resizeOperator', function () {
-            return $this->options->getOption('resize') ? '-resize' : '-thumbnail';
-        });
+        return $this->getGeometry(
+            'resizeOperator',
+            function () {
+                return $this->options->getOption('resize') ? '-resize' : '-thumbnail';
+            }
+        );
     }
 
-    protected function updateTargetDimensions()
+    /**
+     *
+     */
+    protected function updateTargetDimensions(): void
     {
         if (!$this->options->getOption('preserve-natural-size')) {
             return;
@@ -237,9 +261,9 @@ class ImageProcessor extends Processor
 
         $targetWidth = $this->options->getOption('width');
         $targetHeight = $this->options->getOption('height');
-        $originalWidth = $this->sourceImageInfo->getDimensions()['width'];
-        $originalHeight = $this->sourceImageInfo->getDimensions()['height'];
-        
+        $originalWidth = $this->sourceImageInfo->dimensions()['width'];
+        $originalHeight = $this->sourceImageInfo->dimensions()['height'];
+
         if ($originalWidth < $targetWidth) {
             $this->options->setOption('width', $originalWidth);
         }
@@ -258,8 +282,8 @@ class ImageProcessor extends Processor
      */
     protected function generateSize(OutputImage $outputImage): array
     {
-        $targetWidth = $outputImage->extract('width');
-        $targetHeight = $outputImage->extract('height');
+        $targetWidth = $outputImage->extractKey('width');
+        $targetHeight = $outputImage->extractKey('height');
 
         $size = $extent = '';
         if ($targetWidth) {
@@ -271,16 +295,16 @@ class ImageProcessor extends Processor
 
         // When width and height a whole bunch of special cases must be taken into consideration.
         // resizing constraints (< > ^ !) can only be applied to geometry with both width AND height
-        $preserveNaturalSize = $outputImage->extract('preserve-natural-size');
-        $preserveAspectRatio = $outputImage->extract('preserve-aspect-ratio');
+        $preserveNaturalSize = $outputImage->extractKey('preserve-natural-size');
+        $preserveAspectRatio = $outputImage->extractKey('preserve-aspect-ratio');
 
         if ($targetWidth && $targetHeight) {
             if ($preserveNaturalSize) {
                 // here we will compare source image dimensions to target dimensions and adjust
             }
-            $gravity = ' -gravity '.escapeshellarg($outputImage->extract('gravity'));
+            $gravity = ' -gravity '.escapeshellarg($outputImage->extractKey('gravity'));
             $resizingConstraints = '';
-            if ($outputImage->extract('crop')) {
+            if ($outputImage->extractKey('crop')) {
                 $resizingConstraints .= '^';
                 $extent = ' -extent '.$size;
                 /**

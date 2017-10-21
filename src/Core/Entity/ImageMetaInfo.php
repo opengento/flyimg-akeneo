@@ -3,6 +3,7 @@
 namespace Core\Entity;
 
 use Core\Exception\ExecFailedException;
+use Core\Processor\Processor;
 
 /**
  * Fetches and stores image properties like mimetype, bit depth, weight and dimensions.
@@ -15,7 +16,7 @@ class ImageMetaInfo
     public const IMAGE_PROP_COLOR_DEPTH = 'colorDepth';
     public const IMAGE_PROP_COLOR_PROFILE = 'colorProfile';
     public const IMAGE_PROP_FILE_WEIGHT = 'weight';
-    
+
     /** @var string */
     protected $imagePath;
 
@@ -28,7 +29,7 @@ class ImageMetaInfo
     /**
      * OutputImage constructor.
      *
-     * @param string     $imagePath
+     * @param string $imagePath
      */
     public function __construct(string $imagePath)
     {
@@ -38,7 +39,7 @@ class ImageMetaInfo
     /**
      * @return string
      */
-    public function getPath(): string
+    public function path(): string
     {
         return $this->imagePath;
     }
@@ -47,7 +48,7 @@ class ImageMetaInfo
      * Returns the mime-type (not the extension) of a file or image i.e: image/png
      * @return string
      */
-    public function getMimeType(): string
+    public function mimeType(): string
     {
         if (isset($this->imageMimeType)) {
             return $this->imageMimeType;
@@ -65,54 +66,55 @@ class ImageMetaInfo
     /**
      * @return string Image type as identified by IM like PNG, JPEG, GIF ...
      */
-    public function getFormat(): string
+    public function format(): string
     {
-        return $this->getInfo()[self::IMAGE_PROP_FILE_FORMAT];
+        return $this->info()[self::IMAGE_PROP_FILE_FORMAT];
     }
 
     /**
      * @return string Image Canvas as identified by IM like: 70x46+0+0
      */
-    public function getCanvas(): string
+    public function canvas(): string
     {
-        return $this->getInfo()[self::IMAGE_PROP_CANVAS_COORD];
+        return $this->info()[self::IMAGE_PROP_CANVAS_COORD];
     }
 
     /**
      * @return string Image bit depth as identified by IM like: 8-bit
      */
-    public function getColorBitDepth(): string
+    public function colorBitDepth(): string
     {
-        return $this->getInfo()[self::IMAGE_PROP_COLOR_DEPTH];
+        return $this->info()[self::IMAGE_PROP_COLOR_DEPTH];
     }
 
     /**
      * @return string Image color profile as identified by IM like: sRGB, aRGB
      */
-    public function getColorProfile(): string
+    public function colorProfile(): string
     {
-        return $this->getInfo()[self::IMAGE_PROP_COLOR_PROFILE];
+        return $this->info()[self::IMAGE_PROP_COLOR_PROFILE];
     }
 
     /**
      * @return string Image File weight as identified by IM like: 2.36KB
      */
-    public function getFileWeight(): string
+    public function fileWeight(): string
     {
-        return $this->getInfo()[self::IMAGE_PROP_FILE_WEIGHT];
+        return $this->info()[self::IMAGE_PROP_FILE_WEIGHT];
     }
 
     /**
      * Gets parsed image dimensions into width and height
      * @return array Associative array with `width` and `height` values in pixels
      */
-    public function getDimensions(): array
+    public function dimensions(): array
     {
-        $dimensions = $this->getInfo()[self::IMAGE_PROP_DIMENSIONS];
+        $dimensions = $this->info()[self::IMAGE_PROP_DIMENSIONS];
         $dimensions = explode('x', $dimensions);
+
         return [
-            'width'  => $dimensions[0],
-            'height' => $dimensions[1]
+            'width' => $dimensions[0],
+            'height' => $dimensions[1],
         ];
     }
 
@@ -120,13 +122,14 @@ class ImageMetaInfo
      * get stored ImageInfo or fetch it and store it
      * @return array Associative array with basic information od the image
      */
-    public function getInfo(): array
+    public function info(): array
     {
         if (!empty($this->imageInfo)) {
             return $this->imageInfo;
         }
 
-        $this->imageInfo = $this->getImageImIdentify();
+        $this->imageInfo = $this->imageImIdentify();
+
         return $this->imageInfo;
     }
 
@@ -137,9 +140,10 @@ class ImageMetaInfo
      * @return array
      * @throws \Exception
      */
-    protected function getImageImIdentify(): array
+    protected function imageImIdentify(): array
     {
-        exec('/usr/bin/identify ' . $this->getPath() .' 2>&1', $output, $code);
+        $commandStr = Processor::IM_IDENTITY_COMMAND.' '.$this->path().' 2>&1';
+        exec($commandStr, $output, $code);
         if (count($output) === 0) {
             $outputError = $code;
         } else {
@@ -157,6 +161,7 @@ class ImageMetaInfo
         $output = $this->sanitizeWebPOutput($output);
 
         $imageDetails = $this->parseImageInfoResponse($output);
+
         return $imageDetails;
     }
 
@@ -166,11 +171,13 @@ class ImageMetaInfo
      *     * Decoded /tmp/magick-19757aUG67rpqXgFy. Dimensions: 100 x 100 . Format: lossy. Now saving...
      *     * Saved file /tmp/magick-19757d1r0Kuo4UPCV
      *     * tests/testImages/square.webp PAM 100x100 100x100+0+0 8-bit TrueColor sRGB 40.1KB 0.000u 0:00.000
-     * This mmethod takes care of the extra output
-     * @param  array  $output CLI exec output array
+     * This method takes care of the extra output
+     *
+     * @param  array $output CLI exec output array
+     *
      * @return array         The expected array with the identify string at position 0.
      */
-    protected function sanitizeWebPOutput(array $output):array
+    protected function sanitizeWebPOutput(array $output): array
     {
         if (strpos($output[0], 'Decoded /tmp/magick-') !== 0) {
             return $output;
@@ -182,19 +189,22 @@ class ImageMetaInfo
     /**
      * Parses the default output of imagemagik identify command
      * To fix in the near future: currently the bit depth is incomplete for WebP and color profile for GIF
+     *
      * @param  array $output the STDOUT from executing an identify command
+     *
      * @return array         associative array with the info in there
      */
     protected function parseImageInfoResponse($output): array
     {
         $output = explode(' ', $output[0]);
+
         return [
-            self::IMAGE_PROP_FILE_FORMAT   => $output[1],
-            self::IMAGE_PROP_DIMENSIONS    => $output[2],
-            self::IMAGE_PROP_CANVAS_COORD  => $output[3],
-            self::IMAGE_PROP_COLOR_DEPTH   => $output[4],
+            self::IMAGE_PROP_FILE_FORMAT => $output[1],
+            self::IMAGE_PROP_DIMENSIONS => $output[2],
+            self::IMAGE_PROP_CANVAS_COORD => $output[3],
+            self::IMAGE_PROP_COLOR_DEPTH => $output[4],
             self::IMAGE_PROP_COLOR_PROFILE => $output[5],
-            self::IMAGE_PROP_FILE_WEIGHT   => $output[6],
+            self::IMAGE_PROP_FILE_WEIGHT => $output[6],
         ];
     }
 }

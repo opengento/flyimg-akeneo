@@ -7,7 +7,7 @@ use Core\Exception\ExecFailedException;
 
 /**
  * Class Processor
- * @package Core\Service
+ * @package Core\Processor
  */
 class Processor
 {
@@ -61,9 +61,9 @@ class Processor
      *
      * @return string
      */
-    public function getImageIdentity(OutputImage $image): string
+    public function imageIdentityInformation(OutputImage $image): string
     {
-        $output = $this->execute(self::IM_IDENTITY_COMMAND." ".$image->getOutputImagePath());
+        $output = $this->execute(self::IM_IDENTITY_COMMAND." ".$image->outputImagePath());
 
         return !empty($output[0]) ? $output[0] : "";
     }

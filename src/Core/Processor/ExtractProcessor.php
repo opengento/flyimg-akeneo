@@ -6,7 +6,7 @@ use Core\Entity\Image\InputImage;
 
 /**
  * Class ExtractProcessor
- * @package Core\Service
+ * @package Core\Processor
  */
 class ExtractProcessor extends Processor
 {
@@ -30,8 +30,8 @@ class ExtractProcessor extends Processor
 
         $cropCmdStr =
             self::IM_CONVERT_COMMAND.
-            " '{$inputImage->getSourceImagePath()}' -crop {$geometryW}'x'{$geometryH}'+'{$topLeftX}'+'{$topLeftY} ".
-            $inputImage->getSourceImagePath();
+            " '{$inputImage->sourceImagePath()}' -crop {$geometryW}'x'{$geometryH}'+'{$topLeftX}'+'{$topLeftY} ".
+            $inputImage->sourceImagePath();
         $this->execute($cropCmdStr);
     }
 }

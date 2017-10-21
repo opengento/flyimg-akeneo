@@ -55,7 +55,7 @@ class BaseTest extends \PHPUnit_Framework_TestCase
     {
         unset($this->ImageHandler);
         unset($this->app);
-        
+
         foreach ($this->generatedImage as $image) {
             if (!$image instanceof OutputImage) {
                 continue;

@@ -13,8 +13,8 @@ class ImageHandlerTest extends BaseTest
     {
         $image = $this->ImageHandler->processImage(parent::CROP_OPTION_URL, parent::PNG_TEST_IMAGE);
         $this->generatedImage[] = $image;
-        $this->assertFileExists($image->getOutputImagePath());
-        $this->assertEquals(OutputImage::PNG_MIME_TYPE, $this->getFileMimeType($image->getOutputImagePath()));
+        $this->assertFileExists($image->outputImagePath());
+        $this->assertEquals(OutputImage::PNG_MIME_TYPE, $this->getFileMimeType($image->outputImagePath()));
     }
 
     /**
@@ -23,8 +23,8 @@ class ImageHandlerTest extends BaseTest
     {
         $image = $this->ImageHandler->processImage(parent::OPTION_URL.',o_webp', parent::PNG_TEST_IMAGE);
         $this->generatedImage[] = $image;
-        $this->assertFileExists($image->getOutputImagePath());
-        $this->assertEquals(OutputImage::WEBP_MIME_TYPE, $this->getFileMimeType($image->getOutputImagePath()));
+        $this->assertFileExists($image->outputImagePath());
+        $this->assertEquals(OutputImage::WEBP_MIME_TYPE, $this->getFileMimeType($image->outputImagePath()));
     }
 
     /**
@@ -33,8 +33,8 @@ class ImageHandlerTest extends BaseTest
     {
         $image = $this->ImageHandler->processImage(parent::OPTION_URL.',o_jpg', parent::PNG_TEST_IMAGE);
         $this->generatedImage[] = $image;
-        $this->assertFileExists($image->getOutputImagePath());
-        $this->assertEquals(OutputImage::JPEG_MIME_TYPE, $this->getFileMimeType($image->getOutputImagePath()));
+        $this->assertFileExists($image->outputImagePath());
+        $this->assertEquals(OutputImage::JPEG_MIME_TYPE, $this->getFileMimeType($image->outputImagePath()));
     }
 
     /**
@@ -43,8 +43,8 @@ class ImageHandlerTest extends BaseTest
     {
         $image = $this->ImageHandler->processImage(parent::OPTION_URL.',o_gif', parent::PNG_TEST_IMAGE);
         $this->generatedImage[] = $image;
-        $this->assertFileExists($image->getOutputImagePath());
-        $this->assertEquals(OutputImage::GIF_MIME_TYPE, $this->getFileMimeType($image->getOutputImagePath()));
+        $this->assertFileExists($image->outputImagePath());
+        $this->assertEquals(OutputImage::GIF_MIME_TYPE, $this->getFileMimeType($image->outputImagePath()));
     }
 
     /**
@@ -53,7 +53,7 @@ class ImageHandlerTest extends BaseTest
     {
         $image = $this->ImageHandler->processImage(parent::OPTION_URL, parent::JPG_TEST_IMAGE);
         $this->generatedImage[] = $image;
-        $this->assertFileExists($image->getOutputImagePath());
+        $this->assertFileExists($image->outputImagePath());
     }
 
     /**
@@ -62,8 +62,8 @@ class ImageHandlerTest extends BaseTest
     {
         $image = $this->ImageHandler->processImage(parent::GIF_OPTION_URL, parent::GIF_TEST_IMAGE);
         $this->generatedImage[] = $image;
-        $this->assertFileExists($image->getOutputImagePath());
-        $this->assertEquals(OutputImage::GIF_MIME_TYPE, $this->getFileMimeType($image->getOutputImagePath()));
+        $this->assertFileExists($image->outputImagePath());
+        $this->assertEquals(OutputImage::GIF_MIME_TYPE, $this->getFileMimeType($image->outputImagePath()));
     }
 
     /**
@@ -72,8 +72,8 @@ class ImageHandlerTest extends BaseTest
     {
         $image = $this->ImageHandler->processImage(parent::GIF_OPTION_URL.',o_png', parent::GIF_TEST_IMAGE);
         $this->generatedImage[] = $image;
-        $this->assertFileExists($image->getOutputImagePath());
-        $this->assertEquals(OutputImage::PNG_MIME_TYPE, $this->getFileMimeType($image->getOutputImagePath()));
+        $this->assertFileExists($image->outputImagePath());
+        $this->assertEquals(OutputImage::PNG_MIME_TYPE, $this->getFileMimeType($image->outputImagePath()));
     }
 
     /**
@@ -82,8 +82,8 @@ class ImageHandlerTest extends BaseTest
     {
         $image = $this->ImageHandler->processImage(parent::GIF_OPTION_URL.',o_jpg', parent::GIF_TEST_IMAGE);
         $this->generatedImage[] = $image;
-        $this->assertFileExists($image->getOutputImagePath());
-        $this->assertEquals(OutputImage::JPEG_MIME_TYPE, $this->getFileMimeType($image->getOutputImagePath()));
+        $this->assertFileExists($image->outputImagePath());
+        $this->assertEquals(OutputImage::JPEG_MIME_TYPE, $this->getFileMimeType($image->outputImagePath()));
     }
 
     /**
@@ -92,8 +92,8 @@ class ImageHandlerTest extends BaseTest
     {
         $image = $this->ImageHandler->processImage(parent::GIF_OPTION_URL.',o_webp', parent::GIF_TEST_IMAGE);
         $this->generatedImage[] = $image;
-        $this->assertFileExists($image->getOutputImagePath());
-        $this->assertEquals(OutputImage::WEBP_MIME_TYPE, $this->getFileMimeType($image->getOutputImagePath()));
+        $this->assertFileExists($image->outputImagePath());
+        $this->assertEquals(OutputImage::WEBP_MIME_TYPE, $this->getFileMimeType($image->outputImagePath()));
     }
 
     /**
