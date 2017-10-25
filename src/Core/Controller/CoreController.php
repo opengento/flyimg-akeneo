@@ -5,6 +5,7 @@ namespace Core\Controller;
 use Core\Entity\Image\OutputImage;
 use Core\Handler\ImageHandler;
 use Silex\Application;
+use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Symfony\Component\HttpFoundation\Response;
 
 class CoreController
@@ -17,7 +18,7 @@ class CoreController
     /**
      * @param Application $app
      */
-    public function setApp(Application $app)
+    public function application(Application $app)
     {
         $this->app = $app;
     }
@@ -25,7 +26,7 @@ class CoreController
     /**
      * @return ImageHandler
      */
-    public function getImageHandler(): ImageHandler
+    public function imageHandler(): ImageHandler
     {
         return $this->app['image.handler'];
     }
@@ -37,8 +38,12 @@ class CoreController
      */
     public function render(string $templateName): Response
     {
+        $templateFullPath = ROOT_DIR.'/src/Core/Views/'.$templateName.'.php';
+        if (!file_exists($templateFullPath)) {
+            throw new FileNotFoundException('Template file note exist: '.$templateFullPath);
+        }
         ob_start();
-        include(ROOT_DIR.'/src/Core/Views/'.$templateName.'.php');
+        include($templateFullPath);
         $body = ob_get_contents();
         ob_end_clean();
 
@@ -54,7 +59,7 @@ class CoreController
     {
         $response = new Response();
         $response->setContent($image->getOutputImageContent());
-        $response = $this->setHeadersContent($image, $response);
+        $response = $this->generateHeaders($image, $response);
         $image->removeOutputImage();
 
         return $response;
@@ -82,25 +87,25 @@ class CoreController
      *
      * @return Response
      */
-    protected function setHeadersContent(OutputImage $image, Response $response): Response
+    protected function generateHeaders(OutputImage $image, Response $response): Response
     {
-        $imageHandler = $this->getImageHandler();
-        $response->headers->set('Content-Type', $imageHandler->getResponseContentType($image));
+        $imageHandler = $this->imageHandler();
+        $response->headers->set('Content-Type', $imageHandler->responseContentType($image));
 
         $expireDate = new \DateTime();
         $expireDate->add(new \DateInterval('P1Y'));
         $response->setExpires($expireDate);
-        $longCacheTime = 3600 * 24 * ((int)$this->app['params']->get('header_cache_days'));
+        $longCacheTime = 3600 * 24 * ((int)$this->app['params']->parameterByKey('header_cache_days'));
 
         $response->setMaxAge($longCacheTime);
         $response->setSharedMaxAge($longCacheTime);
         $response->setPublic();
 
-        if ($image->getInputImage()->getOptionsBag()->get('refresh')) {
+        if ($image->getInputImage()->optionsBag()->get('refresh')) {
             $response->headers->set('Cache-Control', 'no-cache, private');
             $response->setExpires(null)->expire();
 
-            $response->headers->set('im-identify', $imageHandler->getImageProcessor()->getImageIdentity($image));
+            $response->headers->set('im-identify', $imageHandler->imageProcessor()->imageIdentityInformation($image));
             $response->headers->set('im-command', $image->getCommandString());
         }
 

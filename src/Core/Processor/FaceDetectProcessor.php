@@ -6,7 +6,7 @@ use Core\Entity\Image\InputImage;
 
 /**
  * Class FaceDetectProcessor
- * @package Core\Service
+ * @package Core\Processor
  */
 class FaceDetectProcessor extends Processor
 {
@@ -21,7 +21,7 @@ class FaceDetectProcessor extends Processor
         if (!is_executable(self::FACEDETECT_COMMAND)) {
             return;
         }
-        $commandStr = self::FACEDETECT_COMMAND." ".$inputImage->getSourceImagePath();
+        $commandStr = self::FACEDETECT_COMMAND." ".$inputImage->sourceImagePath();
         $output = $this->execute($commandStr);
         if (empty($output[$faceCropPosition])) {
             return;
@@ -31,8 +31,8 @@ class FaceDetectProcessor extends Processor
             [$geometryX, $geometryY, $geometryW, $geometryH] = $geometry;
             $cropCmdStr =
                 self::IM_CONVERT_COMMAND.
-                " '{$inputImage->getSourceImagePath()}' -crop {$geometryW}x{$geometryH}+{$geometryX}+{$geometryY} ".
-                $inputImage->getSourceImagePath();
+                " '{$inputImage->sourceImagePath()}' -crop {$geometryW}x{$geometryH}+{$geometryX}+{$geometryY} ".
+                $inputImage->sourceImagePath();
             $this->execute($cropCmdStr);
         }
     }
@@ -47,7 +47,7 @@ class FaceDetectProcessor extends Processor
         if (!is_executable(self::FACEDETECT_COMMAND)) {
             return;
         }
-        $commandStr = self::FACEDETECT_COMMAND." ".$inputImage->getSourceImagePath();
+        $commandStr = self::FACEDETECT_COMMAND." ".$inputImage->sourceImagePath();
         $output = $this->execute($commandStr);
         if (empty($output)) {
             return;
@@ -59,7 +59,7 @@ class FaceDetectProcessor extends Processor
                 $cropCmdStr = self::IM_MOGRIFY_COMMAND.
                     " -gravity NorthWest -region {$geometryW}x{$geometryH}+{$geometryX}+{$geometryY} ".
                     "-scale '10%' -scale '1000%' ".
-                    $inputImage->getSourceImagePath();
+                    $inputImage->sourceImagePath();
                 $this->execute($cropCmdStr);
             }
         }

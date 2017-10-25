@@ -19,7 +19,7 @@ class S3StorageProviderTest extends BaseTest
 
         unset($this->app['flysystems']);
         unset($this->app['image.handler']);
-        $this->app['params']->set(
+        $this->app['params']->addParameter(
             'aws_s3',
             [
                 'access_id' => 'xxxxx',
@@ -45,7 +45,7 @@ class S3StorageProviderTest extends BaseTest
     public function testUploadActionWithS3StorageException()
     {
         $this->expectException(MissingParamsException::class);
-        $this->app['params']->set(
+        $this->app['params']->addParameter(
             'aws_s3',
             [
                 'access_id' => 'xxxxx',

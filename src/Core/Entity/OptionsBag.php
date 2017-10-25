@@ -39,10 +39,10 @@ class OptionsBag
      */
     private function parseOptions(string $options): array
     {
-        $defaultOptions = $this->appParameters->get('default_options');
-        $optionsKeys = $this->appParameters->get('options_keys');
-        $optionsSeparator = !empty($this->appParameters->get('options_separator')) ?
-            $this->appParameters->get('options_separator') : ',';
+        $defaultOptions = $this->appParameters->parameterByKey('default_options');
+        $optionsKeys = $this->appParameters->parameterByKey('options_keys');
+        $optionsSeparator = !empty($this->appParameters->parameterByKey('options_separator')) ?
+            $this->appParameters->parameterByKey('options_separator') : ',';
         $optionsUrl = explode($optionsSeparator, $options);
         $options = [];
         foreach ($optionsUrl as $option) {

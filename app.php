@@ -23,7 +23,7 @@ $exceptionHandlerFunction = function (\Exception $e) {
 };
 
 ErrorHandler::register();
-$exceptionHandler = ExceptionHandler::register($app['params']->get('debug'));
+$exceptionHandler = ExceptionHandler::register($app['params']->parameterByKey('debug'));
 $exceptionHandler->setHandler($exceptionHandlerFunction);
 
 if ('test' !== $app['env']) {
@@ -58,7 +58,7 @@ $app['routes'] = $app->extend(
 
 /** Register Storage provider */
 
-switch ($app['params']->get('storage_system')) {
+switch ($app['params']->parameterByKey('storage_system')) {
     case 's3':
         $app->register(new \Core\StorageProvider\S3StorageProvider());
         break;
@@ -103,6 +103,6 @@ if (!empty($argv[1]) && !empty($argv[2]) && $argv[1] == 'encrypt') {
 }
 
 /** debug conf */
-$app['debug'] = $app['params']->get('debug');
+$app['debug'] = $app['params']->parameterByKey('debug');
 
 return $app;

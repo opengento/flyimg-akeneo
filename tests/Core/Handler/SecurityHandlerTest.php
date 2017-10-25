@@ -16,8 +16,9 @@ class SecurityHandlerTest extends BaseTest
     {
         $this->expectException(SecurityException::class);
         $this->expectExceptionMessage("Restricted domains enabled, the domain your fetching from is not allowed:");
+        /** @var AppParameters $appParameters */
         $appParameters = clone $this->app['params'];
-        $appParameters->set('restricted_domains', true);
+        $appParameters->addParameter('restricted_domains', true);
         $securityHandler = new SecurityHandler($appParameters);
 
         $securityHandler->checkRestrictedDomains(parent::PNG_TEST_IMAGE);
@@ -32,9 +33,10 @@ class SecurityHandlerTest extends BaseTest
         $this->expectExceptionMessage(
             "Security Key enabled: Requested URL doesn't match with the hashed Security key !"
         );
+        /** @var AppParameters $appParameters */
         $appParameters = clone $this->app['params'];
-        $appParameters->set('security_key', 'TestSecurityKey');
-        $appParameters->set('security_iv', 'TestSecurityIVXXXX');
+        $appParameters->addParameter('security_key', 'TestSecurityKey');
+        $appParameters->addParameter('security_iv', 'TestSecurityIVXXXX');
         $this->checkSecurityHash($appParameters);
     }
 
@@ -47,8 +49,9 @@ class SecurityHandlerTest extends BaseTest
         $this->expectExceptionMessage(
             "security_key in empty im parameters.yml!"
         );
+        /** @var AppParameters $appParameters */
         $appParameters = clone $this->app['params'];
-        $appParameters->set('security_key', '');
+        $appParameters->addParameter('security_key', '');
         $securityHandler = new SecurityHandler($appParameters);
         $securityHandler->encrypt(parent::OPTION_URL.'/'.parent::JPG_TEST_IMAGE);
     }
@@ -60,9 +63,10 @@ class SecurityHandlerTest extends BaseTest
     {
         $this->expectException(SecurityException::class);
         $this->expectExceptionMessage("Security iv is not set in parameters.yml (security_iv)");
+        /** @var AppParameters $appParameters */
         $appParameters = clone $this->app['params'];
-        $appParameters->set('security_key', 'TestSecurityKey');
-        $appParameters->set('security_iv', '');
+        $appParameters->addParameter('security_key', 'TestSecurityKey');
+        $appParameters->addParameter('security_iv', '');
         $this->checkSecurityHash($appParameters);
     }
 
@@ -71,9 +75,10 @@ class SecurityHandlerTest extends BaseTest
      */
     public function testCheckSecurityHashSuccess()
     {
+        /** @var AppParameters $appParameters */
         $appParameters = clone $this->app['params'];
-        $appParameters->set('security_key', 'TestSecurityKey');
-        $appParameters->set('security_iv', 'TestSecurityIVXXXX');
+        $appParameters->addParameter('security_key', 'TestSecurityKey');
+        $appParameters->addParameter('security_iv', 'TestSecurityIVXXXX');
         $securityHandler = new SecurityHandler($appParameters);
         $options = parent::OPTION_URL;
         $imageSrc = parent::JPG_TEST_IMAGE;
@@ -88,9 +93,10 @@ class SecurityHandlerTest extends BaseTest
      */
     public function testEncryptionDecryption()
     {
+        /** @var AppParameters $appParameters */
         $appParameters = clone $this->app['params'];
-        $appParameters->set('security_key', 'TestSecurityKey');
-        $appParameters->set('security_iv', 'TestSecurityIVXXXX');
+        $appParameters->addParameter('security_key', 'TestSecurityKey');
+        $appParameters->addParameter('security_iv', 'TestSecurityIVXXXX');
 
         $securityHandler = new SecurityHandler($appParameters);
         $randomString = str_shuffle('AKALEOCJCNXMSOLWO5#KXMw');

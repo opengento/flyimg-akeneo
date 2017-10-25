@@ -32,7 +32,7 @@ class AppParameters
      *
      * @return mixed
      */
-    public function get($key, $default = null)
+    public function parameterByKey($key, $default = null)
     {
         return array_key_exists($key, $this->parameters) ? $this->parameters[$key] : $default;
     }
@@ -43,7 +43,7 @@ class AppParameters
      * @param string $key   The key
      * @param mixed  $value The value
      */
-    public function set($key, $value)
+    public function addParameter($key, $value)
     {
         $this->parameters[$key] = $value;
     }

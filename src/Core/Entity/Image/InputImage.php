@@ -20,7 +20,7 @@ class InputImage
     /** @var string */
     protected $sourceImageMimeType;
 
-    /** @var \ImageMetaInfo */
+    /** @var ImageMetaInfo */
     protected $sourceImageInfo;
 
     /**
@@ -80,8 +80,8 @@ class InputImage
      */
     public function removeInputImage()
     {
-        if (file_exists($this->getSourceImagePath())) {
-            unlink($this->getSourceImagePath());
+        if (file_exists($this->sourceImagePath())) {
+            unlink($this->sourceImagePath());
         }
     }
 
@@ -90,7 +90,7 @@ class InputImage
      *
      * @return string
      */
-    public function extract(string $key): string
+    public function extractKey(string $key): string
     {
         $value = '';
         if ($this->optionsBag->has($key)) {
@@ -104,7 +104,7 @@ class InputImage
     /**
      * @return OptionsBag
      */
-    public function getOptionsBag(): OptionsBag
+    public function optionsBag(): OptionsBag
     {
         return $this->optionsBag;
     }
@@ -112,7 +112,7 @@ class InputImage
     /**
      * @return string
      */
-    public function getSourceImageUrl(): string
+    public function sourceImageUrl(): string
     {
         return $this->sourceImageUrl;
     }
@@ -120,7 +120,7 @@ class InputImage
     /**
      * @return string
      */
-    public function getSourceImagePath(): string
+    public function sourceImagePath(): string
     {
         return $this->sourceImagePath;
     }
@@ -128,17 +128,17 @@ class InputImage
     /**
      * @return string
      */
-    public function getSourceImageMimeType(): string
+    public function sourceImageMimeType(): string
     {
         if (isset($this->sourceImageMimeType)) {
             return $this->sourceImageMimeType;
         }
 
-        $this->sourceImageMimeType = $this->sourceImageInfo->getMimeType();
+        $this->sourceImageMimeType = $this->sourceImageInfo->mimeType();
         return $this->sourceImageMimeType;
     }
 
-    public function getSourceImageInfo()
+    public function sourceImageInfo()
     {
         return $this->sourceImageInfo;
     }

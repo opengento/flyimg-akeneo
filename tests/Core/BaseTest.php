@@ -55,12 +55,16 @@ class BaseTest extends \PHPUnit_Framework_TestCase
     {
         unset($this->ImageHandler);
         unset($this->app);
-        
+
         foreach ($this->generatedImage as $image) {
             if (!$image instanceof OutputImage) {
                 continue;
             }
-            $image->cleanupFiles();
+            $fullPath = UPLOAD_DIR.$image->getOutputImageName();
+            if (file_exists($fullPath)) {
+                unlink($fullPath);
+            }
+            $image->getInputImage()->removeInputImage();
         }
     }
 

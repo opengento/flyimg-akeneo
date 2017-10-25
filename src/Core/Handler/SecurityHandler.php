@@ -36,9 +36,9 @@ class SecurityHandler
      */
     public function checkRestrictedDomains(string $imageSource)
     {
-        if ($this->appParameters->get('restricted_domains') &&
-            is_array($this->appParameters->get('whitelist_domains')) &&
-            !in_array(parse_url($imageSource, PHP_URL_HOST), $this->appParameters->get('whitelist_domains'))
+        if ($this->appParameters->parameterByKey('restricted_domains') &&
+            is_array($this->appParameters->parameterByKey('whitelist_domains')) &&
+            !in_array(parse_url($imageSource, PHP_URL_HOST), $this->appParameters->parameterByKey('whitelist_domains'))
         ) {
             throw  new SecurityException(
                 'Restricted domains enabled, the domain your fetching from is not allowed: '.
@@ -56,11 +56,11 @@ class SecurityHandler
      */
     public function checkSecurityHash(string $options, string $imageSrc): array
     {
-        if (empty($this->appParameters->get('security_key'))) {
+        if (empty($this->appParameters->parameterByKey('security_key'))) {
             return [$options, $imageSrc];
         }
 
-        if (empty($this->appParameters->get('security_iv'))) {
+        if (empty($this->appParameters->parameterByKey('security_iv'))) {
             throw  new SecurityException(
                 'Security iv is not set in parameters.yml (security_iv)'
             );
@@ -118,8 +118,8 @@ class SecurityHandler
      */
     protected function createHash(): array
     {
-        $secretKey = $this->appParameters->get('security_key');
-        $secretIv = $this->appParameters->get('security_iv');
+        $secretKey = $this->appParameters->parameterByKey('security_key');
+        $secretIv = $this->appParameters->parameterByKey('security_iv');
 
         if (empty($secretKey)) {
             throw  new SecurityException(

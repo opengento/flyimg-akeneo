@@ -22,7 +22,7 @@ class DefaultController extends CoreController
      */
     public function uploadAction(string $options, string $imageSrc = null): Response
     {
-        $image = $this->getImageHandler()->processImage($options, $imageSrc);
+        $image = $this->imageHandler()->processImage($options, $imageSrc);
 
         return $this->generateImageResponse($image);
     }
@@ -35,7 +35,7 @@ class DefaultController extends CoreController
      */
     public function pathAction(string $options, string $imageSrc = null): Response
     {
-        $image = $this->getImageHandler()->processImage($options, $imageSrc);
+        $image = $this->imageHandler()->processImage($options, $imageSrc);
 
         return $this->generatePathResponse($image);
     }

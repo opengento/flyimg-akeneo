@@ -55,7 +55,7 @@ class ImageHandler
     /**
      * @return ImageProcessor
      */
-    public function getImageProcessor(): ImageProcessor
+    public function imageProcessor(): ImageProcessor
     {
         return $this->imageProcessor;
     }
@@ -63,7 +63,7 @@ class ImageHandler
     /**
      * @return AppParameters
      */
-    public function getAppParameters(): AppParameters
+    public function appParameters(): AppParameters
     {
         return $this->appParameters;
     }
@@ -71,7 +71,7 @@ class ImageHandler
     /**
      * @return SecurityHandler
      */
-    public function getSecurityHandler(): SecurityHandler
+    public function securityHandler(): SecurityHandler
     {
         return $this->securityHandler;
     }
@@ -103,7 +103,7 @@ class ImageHandler
                 $outputImage = $this->processNewImage($outputImage);
             }
 
-            $outputImage->setOutputImageContent($this->filesystem->read($outputImage->getOutputImageName()));
+            $outputImage->attachOutputContent($this->filesystem->read($outputImage->getOutputImageName()));
         } catch (\Exception $e) {
             $outputImage->removeOutputImage();
             throw $e;
@@ -117,9 +117,9 @@ class ImageHandler
      */
     protected function faceDetectionProcess(OutputImage $outputImage): void
     {
-        $faceCrop = $outputImage->extract('face-crop');
-        $faceCropPosition = $outputImage->extract('face-crop-position');
-        $faceBlur = $outputImage->extract('face-blur');
+        $faceCrop = $outputImage->extractKey('face-crop');
+        $faceCropPosition = $outputImage->extractKey('face-crop-position');
+        $faceBlur = $outputImage->extractKey('face-blur');
 
         if ($faceBlur && !$outputImage->isOutputGif()) {
             $this->faceDetectProcessor->blurFaces($outputImage->getInputImage());
@@ -138,14 +138,14 @@ class ImageHandler
     protected function processNewImage(OutputImage $outputImage): OutputImage
     {
         //Check Extract options
-        if ($outputImage->extract('extract')) {
+        if ($outputImage->extractKey('extract')) {
             $this->extractProcess($outputImage);
         }
 
         //Check Face Detection options
         $this->faceDetectionProcess($outputImage);
 
-        $outputImage = $this->getImageProcessor()->processNewImage($outputImage);
+        $outputImage = $this->imageProcessor()->processNewImage($outputImage);
         $this->filesystem->write(
             $outputImage->getOutputImageName(),
             stream_get_contents(fopen($outputImage->getOutputImagePath(), 'r'))
@@ -159,10 +159,10 @@ class ImageHandler
      */
     protected function extractProcess(OutputImage $outputImage): void
     {
-        $topLeftX = $outputImage->extract('extract-top-x');
-        $topLeftY = $outputImage->extract('extract-top-y');
-        $bottomRightX = $outputImage->extract('extract-bottom-x');
-        $bottomRightY = $outputImage->extract('extract-bottom-y');
+        $topLeftX = $outputImage->extractKey('extract-top-x');
+        $topLeftY = $outputImage->extractKey('extract-top-y');
+        $bottomRightX = $outputImage->extractKey('extract-bottom-x');
+        $bottomRightY = $outputImage->extractKey('extract-bottom-y');
 
         $this->extractProcessor->extract(
             $outputImage->getInputImage(),
@@ -178,7 +178,7 @@ class ImageHandler
      *
      * @return string
      */
-    public function getResponseContentType(OutputImage $outputImage): string
+    public function responseContentType(OutputImage $outputImage): string
     {
         if ($outputImage->getOutputImageExtension() == OutputImage::EXT_WEBP) {
             return OutputImage::WEBP_MIME_TYPE;
