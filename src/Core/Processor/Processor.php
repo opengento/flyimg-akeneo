@@ -63,7 +63,7 @@ class Processor
      */
     public function imageIdentityInformation(OutputImage $image): string
     {
-        $output = $this->execute(self::IM_IDENTITY_COMMAND." ".$image->outputImagePath());
+        $output = $this->execute(self::IM_IDENTITY_COMMAND." ".$image->getOutputImagePath());
 
         return !empty($output[0]) ? $output[0] : "";
     }

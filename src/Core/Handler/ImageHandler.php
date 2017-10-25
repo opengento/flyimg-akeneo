@@ -95,15 +95,15 @@ class ImageHandler
         $outputImage = new OutputImage($inputImage);
 
         try {
-            if ($this->filesystem->has($outputImage->outputImageName()) && $optionsBag->get('refresh')) {
-                $this->filesystem->delete($outputImage->outputImageName());
+            if ($this->filesystem->has($outputImage->getOutputImageName()) && $optionsBag->get('refresh')) {
+                $this->filesystem->delete($outputImage->getOutputImageName());
             }
 
-            if (!$this->filesystem->has($outputImage->outputImageName())) {
+            if (!$this->filesystem->has($outputImage->getOutputImageName())) {
                 $outputImage = $this->processNewImage($outputImage);
             }
 
-            $outputImage->attachOutputContent($this->filesystem->read($outputImage->outputImageName()));
+            $outputImage->attachOutputContent($this->filesystem->read($outputImage->getOutputImageName()));
         } catch (\Exception $e) {
             $outputImage->removeOutputImage();
             throw $e;
@@ -122,11 +122,11 @@ class ImageHandler
         $faceBlur = $outputImage->extractKey('face-blur');
 
         if ($faceBlur && !$outputImage->isOutputGif()) {
-            $this->faceDetectProcessor->blurFaces($outputImage->inputImage());
+            $this->faceDetectProcessor->blurFaces($outputImage->getInputImage());
         }
 
         if ($faceCrop && !$outputImage->isOutputGif()) {
-            $this->faceDetectProcessor->cropFaces($outputImage->inputImage(), $faceCropPosition);
+            $this->faceDetectProcessor->cropFaces($outputImage->getInputImage(), $faceCropPosition);
         }
     }
 
@@ -147,8 +147,8 @@ class ImageHandler
 
         $outputImage = $this->imageProcessor()->processNewImage($outputImage);
         $this->filesystem->write(
-            $outputImage->outputImageName(),
-            stream_get_contents(fopen($outputImage->outputImagePath(), 'r'))
+            $outputImage->getOutputImageName(),
+            stream_get_contents(fopen($outputImage->getOutputImagePath(), 'r'))
         );
 
         return $outputImage;
@@ -165,7 +165,7 @@ class ImageHandler
         $bottomRightY = $outputImage->extractKey('extract-bottom-y');
 
         $this->extractProcessor->extract(
-            $outputImage->inputImage(),
+            $outputImage->getInputImage(),
             $topLeftX,
             $topLeftY,
             $bottomRightX,

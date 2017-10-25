@@ -47,8 +47,8 @@ class ImageProcessor extends Processor
      */
     public function processNewImage(OutputImage $outputImage): OutputImage
     {
-        $this->sourceImageInfo = $outputImage->inputImage()->sourceImageInfo();
-        $this->options = $outputImage->inputImage()->optionsBag();
+        $this->sourceImageInfo = $outputImage->getInputImage()->sourceImageInfo();
+        $this->options = $outputImage->getInputImage()->optionsBag();
         $cmdString = $this->generateCmdString($outputImage);
         $this->execute($cmdString);
 
@@ -179,17 +179,17 @@ class ImageProcessor extends Processor
         if (is_executable(self::CWEBP_COMMAND) && $outputImage->isOutputWebP()) {
             $lossLess = $outputImage->extractKey('webp-lossless') ? 'true' : 'false';
             $parameter = "-quality ".escapeshellarg($quality).
-                " -define webp:lossless=".$lossLess." ".escapeshellarg($outputImage->outputImagePath());
+                " -define webp:lossless=".$lossLess." ".escapeshellarg($outputImage->getOutputImagePath());
         } /** MozJpeg compression */
         elseif (is_executable(self::MOZJPEG_COMMAND) && $outputImage->isOutputMozJpeg()) {
             $parameter = "TGA:- | ".escapeshellarg(self::MOZJPEG_COMMAND)
                 ." -quality ".escapeshellarg($quality)
-                ." -outfile ".escapeshellarg($outputImage->outputImagePath())
+                ." -outfile ".escapeshellarg($outputImage->getOutputImagePath())
                 ." -targa";
         } /** default ImageMagick compression */
         else {
             $parameter = "-quality ".escapeshellarg($quality).
-                " ".escapeshellarg($outputImage->outputImagePath());
+                " ".escapeshellarg($outputImage->getOutputImagePath());
         }
 
         return $parameter;

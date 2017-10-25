@@ -58,7 +58,7 @@ class CoreController
     public function generateImageResponse(OutputImage $image): Response
     {
         $response = new Response();
-        $response->setContent($image->outputImageContent());
+        $response->setContent($image->getOutputImageContent());
         $response = $this->generateHeaders($image, $response);
         $image->removeOutputImage();
 
@@ -73,7 +73,7 @@ class CoreController
     public function generatePathResponse(OutputImage $image): Response
     {
         $response = new Response();
-        $imagePath = $image->outputImageName();
+        $imagePath = $image->getOutputImageName();
         $imagePath = sprintf($this->app['flysystems']['file_path_resolver'], $imagePath);
         $response->setContent($imagePath);
         $image->removeOutputImage();
@@ -101,12 +101,12 @@ class CoreController
         $response->setSharedMaxAge($longCacheTime);
         $response->setPublic();
 
-        if ($image->inputImage()->optionsBag()->get('refresh')) {
+        if ($image->getInputImage()->optionsBag()->get('refresh')) {
             $response->headers->set('Cache-Control', 'no-cache, private');
             $response->setExpires(null)->expire();
 
             $response->headers->set('im-identify', $imageHandler->imageProcessor()->imageIdentityInformation($image));
-            $response->headers->set('im-command', $image->commandString());
+            $response->headers->set('im-command', $image->getCommandString());
         }
 
         return $response;

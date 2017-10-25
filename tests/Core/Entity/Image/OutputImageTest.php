@@ -68,7 +68,7 @@ class OutputImageTest extends BaseTest
         $image = new OutputImage($inputImage);
         $this->generatedImage[] = $image;
 
-        $this->assertFileExists($image->inputImage()->sourceImagePath());
+        $this->assertFileExists($image->getInputImage()->sourceImagePath());
     }
 
     /**
@@ -87,8 +87,8 @@ class OutputImageTest extends BaseTest
         $this->generatedImage[] = $image2;
         $this->generatedImage[] = $image;
 
-        $this->assertEquals($image2->outputImageName(), $image->outputImageName());
-        $this->assertNotEquals($image2->outputImagePath(), $image->outputImagePath());
+        $this->assertEquals($image2->getOutputImageName(), $image->getOutputImageName());
+        $this->assertNotEquals($image2->getOutputImagePath(), $image->getOutputImagePath());
     }
 
     /**
@@ -102,6 +102,6 @@ class OutputImageTest extends BaseTest
 
         $image->extractKey('width');
         $this->generatedImage[] = $image;
-        $this->assertFalse(array_key_exists('width', $image->inputImage()->optionsBag()->asArray()));
+        $this->assertFalse(array_key_exists('width', $image->getInputImage()->optionsBag()->asArray()));
     }
 }

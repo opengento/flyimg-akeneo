@@ -71,7 +71,7 @@ class OutputImage
     /**
      * @return InputImage
      */
-    public function inputImage(): InputImage
+    public function getInputImage(): InputImage
     {
         return $this->inputImage;
     }
@@ -79,7 +79,7 @@ class OutputImage
     /**
      * @return string
      */
-    public function outputImageName(): string
+    public function getOutputImageName(): string
     {
         return $this->outputImageName;
     }
@@ -87,7 +87,7 @@ class OutputImage
     /**
      * @return string
      */
-    public function outputImagePath(): string
+    public function getOutputImagePath(): string
     {
         return $this->outputImagePath;
     }
@@ -100,7 +100,10 @@ class OutputImage
         $this->commandString = $commandStr;
     }
 
-    public function commandString(): string
+    /**
+     * @return string
+     */
+    public function getCommandString(): string
     {
         return $this->commandString;
     }
@@ -108,7 +111,7 @@ class OutputImage
     /**
      * @return string
      */
-    public function outputImageContent(): string
+    public function getOutputImageContent(): string
     {
         return $this->outputImageContent;
     }
@@ -134,24 +137,9 @@ class OutputImage
      */
     public function removeOutputImage()
     {
-        if (file_exists($this->outputImagePath())) {
-            unlink($this->outputImagePath());
+        if (file_exists($this->getOutputImagePath())) {
+            unlink($this->getOutputImagePath());
         }
-    }
-
-    /**
-     * Remove all generated files
-     */
-    public function cleanupFiles()
-    {
-        $this->removeOutputImage();
-
-        $fullPath = UPLOAD_DIR.$this->outputImageName();
-        if (file_exists($fullPath)) {
-            unlink($fullPath);
-        }
-
-        $this->inputImage()->removeInputImage();
     }
 
     /**
