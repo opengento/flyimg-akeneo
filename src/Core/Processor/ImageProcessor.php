@@ -114,7 +114,6 @@ class ImageProcessor extends Processor
         }
 
         return $size;
-
     }
 
     /**
