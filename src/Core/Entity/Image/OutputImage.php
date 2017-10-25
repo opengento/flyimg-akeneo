@@ -127,7 +127,7 @@ class OutputImage
     /**
      * @return string
      */
-    public function outputImageExtension(): string
+    public function getOutputImageExtension(): string
     {
         return $this->outputImageExtension;
     }

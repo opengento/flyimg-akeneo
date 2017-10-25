@@ -155,7 +155,7 @@ class ImageProcessor extends Processor
             $frame = $this->options->getOption('gif-frame');
 
             // set the frame if the output image is not gif (to get ony one  frame)
-            if ($outputImage->outputImageExtension() !== OutputImage::EXT_GIF) {
+            if ($outputImage->getOutputImageExtension() !== OutputImage::EXT_GIF) {
                 $tmpFileName .= '['.escapeshellarg($frame).']';
             }
         }
