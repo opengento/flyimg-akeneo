@@ -2,6 +2,7 @@
 
 namespace Core\Processor;
 
+use Core\Entity\Command;
 use Core\Entity\Image\OutputImage;
 use Core\Entity\ImageMetaInfo;
 
@@ -49,8 +50,8 @@ class ImageProcessor extends Processor
     {
         $this->sourceImageInfo = $outputImage->getInputImage()->sourceImageInfo();
         $this->options = $outputImage->getInputImage()->optionsBag();
-        $cmdString = $this->generateCmdString($outputImage);
-        $this->execute($cmdString);
+        $command = $this->generateCommand($outputImage);
+        $this->execute($command);
 
         return $outputImage;
     }
@@ -60,18 +61,50 @@ class ImageProcessor extends Processor
      *
      * @param OutputImage $outputImage
      *
+     * @return Command
+     */
+    protected function generateCommand(OutputImage $outputImage): Command
+    {
+        $command = new Command(self::IM_CONVERT_COMMAND);
+
+        if ($outputImage->isInputGif()) {
+            $command->addArgument('-coalesce');
+        }
+
+        $command->addArgument($this->getSourceImagePath($outputImage));
+        $command->addArgument($this->calculateSize());
+        $command->addArgument('-colorspace', 'sRGB');
+
+        //Rotate option
+        if (!empty($this->options->getOption('rotate'))) {
+            $command->addArgument("-rotate", $this->options->getOption('rotate'));
+        }
+
+        // strip is added internally by ImageMagick when using -thumbnail
+        if (!empty($outputImage->extractKey('strip'))) {
+            $command->addArgument("-strip");
+        }
+
+        if (!empty($outputImage->extractKey('thread'))) {
+            $command->addArgument("-limit thread", $outputImage->extractKey('thread'));
+        }
+
+        $command->addArgument($this->calculateQuality($outputImage));
+
+        $outputImage->setCommandString($command);
+
+        return $command;
+    }
+
+    /**
      * @return string
      */
-    public function generateCmdString(OutputImage $outputImage): string
+    protected function calculateSize(): string
     {
-        // we will categorize the operation in this method and call the adecuate functions depending on the parameters
-        // first we get the data we need
         $width = $this->options->getOption('width');
         $height = $this->options->getOption('height');
         $crop = $this->options->getOption('crop');
-
-        $command = [];
-        $command[] = self::IM_CONVERT_COMMAND;
+        $size = '';
 
         // if width AND height AND crop are defined we need check further to define the type of operation we will do
         if ($width && $height && $crop) {
@@ -80,31 +113,7 @@ class ImageProcessor extends Processor
             $size = $this->generateSimpleSize();
         }
 
-        if ($outputImage->isInputGif()) {
-            $command[] = '-coalesce';
-        }
-
-        $command[] = $this->getSourceImagePath($outputImage);
-        $command[] = $size;
-        $command[] = ' -colorspace sRGB';
-
-        // strip is added internally by ImageMagick when using -thumbnail
-        $strip = $outputImage->extractKey('strip');
-        if (!empty($strip)) {
-            $command[] = "-strip";
-        }
-
-        $thread = $outputImage->extractKey('thread');
-        if (!empty($thread)) {
-            $command[] = "-limit thread ".escapeshellarg($thread);
-        }
-
-        $command[] = $this->calculateQuality($outputImage);
-
-        $commandStr = implode(' ', $command);
-        $outputImage->setCommandString($commandStr);
-
-        return $commandStr;
+        return $size;
     }
 
     /**
@@ -173,7 +182,6 @@ class ImageProcessor extends Processor
     protected function calculateQuality(OutputImage $outputImage): string
     {
         $quality = $outputImage->extractKey('quality');
-        $parameter = '';
 
         /** WebP format */
         if (is_executable(self::CWEBP_COMMAND) && $outputImage->isOutputWebP()) {
