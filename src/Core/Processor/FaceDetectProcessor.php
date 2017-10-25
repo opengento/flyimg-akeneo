@@ -33,7 +33,7 @@ class FaceDetectProcessor extends Processor
             [$geometryX, $geometryY, $geometryW, $geometryH] = $geometry;
             $cropCmd = new Command(self::IM_CONVERT_COMMAND);
             $cropCmd->addArgument($inputImage->sourceImagePath());
-            $cropCmd->addArgument("-crop {$geometryW}x{$geometryH}+{$geometryX}+{$geometryY}");
+            $cropCmd->addArgument("-crop", "{$geometryW}x{$geometryH}+{$geometryX}+{$geometryY}");
             $cropCmd->addArgument($inputImage->sourceImagePath());
             $this->execute($cropCmd);
         }
@@ -61,9 +61,10 @@ class FaceDetectProcessor extends Processor
                 [$geometryX, $geometryY, $geometryW, $geometryH] = $geometry;
 
                 $blurCmd = new Command(self::IM_MOGRIFY_COMMAND);
-                $blurCmd->addArgument("-gravity NorthWest");
-                $blurCmd->addArgument("-region {$geometryW}x{$geometryH}+{$geometryX}+{$geometryY} ");
-                $blurCmd->addArgument("-scale '10%' -scale '1000%'");
+                $blurCmd->addArgument("-gravity", "NorthWest");
+                $blurCmd->addArgument("-region", "{$geometryW}x{$geometryH}+{$geometryX}+{$geometryY}");
+                $blurCmd->addArgument("-scale", "10%");
+                $blurCmd->addArgument("-scale", "1000%");
                 $blurCmd->addArgument($inputImage->sourceImagePath());
                 $this->execute($blurCmd);
             }
