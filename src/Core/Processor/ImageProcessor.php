@@ -2,6 +2,7 @@
 
 namespace Core\Processor;
 
+use Core\Entity\Command;
 use Core\Entity\Image\OutputImage;
 use Core\Entity\ImageMetaInfo;
 
@@ -49,8 +50,8 @@ class ImageProcessor extends Processor
     {
         $this->sourceImageInfo = $outputImage->getInputImage()->sourceImageInfo();
         $this->options = $outputImage->getInputImage()->optionsBag();
-        $cmdString = $this->generateCmdString($outputImage);
-        $this->execute($cmdString);
+        $command = $this->generateCmdString($outputImage);
+        $this->execute($command);
 
         return $outputImage;
     }
@@ -60,9 +61,9 @@ class ImageProcessor extends Processor
      *
      * @param OutputImage $outputImage
      *
-     * @return string
+     * @return Command
      */
-    public function generateCmdString(OutputImage $outputImage): string
+    public function generateCmdString(OutputImage $outputImage): Command
     {
         // we will categorize the operation in this method and call the adecuate functions depending on the parameters
         // first we get the data we need
@@ -70,10 +71,10 @@ class ImageProcessor extends Processor
         $height = $this->options->getOption('height');
         $crop = $this->options->getOption('crop');
 
-        $command = [];
-        $command[] = self::IM_CONVERT_COMMAND;
+        $command = new Command(self::IM_CONVERT_COMMAND);
 
         // if width AND height AND crop are defined we need check further to define the type of operation we will do
+        $size = '';
         if ($width && $height && $crop) {
             $size = $this->generateCropSize();
         } elseif ($width || $height) {
@@ -81,36 +82,32 @@ class ImageProcessor extends Processor
         }
 
         if ($outputImage->isInputGif()) {
-            $command[] = '-coalesce';
+            $command->addArgument('-coalesce');
         }
 
-        $command[] = $this->getSourceImagePath($outputImage);
-        $command[] = $size;
-        $command[] = ' -colorspace sRGB';
+        $command->addArgument($this->getSourceImagePath($outputImage));
+        $command->addArgument($size);
+        $command->addArgument(' -colorspace sRGB');
 
         //Rotate option
-        $rotate = $this->options->getOption('rotate');
-        if (!empty($rotate)) {
-            $command[] = "-rotate ".escapeshellarg($rotate);
+        if (!empty($this->options->getOption('rotate'))) {
+            $command->addArgument("-rotate ".escapeshellarg($this->options->getOption('rotate')));
         }
 
         // strip is added internally by ImageMagick when using -thumbnail
-        $strip = $outputImage->extractKey('strip');
-        if (!empty($strip)) {
-            $command[] = "-strip";
+        if (!empty($outputImage->extractKey('strip'))) {
+            $command->addArgument("-strip");
         }
 
-        $thread = $outputImage->extractKey('thread');
-        if (!empty($thread)) {
-            $command[] = "-limit thread ".escapeshellarg($thread);
+        if (!empty($outputImage->extractKey('thread'))) {
+            $command->addArgument("-limit thread ".escapeshellarg($outputImage->extractKey('thread')));
         }
 
-        $command[] = $this->calculateQuality($outputImage);
+        $command->addArgument($this->calculateQuality($outputImage));
 
-        $commandStr = implode(' ', $command);
-        $outputImage->setCommandString($commandStr);
+        $outputImage->setCommandString($command);
 
-        return $commandStr;
+        return $command;
     }
 
     /**

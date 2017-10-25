@@ -2,6 +2,7 @@
 
 namespace Core\Processor;
 
+use Core\Entity\Command;
 use Core\Entity\Image\InputImage;
 
 /**
@@ -21,19 +22,20 @@ class FaceDetectProcessor extends Processor
         if (!is_executable(self::FACEDETECT_COMMAND)) {
             return;
         }
-        $commandStr = self::FACEDETECT_COMMAND." ".$inputImage->sourceImagePath();
-        $output = $this->execute($commandStr);
+        $faceDetectCmd = new Command(self::FACEDETECT_COMMAND);
+        $faceDetectCmd->addArgument($inputImage->sourceImagePath());
+        $output = $this->execute($faceDetectCmd);
         if (empty($output[$faceCropPosition])) {
             return;
         }
         $geometry = explode(" ", $output[$faceCropPosition]);
         if (count($geometry) == 4) {
             [$geometryX, $geometryY, $geometryW, $geometryH] = $geometry;
-            $cropCmdStr =
-                self::IM_CONVERT_COMMAND.
-                " '{$inputImage->sourceImagePath()}' -crop {$geometryW}x{$geometryH}+{$geometryX}+{$geometryY} ".
-                $inputImage->sourceImagePath();
-            $this->execute($cropCmdStr);
+            $cropCmd = new Command(self::IM_CONVERT_COMMAND);
+            $cropCmd->addArgument($inputImage->sourceImagePath());
+            $cropCmd->addArgument("-crop {$geometryW}x{$geometryH}+{$geometryX}+{$geometryY}");
+            $cropCmd->addArgument($inputImage->sourceImagePath());
+            $this->execute($cropCmd);
         }
     }
 
@@ -47,8 +49,9 @@ class FaceDetectProcessor extends Processor
         if (!is_executable(self::FACEDETECT_COMMAND)) {
             return;
         }
-        $commandStr = self::FACEDETECT_COMMAND." ".$inputImage->sourceImagePath();
-        $output = $this->execute($commandStr);
+        $faceDetectCmd = new Command(self::FACEDETECT_COMMAND);
+        $faceDetectCmd->addArgument($inputImage->sourceImagePath());
+        $output = $this->execute($faceDetectCmd);
         if (empty($output)) {
             return;
         }
@@ -56,11 +59,13 @@ class FaceDetectProcessor extends Processor
             $geometry = explode(" ", $outputLine);
             if (count($geometry) == 4) {
                 [$geometryX, $geometryY, $geometryW, $geometryH] = $geometry;
-                $cropCmdStr = self::IM_MOGRIFY_COMMAND.
-                    " -gravity NorthWest -region {$geometryW}x{$geometryH}+{$geometryX}+{$geometryY} ".
-                    "-scale '10%' -scale '1000%' ".
-                    $inputImage->sourceImagePath();
-                $this->execute($cropCmdStr);
+
+                $blurCmd = new Command(self::IM_MOGRIFY_COMMAND);
+                $blurCmd->addArgument("-gravity NorthWest");
+                $blurCmd->addArgument("-region {$geometryW}x{$geometryH}+{$geometryX}+{$geometryY} ");
+                $blurCmd->addArgument("-scale '10%' -scale '1000%'");
+                $blurCmd->addArgument($inputImage->sourceImagePath());
+                $this->execute($blurCmd);
             }
         }
     }
