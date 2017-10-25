@@ -88,6 +88,12 @@ class ImageProcessor extends Processor
         $command[] = $size;
         $command[] = ' -colorspace sRGB';
 
+        //Rotate option
+        $rotate = $this->options->getOption('rotate');
+        if (!empty($rotate)) {
+            $command[] = "-rotate ".escapeshellarg($rotate);
+        }
+
         // strip is added internally by ImageMagick when using -thumbnail
         $strip = $outputImage->extractKey('strip');
         if (!empty($strip)) {
