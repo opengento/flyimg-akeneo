@@ -79,7 +79,7 @@ class Response extends BaseResponse
      * @param OutputImage $image
      *
      */
-    public function generateImageResponse(OutputImage $image) :void
+    public function generateImageResponse(OutputImage $image): void
     {
         $this->setContent($image->getOutputImageContent());
         $this->generateHeaders($image);
@@ -90,10 +90,10 @@ class Response extends BaseResponse
      * @param OutputImage $image
      *
      */
-    public function generatePathResponse(OutputImage $image) :void
+    public function generatePathResponse(OutputImage $image): void
     {
         $imagePath = $image->getOutputImageName();
-        $imagePath = sprintf( $this->filePathResolver, $imagePath);
+        $imagePath = sprintf($this->filePathResolver, $imagePath);
         $this->setContent($imagePath);
         $image->removeOutputImage();
     }
