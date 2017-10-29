@@ -246,6 +246,15 @@ For the hex code, the hash `#` character should be replaced by `%23`
 
 [![fb_1](https://oi.flyimg.io/upload/fb_1/http://facedetection.jaysalvat.com/img/faces.jpg)](https://oi.flyimg.io/upload/fb_1/http://facedetection.jaysalvat.com/img/faces.jpg)
 
+### `e` : extract
+#### `p1x` : extract-top-x
+#### `p1y` : extract-top-y
+#### `p2x` : extract-bottom-x
+#### `p2y` : extract-bottom-y
+*Default:* `null`
+
+*Description:* Extract and crop an image with given the x/y coordinates of each booth top and bottom.
+
 ### `sf` : sampling-factor
 *Default:* `1x1`
 *Description:* ...
