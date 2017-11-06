@@ -75,12 +75,17 @@ class ImageProcessor extends Processor
         $command->addArgument($this->calculateSize());
         $command->addArgument('-colorspace', 'sRGB');
 
+        //Background option
+        if (!empty($this->options->getOption('background'))) {
+            $command->addArgument("-background", $this->options->getOption('background'));
+        }
+
         //Rotate option
         if (!empty($this->options->getOption('rotate'))) {
             $command->addArgument("-rotate", $this->options->getOption('rotate'));
         }
 
-        // strip is added internally by ImageMagick when using -thumbnail
+        //Strip is added internally by ImageMagick when using -thumbnail
         if (!empty($outputImage->extractKey('strip'))) {
             $command->addArgument("-strip");
         }
