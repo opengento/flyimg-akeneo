@@ -1,5 +1,8 @@
 ## Change Log
 
+### 1.1.1 (2017/11/06 18:10 +00:00)
+- [#147](https://github.com/flyimg/flyimg/pull/147) [issue-#146] Fix Background color doesn't work, (@sadok-f)
+
 ### 1.1.0 (2017/10/29 10:14 +00:00)
 - [#144](https://github.com/flyimg/flyimg/pull/144) [issue-#109] Update docs about the new feature image extraction, (@sadok-f)
 - [#143](https://github.com/flyimg/flyimg/pull/143) [issue-#142] Create Response Entity, closes #142 (@sadok-f)
@@ -12,7 +15,13 @@
 - [#136](https://github.com/flyimg/flyimg/pull/136) Replace getters and setters names with meaning names, closes #135 (@sadok-f)
 - [#134](https://github.com/flyimg/flyimg/pull/134) Refactor part 3: replace list function with [] (new in php7.1), close… (@sadok-f)
 - [#130](https://github.com/flyimg/flyimg/pull/130) Image Processor geometry refactor, added more tests. (@flyimg)
-- [#124](https://github.com/flyimg/flyimg/pull/124) [WIP]: Added more cases for the tests. Fixes #115. Added Image Info to the source image …  Alright! I'm done with this PR, I have more tests, but they are failing and I need to fix the functionallity. I'll do that in another PR. I've done enough here. And all works same as before.  We do need to fix all cases for the image identification (minor bugs there).  Also need to create an abstract Executor class for the command line executions and binary paths. (@flyimg)
+- [#124](https://github.com/flyimg/flyimg/pull/124) [WIP]: Added more cases for the tests. Fixes #115. Added Image Info to the source image …
+ 
+ Alright! I'm done with this PR, I have more tests, but they are failing and I need to fix the functionallity. I'll do that in another PR. I've done enough here. And all works same as before.
+ 
+ We do need to fix all cases for the image identification (minor bugs there).
+ 
+ Also need to create an abstract Executor class for the command line executions and binary paths. (@flyimg)
 - [#128](https://github.com/flyimg/flyimg/pull/128) Move url docs to https, closes #127 (@sadok-f)
 - [#126](https://github.com/flyimg/flyimg/pull/126) Add Community links (Github and Twitter) (@sadok-f)
 - [#123](https://github.com/flyimg/flyimg/pull/123) Fix SensioLabsInsight warning, closes #122 (@sadok-f)
@@ -44,7 +53,8 @@
 - [#77](https://github.com/flyimg/flyimg/pull/77) Update composer [phpunittest] (@sadok-f)
 - [#73](https://github.com/flyimg/flyimg/pull/73) Increase code coverage unit test + Update readme (@sadok-f)
 - [#72](https://github.com/flyimg/flyimg/pull/72) Add more UnitTest in order to increase the code coverage (@sadok-f)
-- [#71](https://github.com/flyimg/flyimg/pull/71) Add More Unit test cover WebTestCases #42 (@sadok-f)
+- [#71](https://github.com/flyimg/flyimg/pull/71) Add More Unit test cover WebTestCases
+ #42 (@sadok-f)
 
 ### 1.0.0 (2017/06/30 16:12 +00:00)
 - [#70](https://github.com/flyimg/flyimg/pull/70) Optimization part 1 (@sadok-f)
@@ -65,7 +75,9 @@
 - [#60](https://github.com/flyimg/flyimg/pull/60) Activating Open Collective (@xdamman)
 
 ### 0.1.6 (2017/03/28 05:56 +00:00)
-- [#57](https://github.com/flyimg/flyimg/pull/57) Allow to serve WebP if explicitly requested  I need this to keep working on other branch, so I'll be a dick and just merge it without approval. If there is anything you don't like we can revert, no problem. (@baamenabar)
+- [#57](https://github.com/flyimg/flyimg/pull/57) Allow to serve WebP if explicitly requested
+ 
+ I need this to keep working on other branch, so I'll be a dick and just merge it without approval. If there is anything you don't like we can revert, no problem. (@baamenabar)
 - [#56](https://github.com/flyimg/flyimg/pull/56) Update docs (@sadok-f)
 - [#55](https://github.com/flyimg/flyimg/pull/55) Move phpunit to require-dev section (@sadok-f)
 - [#53](https://github.com/flyimg/flyimg/pull/53) Remove Twig from the repo. Clean clean clean! (@sadok-f)
