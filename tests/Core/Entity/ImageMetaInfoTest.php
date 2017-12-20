@@ -51,6 +51,14 @@ class ImageMetaInfoTest extends BaseTest
     }
 
     /**
+     * @param string $testImagePath
+     * @param string $expectedFormat
+     * @param string $expectedCanvas
+     * @param string $expectedBitDepth
+     * @param string $expectedColorProfile
+     * @param string $expectedFileWeight
+     * @param array  $expectedDimensions
+     *
      * @dataProvider fileInfoProvider
      */
     public function testGetInfoAttributes(

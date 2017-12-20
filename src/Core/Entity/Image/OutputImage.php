@@ -164,23 +164,7 @@ class OutputImage
      */
     protected function generateFileExtension()
     {
-        $this->outputImageExtension = $this->resolveOutputImageExtension($this->extractKey('output'));
-        $fileExtension = '.'.$this->outputImageExtension;
-        $this->outputImagePath .= $fileExtension;
-        $this->outputImageName .= $fileExtension;
-    }
-
-    /**
-     * Given a certain output expected this method will resolve the extension
-     *
-     * @param  string $requestedOutput file type extension, or behaviour like `auto` or `input`
-     *
-     * @return string The extension to generate given all the configs and conditions present.
-     * @throws InvalidArgumentException
-     */
-    protected function resolveOutputImageExtension(string $requestedOutput): string
-    {
-        $resolvedExtension = self::EXT_JPG;
+        $requestedOutput = $this->extractKey('output');
 
         if ($requestedOutput == self::EXT_INPUT) {
             $resolvedExtension = $this->inputImageExtension();
@@ -194,7 +178,9 @@ class OutputImage
             $resolvedExtension = $requestedOutput;
         }
 
-        return $resolvedExtension;
+        $this->outputImageExtension = $resolvedExtension;
+        $this->outputImagePath .= '.'.$this->outputImageExtension;
+        $this->outputImageName .= '.'.$this->outputImageExtension;
     }
 
     /**
@@ -212,30 +198,6 @@ class OutputImage
             return self::EXT_WEBP;
         }
 
-        // fall back to input extension, which falls back to jpg
-        return $this->inputImageExtension();
-    }
-
-    /**
-     * get the extension of the input image asociated with this entity
-     * @return string   defaults to `jpg`
-     */
-    protected function inputImageExtension(): string
-    {
-        $resolvedExtension = $this->extensionByMimeType($this->inputImage->sourceImageMimeType());
-
-        return $resolvedExtension ? $resolvedExtension : self::EXT_JPG;
-    }
-
-    /**
-     * given a mime-type this returns the extension associated to it
-     *
-     * @param  string $mimeType mime-type
-     *
-     * @return string           extension OR empty string
-     */
-    protected function extensionByMimeType(string $mimeType): string
-    {
         $mimeToExtensions = [
             self::PNG_MIME_TYPE => self::EXT_PNG,
             self::WEBP_MIME_TYPE => self::EXT_WEBP,
@@ -243,7 +205,10 @@ class OutputImage
             self::GIF_MIME_TYPE => self::EXT_GIF,
         ];
 
-        return array_key_exists($mimeType, $mimeToExtensions) ? $mimeToExtensions[$mimeType] : '';
+        return array_key_exists(
+            $this->inputImage->sourceImageMimeType(),
+            $mimeToExtensions
+        ) ? $mimeToExtensions[$this->inputImage->sourceImageMimeType()] : self::EXT_JPG;
     }
 
     /**

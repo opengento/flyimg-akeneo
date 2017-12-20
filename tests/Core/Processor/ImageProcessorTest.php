@@ -220,36 +220,35 @@ class ImageProcessorTest extends BaseTest
         );
     }
 
+    /**
+     * Test partial crops without expanding
+     * @return array
+     */
     protected function partialCropTestProvider(): array
     {
         return [
-            // test partial crops without expanding
             'Expand and partial crop to square a landscape' =>
                 ['w_250,h_250,c_1', '250x200', self::PNG_TEST_SMALL_LANDSCAPE_IMAGE],
             'Expand and partial crop to square a portrait' =>
                 ['w_250,h_250,c_1', '200x250', self::PNG_TEST_SMALL_PORTRAIT_IMAGE],
-
             'Expand and partial crop to portrait (wider a.r. than portrait) square' =>
                 ['w_190,h_220,c_1', '190x200', self::PNG_TEST_SMALL_SQUARE_IMAGE],
             'Expand and partial crop to portrait (wider a.r. than portrait) landscape' =>
                 ['w_210,h_300,c_1', '210x200', self::PNG_TEST_SMALL_LANDSCAPE_IMAGE],
             'Expand and partial crop to portrait (wider a.r. than portrait) portrait' =>
                 ['w_210,h_290,c_1', '200x290', self::PNG_TEST_SMALL_PORTRAIT_IMAGE],
-
             'Expand and partial crop to portrait (narrower a.r. than portrait) square' =>
                 ['w_190,h_300,c_1', '190x200', self::PNG_TEST_SMALL_SQUARE_IMAGE],
             'Expand and partial crop to portrait (narrower a.r. than portrait) landscape' =>
                 ['w_190,h_350,c_1', '190x200', self::PNG_TEST_SMALL_LANDSCAPE_IMAGE],
             'Expand and partial crop to portrait (narrower a.r. than portrait) portrait' =>
                 ['w_190,h_350,c_1', '190x300', self::PNG_TEST_SMALL_PORTRAIT_IMAGE],
-
             'Expand and partial crop to landscape (taller a.r. than landscape) square' =>
                 ['w_250,h_190,c_1', '200x190', self::PNG_TEST_SMALL_SQUARE_IMAGE],
             'Expand and partial crop to landscape (taller a.r. than landscape) landscape' =>
                 ['w_290,h_210,c_1', '290x200', self::PNG_TEST_SMALL_LANDSCAPE_IMAGE],
             'Expand and partial crop to landscape (taller a.r. than landscape) portrait' =>
                 ['w_290,h_210,c_1', '200x210', self::PNG_TEST_SMALL_PORTRAIT_IMAGE],
-
             'Expand and partial crop to landscape (shorter a.r. than landscape) square' =>
                 ['w_320,h_190,c_1', '200x190', self::PNG_TEST_SMALL_SQUARE_IMAGE],
             'Expand and partial crop to landscape (shorter a.r. than landscape) landscape' =>
