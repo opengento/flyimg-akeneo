@@ -24,3 +24,4 @@ ratings:
   - "**.rb"
 exclude_paths:
 - config/
+- tests/
