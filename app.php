@@ -98,7 +98,7 @@ $app['image.handler'] = function (\Silex\Application $app) {
  * Example usage: php app.php encrypt w_200,h_200,c_1/Rovinj-Croatia.jpg
  */
 if (!empty($argv[1]) && !empty($argv[2]) && $argv[1] == 'encrypt') {
-    printf("Hashed request: %s\n", $app['image.handler']->getSecurityHandler()->encrypt($argv[2]));
+    printf("Hashed request: %s\n", $app['image.handler']->securityHandler()->encrypt($argv[2]));
     return;
 }
 
