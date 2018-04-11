@@ -106,9 +106,11 @@ https://oi.flyimg.io/upload/w_200,h_200,c_1,q_30/https://m0.cl/t/resize-test_192
    * [Demo Application running](#demo-application-running)
    * [Roadmap](#roadmap)
    * [Community](#community)
+   * [Supporters](#supporters)
    * [Contributors](#contributors)
    * [Backers](#backers)
    * [Sponsors](#sponsors)
+   * [License](#license)
    
    
 # Requirements
@@ -431,6 +433,12 @@ Status Codes  [code:count]             200:500
 
 * Follow us on [GitHub][1] and [Twitter][2].
 
+# Supporters
+
+A special thanks to Jetbrains for supporting our project with their [open source license program](https://www.jetbrains.com/buy/opensource/).
+
+![Jetbrains](https://oi.flyimg.io/upload/w_300/jetbrains-variant-3.png)
+
 
 # Contributors
 
@@ -462,7 +470,9 @@ Thank you to all our sponsors! (please ask your company to also support this ope
 
 
 
-Licence: MIT
+# License
+
+The MIT License (MIT). Please see [License File](LICENSE) for more information.
 
 
 Enjoy your Flyimaging!
