@@ -110,6 +110,7 @@ https://oi.flyimg.io/upload/w_200,h_200,c_1,q_30/https://m0.cl/t/resize-test_192
    * [Contributors](#contributors)
    * [Backers](#backers)
    * [Sponsors](#sponsors)
+   * [License](#license)
    
    
 # Requirements
@@ -469,7 +470,9 @@ Thank you to all our sponsors! (please ask your company to also support this ope
 
 
 
-Licence: MIT
+# License
+
+The MIT License (MIT). Please see [License File](LICENSE) for more information.
 
 
 Enjoy your Flyimaging!
