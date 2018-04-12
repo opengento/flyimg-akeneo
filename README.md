@@ -435,7 +435,7 @@ Status Codes  [code:count]             200:500
 
 # Supporters
 
-A special thanks to Jetbrains for supporting our project with their [open source license program](https://www.jetbrains.com/buy/opensource/).
+A special thanks to JetBrains for supporting our project with their [open source license program](https://www.jetbrains.com/buy/opensource/).
 
 ![Jetbrains](https://oi.flyimg.io/upload/w_300/jetbrains-variant-3.png)
 
