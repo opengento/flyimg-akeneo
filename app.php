@@ -59,9 +59,6 @@ $app['routes'] = $app->extend(
 /** Register Storage provider */
 
 switch ($app['params']->parameterByKey('storage_system')) {
-    case 'akeneo_api':
-        $app->register(new \Core\StorageProvider\AkeneoAPIStorageProvider());
-        break;
     case 's3':
         $app->register(new \Core\StorageProvider\S3StorageProvider());
         break;
@@ -92,6 +89,7 @@ $app['resolver'] = function (\Silex\Application $app) {
 $app['image.handler'] = function (\Silex\Application $app) {
     return new \Core\Handler\ImageHandler(
         $app['flysystems']['upload_dir'],
+        $app['flysystem.mount_manager'],
         $app['params']
     );
 };

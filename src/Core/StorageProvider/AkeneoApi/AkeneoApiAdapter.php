@@ -4,11 +4,13 @@ namespace Core\StorageProvider\AkeneoApi;
 
 use Akeneo\Pim\ApiClient\AkeneoPimClientInterface;
 use Akeneo\Pim\ApiClient\Exception\HttpException;
+use League\Flysystem\AdapterInterface;
+use League\Flysystem\Config;
 use League\Flysystem\ReadInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
-class AkeneoApiAdapter implements ReadInterface
+class AkeneoApiAdapter implements AdapterInterface
 {
     /**
      * @var AkeneoPimClientInterface
@@ -32,7 +34,7 @@ class AkeneoApiAdapter implements ReadInterface
 
     public function has($path)
     {
-        $this->getMetadata($path);
+        return $this->getMetadata($path);
     }
 
     public function read($path)
@@ -51,7 +53,7 @@ class AkeneoApiAdapter implements ReadInterface
     public function readStream($path)
     {
         return array_merge(
-            $this->getMetadata(),
+            $this->getMetadata($path),
             [
                 'stream' => $this->client->getProductMediaFileApi()
                     ->download($path)
@@ -102,5 +104,55 @@ class AkeneoApiAdapter implements ReadInterface
     public function getVisibility($path)
     {
         return $this->getMetadata($path);
+    }
+
+    public function write($path, $contents, Config $config)
+    {
+        throw new \RuntimeException('Unimplemented feature');
+    }
+
+    public function writeStream($path, $resource, Config $config)
+    {
+        throw new \RuntimeException('Unimplemented feature');
+    }
+
+    public function update($path, $contents, Config $config)
+    {
+        throw new \RuntimeException('Unimplemented feature');
+    }
+
+    public function updateStream($path, $resource, Config $config)
+    {
+        throw new \RuntimeException('Unimplemented feature');
+    }
+
+    public function rename($path, $newpath)
+    {
+        throw new \RuntimeException('Unimplemented feature');
+    }
+
+    public function copy($path, $newpath)
+    {
+        throw new \RuntimeException('Unimplemented feature');
+    }
+
+    public function delete($path)
+    {
+        throw new \RuntimeException('Unimplemented feature');
+    }
+
+    public function deleteDir($dirname)
+    {
+        throw new \RuntimeException('Unimplemented feature');
+    }
+
+    public function createDir($dirname, Config $config)
+    {
+        throw new \RuntimeException('Unimplemented feature');
+    }
+
+    public function setVisibility($path, $visibility)
+    {
+        throw new \RuntimeException('Unimplemented feature');
     }
 }

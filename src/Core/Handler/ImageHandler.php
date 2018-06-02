@@ -10,6 +10,7 @@ use Core\Processor\ExtractProcessor;
 use Core\Processor\FaceDetectProcessor;
 use Core\Processor\ImageProcessor;
 use League\Flysystem\Filesystem;
+use League\Flysystem\MountManager;
 
 /**
  * Class ImageHandler
@@ -35,16 +36,24 @@ class ImageHandler
     /** @var AppParameters */
     protected $appParameters;
 
+    /** @var MountManager */
+    protected $mountManager;
+
     /**
      * ImageHandler constructor.
      *
      * @param Filesystem    $filesystem
+     * @param MountManager  $mountManager
      * @param AppParameters $appParameters
      */
-    public function __construct(Filesystem $filesystem, AppParameters $appParameters)
-    {
+    public function __construct(
+        Filesystem $filesystem,
+        MountManager $mountManager,
+        AppParameters $appParameters
+    ) {
         $this->filesystem = $filesystem;
         $this->appParameters = $appParameters;
+        $this->mountManager = $mountManager;
 
         $this->imageProcessor = new ImageProcessor();
         $this->faceDetectProcessor = new FaceDetectProcessor();
@@ -91,7 +100,7 @@ class ImageHandler
 
 
         $optionsBag = new OptionsBag($this->appParameters, $options);
-        $inputImage = new InputImage($optionsBag, $imageSrc);
+        $inputImage = new InputImage($optionsBag, $imageSrc, $this->mountManager);
         $outputImage = new OutputImage($inputImage);
 
         try {

@@ -34,6 +34,7 @@ class S3StorageProviderTest extends BaseTest
         $this->ImageHandler =
             new ImageHandler(
                 $this->app['flysystems']['upload_dir'],
+                $this->app['flysystem.mount_manager'],
                 $this->app['params']
             );
         $this->ImageHandler->processImage(parent::OPTION_URL.',o_webp', parent::PNG_TEST_IMAGE);

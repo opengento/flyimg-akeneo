@@ -2,8 +2,10 @@
 
 namespace Core\StorageProvider;
 
+use Akeneo\Pim\ApiClient\AkeneoPimClientBuilder;
 use Aws\S3\S3Client;
 use Core\Exception\MissingParamsException;
+use Core\StorageProvider\AkeneoApi\AkeneoApiAdapter;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use WyriHaximus\SliFly\FlysystemServiceProvider;
@@ -50,6 +52,22 @@ class S3StorageProvider implements ServiceProviderInterface
             ]
         );
 
+        $params = $app['params']->parameterByKey('akeneo_api');
+        if (in_array("", $params)) {
+            throw new MissingParamsException("One of Akeneo API's parameters in empty ! ");
+        }
+
+        $clientBuilder = new AkeneoPimClientBuilder(
+            $params['base_url']
+        );
+
+        $client = $clientBuilder->buildAuthenticatedByPassword(
+            $params['client_id'],
+            $params['client_secret'],
+            $params['user'],
+            $params['password']
+        );
+
         $app->register(
             new FlysystemServiceProvider(),
             [
@@ -58,6 +76,10 @@ class S3StorageProvider implements ServiceProviderInterface
                         'adapter' => 'League\Flysystem\AwsS3v3\AwsS3Adapter',
                         'args' => [$s3Client, $s3Params['bucket_name']],
                     ],
+                ],
+                'akeneo' => [
+                    'adapter' => AkeneoApiAdapter::class,
+                    'args' => [$client],
                 ],
             ]
         );

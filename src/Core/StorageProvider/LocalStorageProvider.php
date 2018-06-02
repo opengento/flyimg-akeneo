@@ -2,6 +2,9 @@
 
 namespace Core\StorageProvider;
 
+use Akeneo\Pim\ApiClient\AkeneoPimClientBuilder;
+use Core\Exception\MissingParamsException;
+use Core\StorageProvider\AkeneoApi\AkeneoApiAdapter;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use WyriHaximus\SliFly\FlysystemServiceProvider;
@@ -23,6 +26,22 @@ class LocalStorageProvider implements ServiceProviderInterface
      */
     public function register(Container $app)
     {
+        $params = $app['params']->parameterByKey('akeneo_api');
+        if (in_array("", $params)) {
+            throw new MissingParamsException("One of Akeneo API's parameters in empty ! ");
+        }
+
+        $clientBuilder = new AkeneoPimClientBuilder(
+            $params['base_url']
+        );
+
+        $client = $clientBuilder->buildAuthenticatedByPassword(
+            $params['client_id'],
+            $params['client_secret'],
+            $params['user'],
+            $params['password']
+        );
+
         $app->register(
             new FlysystemServiceProvider(),
             [
@@ -30,6 +49,10 @@ class LocalStorageProvider implements ServiceProviderInterface
                     'upload_dir' => [
                         'adapter' => 'League\Flysystem\Adapter\Local',
                         'args' => [UPLOAD_DIR],
+                    ],
+                    'akeneo' => [
+                        'adapter' => AkeneoApiAdapter::class,
+                        'args' => [$client],
                     ],
                 ],
             ]

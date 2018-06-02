@@ -5,6 +5,8 @@ namespace Core\Entity\Image;
 use Core\Entity\OptionsBag;
 use Core\Exception\ReadFileException;
 use Core\Entity\ImageMetaInfo;
+use League\Flysystem\Filesystem;
+use League\Flysystem\MountManager;
 
 class InputImage
 {
@@ -23,14 +25,20 @@ class InputImage
     /** @var ImageMetaInfo */
     protected $sourceImageInfo;
 
+    /** @var MountManager */
+    private $mountManager;
+
     /**
      * OutputImage constructor.
      *
      * @param OptionsBag $optionsBag
      * @param string     $sourceImageUrl
      */
-    public function __construct(OptionsBag $optionsBag, string $sourceImageUrl)
-    {
+    public function __construct(
+        OptionsBag $optionsBag,
+        string $sourceImageUrl,
+        MountManager $mountManager
+    ) {
         $this->optionsBag = $optionsBag;
         $this->sourceImageUrl = $sourceImageUrl;
 
@@ -39,6 +47,8 @@ class InputImage
                 $optionsBag->get('face-crop-position').
                 $this->sourceImageUrl
             ));
+
+        $this->mountManager = $mountManager;
         $this->saveToTemporaryFile();
         $this->sourceImageInfo = new ImageMetaInfo($this->sourceImagePath);
     }
@@ -54,17 +64,8 @@ class InputImage
             return;
         }
 
-        $opts = [
-            'http' =>
-                [
-                    'method' => 'GET',
-                    'max_redirects' => '0',
-                ],
-        ];
-        $context = stream_context_create($opts);
-
-        if (!$stream = @fopen($this->sourceImageUrl, 'r', false, $context)
-        ) {
+        $filesystem = $this->mountManager->getFilesystem('akeneo');
+        if (!$stream = $filesystem->readStream($this->sourceImageUrl)) {
             throw  new ReadFileException(
                 'Error occurred while trying to read the file Url : '
                 .$this->sourceImageUrl
