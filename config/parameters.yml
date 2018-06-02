@@ -16,25 +16,26 @@ security_key: ""
 security_iv: ""
 
 # restrict domains, false by default
-restricted_domains: false
+restricted_domains: true
 
 # if restricted_domains is enabled, put whitelist domains here
 whitelist_domains:
-    - domain-1.com
-    - domain-2.com
+    - 192.168.1.118:8100
 
 # Default storage system is local, to use use AWS S3, change this param to s3
-storage_system: local
+storage_system: akeneo_api
 
 # Number of threads for Imagemagick to use
 thread: 1
 
 #In case storage_system: s3, you need to add those AWS S3 parameters:
-aws_s3:
-  access_id: ""
-  secret_key: ""
-  region: ""
-  bucket_name: ""
+akeneo_api:
+  base_url: ""
+  api_url: ""
+  client_id: "1_4nt3aj7728e8w4coo4ogws48wcgos0o4owo4og4sck4c00kskg"
+  client_secret: "1etszljk2tvoo8wgokok0cscswsgwso4w88cw4owwgwk8w0gk"
+  user: "admin"
+  password: "admin"
 
 #Keys used in url to match options. Ex: q_80,w_200,h_100
 options_keys:

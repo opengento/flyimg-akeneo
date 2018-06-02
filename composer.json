@@ -12,6 +12,13 @@
   ],
   "homepage": "https://github.com/flyimg/flyimg",
   "license": "MIT",
+  "repositories": [
+    {
+      "type": "git",
+      "url": "git@github.com:opengento/nogento.git",
+      "path": "flysystem-akeneo-api-adapter"
+    }
+  ],
   "authors": [
     {
       "name": "Sadok Ferjani",
