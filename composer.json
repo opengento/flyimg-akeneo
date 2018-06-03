@@ -24,6 +24,12 @@
       "email": "baamenabar@gmail.com",
       "homepage": "http://code.medula.cl",
       "role": "Developer"
+    },
+    {
+      "name": "Grégory Planchat",
+      "email": "gregory@kiboko.fr",
+      "homepage": "http://kiboko.fr",
+      "role": "Developer"
     }
   ],
   "require": {
